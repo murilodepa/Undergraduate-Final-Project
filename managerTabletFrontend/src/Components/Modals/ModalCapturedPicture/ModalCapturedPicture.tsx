@@ -1,0 +1,52 @@
+import { View, TouchableOpacity, Image, Modal } from "react-native";
+
+import {
+  Containerfooter,
+  NotCaptureButton,
+  CaptureButton,
+  ContainerHeaderSave,
+  ContainerCapturedImage,
+  TextHeaderSave,
+} from "./styles";
+
+export default function ModalCapturedPicture({
+  openPicture,
+  closePicture,
+  closePictureAndCounter,
+  capturedPhotoURI,
+}) {
+  return (
+    <Modal animationType="slide" transparent={false} visible={openPicture}>
+      <ContainerHeaderSave>
+        <TextHeaderSave style={{ textAlignVertical: "center" }}>
+          Deseja armazenar essa imagem?
+        </TextHeaderSave>
+      </ContainerHeaderSave>
+      
+      <ContainerCapturedImage>
+        <Image
+          style={{ width: "100%", height: 400, borderRadius: 20 }}
+          source={{ uri: capturedPhotoURI }}
+        />
+      </ContainerCapturedImage>
+
+      <Containerfooter>
+        <TouchableOpacity
+          onPress={() => {
+            closePictureAndCounter();
+          }}
+        >
+          <CaptureButton source={require("../../../assets/capture.png")} />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => {
+            closePicture();
+          }}
+        >
+          <NotCaptureButton source={require("../../../assets/not_capture.png")} />
+        </TouchableOpacity>
+      </Containerfooter>
+    </Modal>
+  );
+}
