@@ -9,6 +9,8 @@ import {
   TextHeaderCapture,
 } from "./styles";
 import ModalCapturedPicture from "../../Components/Modals/ModalCapturedPicture/ModalCapturedPicture";
+import { SendImageService } from "../../services/SendImageService/SendImageService";
+import axios from "axios";
 
 export default function App() {
   const camRef = useRef(null);
@@ -57,9 +59,51 @@ export default function App() {
     return <Text> Acesso Negado! </Text>;
   }
 
+  async function sendImage(image: string) {
+    try {
+      const result = await new SendImageService().insertImage(image);
+      console.log("aaaaaaaaaccccccccaaaaaaaaaa" + result)
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   async function takePicture() {
     if (camRef) {
       const data = await camRef.current.takePictureAsync();
+      
+      const config = {
+        params: {
+          image: data
+        }
+      };
+      
+      console.log("entrou")
+     // axios.post('http://192.168.56.1:8080/image/insertImage', config)
+      await sendImage("aaaaaaaaaaaaaa");
+/*
+     try {
+     await axios.post("http://192.168.15.90:8080/image/sendImage", {
+      image: "aaaa"
+      })
+    } catch (error) {
+      console.log("errooooooo", error)
+    }
+*/
+/*
+try {
+  await axios.get("https://img-21.ccm2.net/ED0gH3WmDWR4ru4fLKiRU3rUOf0=/500x/c41137b2397b4d08b596e8d43ab44c6e/ccm-faq/123rf_Sergey_Leonov.jpg", {
+    responseType: 'arraybuffer'
+  })
+  .then(response => Buffer.from(response.data, 'binary').toString('base64'))
+
+
+ } catch (error) {
+   console.log("errooooooo", error)
+ }
+*/
+    console.log("ssssssssssssssssss")
+
       setCapturedPhotoURI(data.uri);
       setOpenPicture(true);
       console.log(data);
