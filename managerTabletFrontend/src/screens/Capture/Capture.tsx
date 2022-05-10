@@ -12,7 +12,7 @@ import ModalCapturedPicture from "../../Components/Modals/ModalCapturedPicture/M
 import { SendImageService } from "../../services/SendImageService/SendImageService";
 import axios from "axios";
 
-export default function App() {
+export function Capture() {
   const camRef = useRef(null);
   const [hasPermission, setHasPermission] = useState(null);
   const [capturedPhotoURI, setCapturedPhotoURI] = useState(null);
