@@ -12,7 +12,7 @@ import ModalCapturedPicture from "../../Components/Modals/ModalCapturedPicture/M
 import { SendImageService } from "../../services/SendImageService/SendImageService";
 import axios from "axios";
 
-export default function App() {
+export function Capture() {
   const camRef = useRef(null);
   const [hasPermission, setHasPermission] = useState(null);
   const [capturedPhotoURI, setCapturedPhotoURI] = useState(null);
@@ -59,7 +59,7 @@ export default function App() {
     return <Text> Acesso Negado! </Text>;
   }
 
-  async function sendImage(image: string) {
+  async function sendImage(image: any) {
     try {
       const result = await new SendImageService().insertImage(image);
       console.log("aaaaaaaaaccccccccaaaaaaaaaa" + result)
@@ -80,7 +80,7 @@ export default function App() {
       
       console.log("entrou")
      // axios.post('http://192.168.56.1:8080/image/insertImage', config)
-      await sendImage("aaaaaaaaaaaaaa");
+      await sendImage(data);
 /*
      try {
      await axios.post("http://192.168.15.90:8080/image/sendImage", {
