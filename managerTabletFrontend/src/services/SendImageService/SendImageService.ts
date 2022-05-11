@@ -17,7 +17,6 @@ export class SendImageService {
             },
         })
 
-
         console.log(result)
     }
 } 

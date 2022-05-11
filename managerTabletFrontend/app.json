@@ -4,9 +4,9 @@
     "slug": "tabletFrontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/store_icon.png",
+    "icon": "./src/assets/clothing_store.png",
     "splash": {
-      "image": "./src/assets/store_icon.png",
+      "image": "./src/assets/clothing_store.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff",
       "widht": 50
@@ -22,7 +22,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/store_icon.png",
+        "foregroundImage": "./src/assets/clothing_store.png",
         "backgroundColor": "#FFFFFF"
       }
     },

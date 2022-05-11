@@ -5,6 +5,24 @@ export const Container = styled.View`
     justify-content: center;
 `;
 
+export const ContainerCamera = styled.View`
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    background-color: #B4CFEF;
+`;
+
+export const CameraEdge = styled.View`
+      flex: 1;
+      max-height: 800px;
+      width: 600px;
+      align-content: center;
+      border-width: 5px;
+      border-color: #000000;
+`;
+
+
+
 export const CameraButton = styled.Image`
       justify-content: center;
       border-radius: 10px;

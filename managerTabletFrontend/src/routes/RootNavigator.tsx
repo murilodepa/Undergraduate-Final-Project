@@ -4,9 +4,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 
 
-import { Splash } from '../screens/Splash/Splash';
-import { Initial } from '../screens/Initial/Initial';
-import { Capture } from '../screens/Capture/Capture'
+import Splash from '../screens/Splash/Splash';
+import Initial from '../screens/Initial/Initial';
+import Capture from '../screens/Capture/Capture'
 
 const Stack = createNativeStackNavigator();
 
@@ -15,7 +15,7 @@ export function RootNavigator() {
 
   return (
     <NavigationContainer>
-      <Navigator screenOptions={{ headerShown: false }}>
+      <Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
         <Screen name="Splash" component={Splash} />
         <Screen name="Initial" component={Initial} />
         <Screen name="Capture" component={Capture} />

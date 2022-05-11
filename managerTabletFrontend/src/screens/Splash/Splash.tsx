@@ -1,21 +1,19 @@
 import React from "react";
-import LottieView from 'lottie-react-native'
-import { Container } from './styles'
-import { useNavigation } from "@react-navigation/native";
+import LottieView from "lottie-react-native";
+import { Container } from "./styles";
 
-export function Splash() {
+const Splash = ({ navigation }) => {
+  return (
+    <Container>
+      <LottieView
+        source={require("../../assets/store-splash.json")}
+        autoPlay
+        speed={0.6}
+        loop={false}
+        onAnimationFinish={() => navigation.navigate("Initial")}
+      />
+    </Container>
+  );
+};
 
-    const navigation = useNavigation()
-
-    return (
-        <Container>
-           <LottieView 
-                source={require('../../assets/store-splash.json')} 
-                autoPlay 
-                speed={0.6}
-                loop={false}
-                onAnimationFinish={() => navigation.navigate('Capture')}
-            /> 
-        </Container>
-    )
-}
+export default Splash;
