@@ -40,7 +40,7 @@ public class ClientService {
         return clientRepository.existsByCpf(cpf);
     }
 
-    public UUID getIdClient(String searchName) {
-        return clientRepository.findByName(searchName).getId();
+    public UUID getIdByCpf(String searchCpf) {
+        return clientRepository.findByCpf(searchCpf).getId();
     }
 }

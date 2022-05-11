@@ -13,20 +13,14 @@ import java.util.UUID;
 @Getter
 @Table(name = "TB_PURCHASE_PRODUCT")
 public class PurchaseProductModel {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_purchase_product", updatable = false, unique = true, nullable = false)
     private UUID id;
-
-    @Column(name = "time")
-    private LocalDateTime dateTime;
-
     @NotNull
     @ManyToOne
     @JoinColumn(name = "id_purchase")
     private PurchaseModel purchaseModel;
-
     @NotNull
     @ManyToOne
     @JoinColumn(name = "id_product")

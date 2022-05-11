@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Data
 public class ClientDTO {
-    @Size(min=3, max=100)
+    @Size(min = 3, max = 100)
     private String name;
     @Size(min = 1, max = 10)
     private String gender;

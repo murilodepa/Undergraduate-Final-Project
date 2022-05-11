@@ -39,4 +39,8 @@ public class SellerService {
     public boolean existsByCpf(String cpf) {
         return sellerRepository.existsByCpf(cpf);
     }
+
+    public UUID getIdByCpf(String searchCpf) {
+        return sellerRepository.findByCpf(searchCpf).getId();
+    }
 }

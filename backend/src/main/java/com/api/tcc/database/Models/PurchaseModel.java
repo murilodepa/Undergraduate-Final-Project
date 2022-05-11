@@ -12,15 +12,12 @@ import java.util.UUID;
 @Getter
 @Table(name = "TB_PURCHASE")
 public class PurchaseModel {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_purchase", updatable = false, unique = true, nullable = false)
     private UUID id;
-
     @Column(name = "timestamp")
     private Timestamp timestamp;
-
     @ManyToOne
     @JoinColumn(name = "id_client")
     private ClientModel clientModel;

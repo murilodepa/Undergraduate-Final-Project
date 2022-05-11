@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -69,5 +70,10 @@ public class SellerController {
         BeanUtils.copyProperties(sellerDTO, sellerModel);
         sellerModel.setId(sellerModelOptional.get().getId());
         return ResponseEntity.status(HttpStatus.OK).body(sellerService.save(sellerModel));
+    }
+
+    @GetMapping("/getIdByCpf")
+    public ResponseEntity getIdClientByCpf(@NotNull @RequestParam String searchCpf) {
+        return ResponseEntity.status(HttpStatus.OK).body(sellerService.getIdByCpf(searchCpf));
     }
 }

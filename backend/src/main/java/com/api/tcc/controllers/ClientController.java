@@ -26,7 +26,6 @@ public class ClientController {
 
     @PostMapping("/insertClient")
     public ResponseEntity<Object> saveClient(@RequestBody @Valid ClientDTO clientDTO) {
-        System.out.println("aaaaaaaaaaaaaaaaaaaaaaaa");
         if (clientService.existsByCpf(clientDTO.getCpf())) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: CPF is already in use!");
         }
@@ -41,9 +40,9 @@ public class ClientController {
     }
 
     @GetMapping("/getClient/{id}")
-    public ResponseEntity<Object> getOneClient(@PathVariable(value = "id") UUID id){
+    public ResponseEntity<Object> getOneClient(@PathVariable(value = "id") UUID id) {
         Optional<ClientModel> clientModelOptional = clientService.findById(id);
-        if(!clientModelOptional.isPresent()) {
+        if (!clientModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
         }
         return ResponseEntity.status(HttpStatus.OK).body(clientModelOptional.get());
@@ -52,7 +51,7 @@ public class ClientController {
     @DeleteMapping("/removeClient/{id}")
     public ResponseEntity<Object> deleteClient(@PathVariable(value = "id") UUID id) {
         Optional<ClientModel> clientModelOptional = clientService.findById(id);
-        if(!clientModelOptional.isPresent()) {
+        if (!clientModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
         }
         clientService.delete(clientModelOptional.get());
@@ -62,7 +61,7 @@ public class ClientController {
     @PutMapping("/updateClient/{id}")
     public ResponseEntity<Object> updateClient(@PathVariable(value = "id") UUID id, @RequestBody @Valid ClientDTO clientDTO) {
         Optional<ClientModel> clientModelOptional = clientService.findById(id);
-        if(!clientModelOptional.isPresent()) {
+        if (!clientModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
         }
         ClientModel clientModel = new ClientModel();
@@ -71,9 +70,8 @@ public class ClientController {
         return ResponseEntity.status(HttpStatus.OK).body(clientService.save(clientModel));
     }
 
-    @GetMapping("/getId")
-    public ResponseEntity getIdClient(@NotNull @RequestParam String searchName) {
-        return ResponseEntity.status(HttpStatus.OK).body(clientService.getIdClient(searchName));
+    @GetMapping("/getIdByCpf")
+    public ResponseEntity getIdClientByCpf(@NotNull @RequestParam String searchCpf) {
+        return ResponseEntity.status(HttpStatus.OK).body(clientService.getIdByCpf(searchCpf));
     }
 }
-

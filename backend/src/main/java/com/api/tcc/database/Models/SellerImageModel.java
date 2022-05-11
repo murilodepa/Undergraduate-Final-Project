@@ -11,15 +11,12 @@ import java.util.UUID;
 @Getter
 @Table(name = "TB_SELLER_IMAGE")
 public class SellerImageModel {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_seller_image", updatable = false, unique = true, nullable = false)
     private UUID id;
-
     @Column(name = "image")
     private String image;
-
     @ManyToOne
     @JoinColumn(name = "id_seller")
     private SellerModel sellerModel;
