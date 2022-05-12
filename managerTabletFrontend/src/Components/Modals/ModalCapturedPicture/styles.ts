@@ -30,12 +30,25 @@ export const ContainerCapturedImage = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
-  margin: 16px;
+  background-color: #B4CFEF;
 `;
+
+export const CapturedImage = styled.Image`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  margin: 16px;
+  width: 575px;
+  max-height: 760px;
+  border-width: 5px;
+  border-color: #000000;
+`;
+
 
 export const TextHeaderSave = styled.Text`
   flex: 1;
   flex-direction: row;
   text-align: center;
-  font-size: 20px;
+  font-size: 30px;
+  margin-bottom: 5px;
 `;

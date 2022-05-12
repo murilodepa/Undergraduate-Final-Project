@@ -14,14 +14,12 @@ export const ContainerCamera = styled.View`
 
 export const CameraEdge = styled.View`
       flex: 1;
-      max-height: 800px;
-      width: 600px;
+      max-height: 760px;
+      width: 575px;
       align-content: center;
       border-width: 5px;
       border-color: #000000;
 `;
-
-
 
 export const CameraButton = styled.Image`
       justify-content: center;
@@ -46,8 +44,8 @@ export const ContainerHeaderCapture = styled.View`
 export const TextHeaderCapture = styled.Text`
       flex: 1;
       text-align: center;
-      font-size: 20px;
-      margin-top: 7%;
+      font-size: 30px;
+      margin-top: 5px;
 `;
 
   

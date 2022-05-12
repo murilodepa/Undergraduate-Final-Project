@@ -7,6 +7,7 @@ import {
   ContainerHeaderSave,
   ContainerCapturedImage,
   TextHeaderSave,
+  CapturedImage,
 } from "./styles";
 
 export default function ModalCapturedPicture({
@@ -24,10 +25,7 @@ export default function ModalCapturedPicture({
       </ContainerHeaderSave>
       
       <ContainerCapturedImage>
-        <Image
-          style={{ width: "100%", height: 400, borderRadius: 20 }}
-          source={{ uri: capturedPhotoURI }}
-        />
+        <CapturedImage source={{ uri: capturedPhotoURI }} />
       </ContainerCapturedImage>
 
       <Containerfooter>
