@@ -15,15 +15,6 @@ export const ProfileImage = styled.Image`
   margin-left: 30px;
 `;
 
-export const NextArrow = styled.Image`
-  justify-content: center;
-  border-radius: 10px;
-  height: 75px;
-  width: 75px;
-  align-items: center;
-  margin-right: 40px;
-`;
-
 export const StoreLogo = styled.Image`
   height: 80px;
   width: 100px;
@@ -52,7 +43,7 @@ export const Line = styled.View`
 export const ContainerDescription = styled.View`
   background-color: #6bb1f1;
   max-height: 600px;
-  height: 400px;
+  height: 800px;
   width: 400px;
   max-width: 400px;
   border-radius: 20px;
@@ -83,10 +74,61 @@ export const ContainerMiddle = styled.View`
   flex: 1;
 `;
 
-export const ContainerFooter = styled.View`
-  justify-content: flex-end;
-  align-items: center;
+export const MenuButton = styled.TouchableOpacity`
+      justify-content: center;
+      align-items: center;
+`;
+
+export const MenuText = styled.Text`
+  font-size: 38px;
+  font-weight: bold;
+`;
+
+export const CharacteristicText = styled.Text`
+  font-size: 30px;
+  font-weight: bold;
+`;
+
+export const CharacteristicInput = styled.TextInput`
+  font-size: 28px;
+  font-weight: bold;
+  background-color: #FFFFFF;
+  border-color: #000000;
+  border-width: 2px;
+  border-radius: 20px;
+  width: 250px;
+  margin-left: 5px;
+`;
+
+export const PlaceHolder = {
+  fontSize: 28, 
+  backgroundColor: "#FFFFFF", 
+  borderColor: "#000000",
+  borderWidth: 2, 
+  borderRadius: 20, 
+  width: 250, 
+  marginStart: 5
+}
+
+export const ViewTextInput = styled.View`
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const ManagerPicture = styled.Image`
+  height: 200px;
+  width: 200px;
+`;
+
+export const MenuIcon = styled.Image`
+  height: 70px;
+  width: 70px;
+`;
+
+export const ContainerFooter = styled.View`
+  justify-content: center;
+  text-align: center;
   background-color: #b5b4b4;
   height: 100px;
 `;

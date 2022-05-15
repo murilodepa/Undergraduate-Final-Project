@@ -1,18 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Text, View, TouchableOpacity, Image, Modal } from "react-native";
 import { Camera } from "expo-camera";
+import axios from "axios";
+
 import {
   Container,
   CameraButton,
   Containerfooter,
   ContainerHeaderCapture,
   TextHeaderCapture,
+  ContainerCamera,
+  CameraEdge,
 } from "./styles";
-import ModalCapturedPicture from "../../Components/Modals/ModalCapturedPicture/ModalCapturedPicture";
-import { SendImageService } from "../../services/SendImageService/SendImageService";
-import axios from "axios";
 
-export function Capture() {
+import ModalCapturedPicture from "../../Components/Modals/ModalCapturedPicture/ModalCapturedPicture";
+import { SendImageClientService } from "../../services/SendImageClientService/SendImageClientService";
+import { SendImageSellerService } from "../../services/SendImageSellerService/SendImageSellerService"
+
+const Capture = ({ route }: any) => {
   const camRef = useRef(null);
   const [hasPermission, setHasPermission] = useState(null);
   const [capturedPhotoURI, setCapturedPhotoURI] = useState(null);
@@ -25,7 +30,8 @@ export function Capture() {
     setOpenPicture(false);
   };
 
-  const closePictureAndCounter = () => {
+  const closePictureAndCounter = async () => {
+    await sendImage(capturedPhotoURI);
     setOpenPicture(false);
     setCapturedPicturesNumber(capturedPicturesNumber + 1);
 
@@ -61,8 +67,13 @@ export function Capture() {
 
   async function sendImage(image: any) {
     try {
-      const result = await new SendImageService().insertImage(image);
-      console.log("aaaaaaaaaccccccccaaaaaaaaaa" + result)
+      var result: any;
+      if(route.params.paramKey == "selle") { // Utilizar mesma tela para vendedor e funcionários
+        result = await new SendImageSellerService().insertImage(image);
+      } else {
+        result = await new SendImageClientService().insertImage(image);
+      }
+      console.log("aaaaaaaaaccccccccaaaaaaaaaa" + result);
     } catch (error) {
       console.error(error);
     }
@@ -71,39 +82,9 @@ export function Capture() {
   async function takePicture() {
     if (camRef) {
       const data = await camRef.current.takePictureAsync();
-      
-      const config = {
-        params: {
-          image: data
-        }
-      };
-      
-      console.log("entrou")
-     // axios.post('http://192.168.56.1:8080/image/insertImage', config)
-      await sendImage(data);
-/*
-     try {
-     await axios.post("http://192.168.15.90:8080/image/sendImage", {
-      image: "aaaa"
-      })
-    } catch (error) {
-      console.log("errooooooo", error)
-    }
-*/
-/*
-try {
-  await axios.get("https://img-21.ccm2.net/ED0gH3WmDWR4ru4fLKiRU3rUOf0=/500x/c41137b2397b4d08b596e8d43ab44c6e/ccm-faq/123rf_Sergey_Leonov.jpg", {
-    responseType: 'arraybuffer'
-  })
-  .then(response => Buffer.from(response.data, 'binary').toString('base64'))
-
-
- } catch (error) {
-   console.log("errooooooo", error)
- }
-*/
-    console.log("ssssssssssssssssss")
-
+      if(route.params.paramKey == "seller") { // Utilizar mesma tela para vendedor e funcionários
+        //await sendImage(data);
+      }
       setCapturedPhotoURI(data.uri);
       setOpenPicture(true);
       console.log(data);
@@ -117,12 +98,18 @@ try {
           {`${capturedPicturesNumber} / 25 \n ${capturedPitureExpression}`}
         </TextHeaderCapture>
       </ContainerHeaderCapture>
-
-      <Camera
-        style={{ flex: 1 }}
-        type={Camera.Constants.Type.back}
-        ref={camRef}
-      />
+      <ContainerCamera>
+        <CameraEdge>
+          <Camera
+            style={{
+              flex: 1,
+              borderRadius: 20,
+              borderColor: "#FFF"}}
+            type={Camera.Constants.Type.back}
+            ref={camRef}
+          />
+        </CameraEdge>
+      </ContainerCamera>
 
       <Containerfooter>
         <TouchableOpacity onPress={takePicture}>
@@ -140,4 +127,6 @@ try {
       )}
     </Container>
   );
-}
+};
+
+export default Capture;

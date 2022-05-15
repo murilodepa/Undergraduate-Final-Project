@@ -5,6 +5,22 @@ export const Container = styled.View`
     justify-content: center;
 `;
 
+export const ContainerCamera = styled.View`
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    background-color: #B4CFEF;
+`;
+
+export const CameraEdge = styled.View`
+      flex: 1;
+      max-height: 760px;
+      width: 575px;
+      align-content: center;
+      border-width: 5px;
+      border-color: #000000;
+`;
+
 export const CameraButton = styled.Image`
       justify-content: center;
       border-radius: 10px;
@@ -28,8 +44,8 @@ export const ContainerHeaderCapture = styled.View`
 export const TextHeaderCapture = styled.Text`
       flex: 1;
       text-align: center;
-      font-size: 20px;
-      margin-top: 7%;
+      font-size: 30px;
+      margin-top: 5px;
 `;
 
   
