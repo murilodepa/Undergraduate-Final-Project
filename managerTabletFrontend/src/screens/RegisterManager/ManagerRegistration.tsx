@@ -1,18 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { Text, StyleSheet, View, TouchableOpacity, BackHandler } from "react-native";
 import { TextInputMask } from 'react-native-masked-text'
-import {Picker} from '@react-native-picker/picker';
+import { Picker } from '@react-native-picker/picker';
+import { ISellerData } from "../../services/SellerService/SellerServiceInterface";
+import validator from 'validator'
+
+import { Container,   ContainerHeader, ContainerFooter, ProfileImage } from "../Initial/stylesInitial";
+
 import {
-  Container,
-  ContainerHeader,
-  ProfileImage,
-  ContainerFooter,
   MenuIcon,
   ContainerMiddle,
   ContainerDescription,
-  StoreLogo,
-  StoreName,
-  Description,
   Line,
   MenuText,
   MenuButton,
@@ -21,48 +19,107 @@ import {
   CharacteristicInput,
   ViewTextInput,
   PlaceHolder,
+  ContainerSelect
 } from "./styles";
 
-const ManagerRegistration  = ({ navigation }) => {
+const ManagerRegistration = ({ navigation }) => {
+
+  const maskDate = (value: string) => {
+    return value
+      .replace(/\D/g, "")
+      .replace(/(\d{2})(\d)/, "$1/$2")
+      .replace(/(\d{2})(\d)/, "$1/$2")
+      .replace(/(\d{4})(\d)/, "$1")
+  };
+
+  const validateDate = (value) => {
+
+    if (validator.isDate(value)) {
+      console.log("Date is validated! - Date", sellerData.birth);
+    } else {
+      console.log('Date is invalid!');
+    }
+  }
+
+  const genderList = ['Feminino', 'Masculino', 'Outros']
+  const sectorList = ['Camiseta', 'Calça', 'Vestido', 'Blusas', 'Roupas Íntimas', 'Saia', 'Short']
+  const [sellerData, setSellerData] = useState<ISellerData>('')
 
   return (
     <Container>
       <ContainerHeader>
-          <ProfileImage
-            source={require("../../assets/profile-image-setting.png")}
-          />
+        <ProfileImage
+          source={require("../../assets/profile-image-setting.png")}
+        />
       </ContainerHeader>
       <ContainerMiddle>
         <ContainerDescription>
           <ManagerPicture source={require("../../assets/manager-picture.png")} />
 
-          <StoreName> Campinense </StoreName>
+
           <Line />
 
           <ViewTextInput>
             <CharacteristicText> Nome: </CharacteristicText>
-            <CharacteristicInput maxLength={10} keyboardType="default" placeholder=" Nome..."/>
+            <CharacteristicInput maxLength={60} keyboardType="default" placeholder=" Nome..." onChangeText={(value) => setSellerData({
+              ...sellerData, name: value
+            })} 
+            style={PlaceHolder}/>
+          </ViewTextInput>
+
+            <ContainerSelect>
+          <Picker
+            selectedValue={sellerData.gender}
+            onValueChange={(itemValue) => setSellerData({ ...sellerData, gender: itemValue })}>
+            {
+              genderList.map((gender, key) => {
+                return <Picker.Item style={{ fontSize: 24 }} label={gender} value={gender} key={key} />
+
+              })
+            }
+          </Picker>
+          </ContainerSelect>
+
+          <ContainerSelect>
+          <Picker
+            selectedValue={sellerData.sector}
+            style={{ width: 200 }}
+            onValueChange={(itemValue) => setSellerData({ ...sellerData, sector: itemValue })}
+          >
+            {
+              sectorList.map((sector, key) => {
+                return <Picker.Item style={{ fontSize: 24 }} label={sector} value={sector} key={key} />
+              })
+            }
+          </Picker>
+          </ContainerSelect>
+
+          <ViewTextInput>
+            <CharacteristicText> Genêro </CharacteristicText>
           </ViewTextInput>
 
           <ViewTextInput>
-          <CharacteristicText> Genêro </CharacteristicText>
-
-         
+            <CharacteristicText> Data de {'\n'} Nascimento: </CharacteristicText>
+            <TextInputMask
+              type={'datetime'}
+              options={{
+                format: 'DD/MM/YYYY'
+              }}
+              placeholder=" dd/mm/aaaa"
+              value={sellerData.birth}
+              onChangeText={(value) => setSellerData({
+                ...sellerData, birth: maskDate(value)
+              })}
+              style={PlaceHolder} />
+            {console.log("name: ", sellerData.name)}
+            {console.log("gender: ", sellerData.gender)}
+            {console.log("data: ", sellerData.birth)}
+            {console.log("sector: ", sellerData.sector)}
           </ViewTextInput>
-
-          <ViewTextInput>
-          <CharacteristicText> Data de {'\n'} Nascimento: </CharacteristicText>
-         <TextInputMask type={'datetime'}             placeholder="DD/MM/YYYY" options={{format: 'DD/MM/YYYY'}} style={PlaceHolder}/>
-          </ViewTextInput>
-
-          <Description>
-            Primeiro vamos realizar o cadastramento do diretor ou um funcionário
-            que possui cargo de confiança do establecimento.
-          </Description>
         </ContainerDescription>
       </ContainerMiddle>
       <ContainerFooter>
-        <MenuButton style={{flexDirection: "row"}}>
+        <MenuButton style={{ flexDirection: "row" }}>
           <MenuIcon source={require("../../assets//menu.png")} />
           <MenuText> Menu </MenuText>
         </MenuButton>

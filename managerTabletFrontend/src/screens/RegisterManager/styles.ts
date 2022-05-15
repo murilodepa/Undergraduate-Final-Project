@@ -15,23 +15,6 @@ export const ProfileImage = styled.Image`
   margin-left: 30px;
 `;
 
-export const StoreLogo = styled.Image`
-  height: 80px;
-  width: 100px;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin-top: 30px;
-  margin-left: 20px;
-`;
-
-export const StoreName = styled.Text`
-  position: absolute;
-  font-size: 43px;
-  font-weight: bold;
-  padding-left: 120px;
-  padding-top: 38px;
-`;
-
 export const Line = styled.View`
   flex: 1;
   background-color: #FFFFFF;
@@ -49,13 +32,6 @@ export const ContainerDescription = styled.View`
   border-radius: 20px;
   border-color: #FFFFFF;
   border-width: 2PX;
-`;
-
-export const Description = styled.Text`
-  font-size: 30px;
-  padding: 20px;
-  text-align: center;
-  line-height: 38px;
 `;
 
 export const ContainerHeader = styled.View`
@@ -101,13 +77,13 @@ export const CharacteristicInput = styled.TextInput`
 `;
 
 export const PlaceHolder = {
-  fontSize: 28, 
+  fontSize: 24, 
   backgroundColor: "#FFFFFF", 
   borderColor: "#000000",
   borderWidth: 2, 
   borderRadius: 20, 
-  width: 250, 
-  marginStart: 5
+  width: 250,
+  paddingLeft: 10
 }
 
 export const ViewTextInput = styled.View`
@@ -132,3 +108,13 @@ export const ContainerFooter = styled.View`
   background-color: #b5b4b4;
   height: 100px;
 `;
+
+export const ContainerSelect = styled.View`
+  border-color: #000000;
+  border-width: 2px;
+  border-radius: 20px;
+  width: 180px;
+  height: 40px;
+`;
+
+

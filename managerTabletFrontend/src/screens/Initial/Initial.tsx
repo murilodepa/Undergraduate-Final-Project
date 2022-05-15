@@ -12,7 +12,7 @@ import {
   StoreName,
   Description,
   Line,
-} from "./styles";
+} from "./stylesInitial";
 
 const Initial = ({ navigation }) => {
 
