@@ -40,7 +40,7 @@ const Initial = ({ navigation }) => {
       </ContainerHeader>
       <ContainerMiddle>
         <ContainerDescription>
-          <StoreLogo source={require("../../assets/clothing_store.png")} />
+          <StoreLogo source={require("../../assets/clothing-store.png")} />
 
           <StoreName> Campinense </StoreName>
           <Line />

@@ -10,7 +10,7 @@ const Splash = ({ navigation }) => {
         autoPlay
         speed={0.6}
         loop={false}
-        onAnimationFinish={() => navigation.navigate("Initial")}
+        onAnimationFinish={() => navigation.navigate("ManagerRegistration")}
       />
     </Container>
   );

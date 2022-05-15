@@ -35,7 +35,9 @@ const Capture = ({ route }: any) => {
     setOpenPicture(false);
     setCapturedPicturesNumber(capturedPicturesNumber + 1);
 
-    console.log("capturedPicturesNumber: " + capturedPicturesNumber);
+    if(capturedPicturesNumber == 25) {
+      // Navega para home
+    }
 
     if (capturedPicturesNumber > 4) {
       if (capturedPicturesNumber <= 9) {
@@ -68,12 +70,11 @@ const Capture = ({ route }: any) => {
   async function sendImage(image: any) {
     try {
       var result: any;
-      if(route.params.paramKey == "selle") { // Utilizar mesma tela para vendedor e funcionários
+      if(route.params.paramKey == "seller") { // Utilizar mesma tela para vendedor e funcionários
         result = await new SendImageSellerService().insertImage(image);
       } else {
-        result = await new SendImageClientService().insertImage(image);
+       // result = await new SendImageClientService().insertImage(image);
       }
-      console.log("aaaaaaaaaccccccccaaaaaaaaaa" + result);
     } catch (error) {
       console.error(error);
     }
@@ -82,9 +83,6 @@ const Capture = ({ route }: any) => {
   async function takePicture() {
     if (camRef) {
       const data = await camRef.current.takePictureAsync();
-      if(route.params.paramKey == "seller") { // Utilizar mesma tela para vendedor e funcionários
-        //await sendImage(data);
-      }
       setCapturedPhotoURI(data.uri);
       setOpenPicture(true);
       console.log(data);
