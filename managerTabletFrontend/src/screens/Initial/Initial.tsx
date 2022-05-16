@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { Text, StyleSheet, View, TouchableOpacity, BackHandler } from "react-native";
+import {
+  Text,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  BackHandler,
+} from "react-native";
 import {
   Container,
   ContainerHeader,
@@ -9,25 +15,23 @@ import {
   ContainerMiddle,
   ContainerDescription,
   StoreLogo,
-  StoreName,
+  ContainerLogo,
   Description,
   Line,
 } from "./stylesInitial";
 
 const Initial = ({ navigation }) => {
-
   useEffect(() => {
-    BackHandler.addEventListener('hardwareBackPress', () => {
-      return true
-    })
-  }, [])
+    BackHandler.addEventListener("hardwareBackPress", () => {
+      return true;
+    });
+  }, []);
 
   var test = "seller";
 
   const eventRegisterManager = async () => {
-		navigation.navigate("Capture", {paramKey: test,
-    })
-	}
+    navigation.navigate("Capture", { paramKey: test });
+  };
 
   return (
     <Container>
@@ -40,9 +44,9 @@ const Initial = ({ navigation }) => {
       </ContainerHeader>
       <ContainerMiddle>
         <ContainerDescription>
-          <StoreLogo source={require("../../assets/clothing-store.png")} />
-
-          <StoreName> Campinense </StoreName>
+          <ContainerLogo>
+          <StoreLogo source={require("../../assets/venda-mais-logo.png")} />
+          </ContainerLogo>
           <Line />
           <Description>
             Primeiro vamos realizar o cadastramento do diretor ou um funcionário
@@ -57,6 +61,6 @@ const Initial = ({ navigation }) => {
       </ContainerFooter>
     </Container>
   );
-}
+};
 
 export default Initial;
