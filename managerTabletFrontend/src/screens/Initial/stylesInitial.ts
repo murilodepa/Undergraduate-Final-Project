@@ -3,6 +3,7 @@ import styled from "styled-components/native";
 export const Container = styled.View`
   flex: 1;
   justify-content: center;
+  align-items: center;
   background-color: #c4c4c4;
 `;
 
@@ -24,44 +25,39 @@ export const NextArrow = styled.Image`
   margin-right: 40px;
 `;
 
-export const StoreLogo = styled.Image`
-  height: 80px;
-  width: 100px;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin-top: 30px;
-  margin-left: 20px;
+export const ContainerLogo = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
 `;
 
-export const StoreName = styled.Text`
-  position: absolute;
-  font-size: 43px;
-  font-weight: bold;
-  padding-left: 120px;
-  padding-top: 38px;
+export const StoreLogo = styled.Image`
+  height: 110px;
+  width: 360px;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const Line = styled.View`
   flex: 1;
   background-color: #FFFFFF;
-  max-height: 2px;
-  margin-top: 30px;
+  max-height: 3px;
   margin-bottom: 12px;
 `
 
 export const ContainerDescription = styled.View`
   background-color: #6bb1f1;
   max-height: 600px;
-  height: 400px;
-  width: 400px;
-  max-width: 400px;
+  height: 470px;
+  width: 430px;
+  max-width: 430px;
   border-radius: 20px;
   border-color: #FFFFFF;
-  border-width: 2PX;
+  border-width: 3px;
 `;
 
 export const Description = styled.Text`
-  font-size: 30px;
+  font-size: 32px;
   padding: 20px;
   text-align: center;
   line-height: 38px;
@@ -89,4 +85,5 @@ export const ContainerFooter = styled.View`
   flex-direction: row;
   background-color: #b5b4b4;
   height: 100px;
+  width: 100%;
 `;

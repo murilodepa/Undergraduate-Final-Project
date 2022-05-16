@@ -6,7 +6,8 @@ import { NavigationContainer } from '@react-navigation/native';
 
 import Splash from '../screens/Splash/Splash';
 import Initial from '../screens/Initial/Initial';
-import Capture from '../screens/Capture/Capture'
+import Capture from '../screens/Capture/Capture';
+import ManagerRegistration from '../screens/RegisterManager/ManagerRegistration';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,8 @@ export function RootNavigator() {
         <Screen name="Splash" component={Splash} />
         <Screen name="Initial" component={Initial} />
         <Screen name="Capture" component={Capture} />
+        <Screen name="ManagerRegistration" component={ManagerRegistration} />
+
       </Navigator>
     </NavigationContainer>
   )

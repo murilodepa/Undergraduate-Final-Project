@@ -6,6 +6,14 @@ export const Container = styled.View`
   background-color: #c4c4c4;
 `;
 
+export const ContainerProfileImage = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  max-height: 250px;
+`;
+
 export const ProfileImage = styled.Image`
   justify-content: center;
   border-radius: 10px;
@@ -15,47 +23,29 @@ export const ProfileImage = styled.Image`
   margin-left: 30px;
 `;
 
-export const StoreLogo = styled.Image`
-  height: 80px;
-  width: 100px;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin-top: 30px;
-  margin-left: 20px;
-`;
-
-export const StoreName = styled.Text`
-  position: absolute;
-  font-size: 43px;
-  font-weight: bold;
-  padding-left: 120px;
-  padding-top: 38px;
-`;
-
 export const Line = styled.View`
   flex: 1;
   background-color: #FFFFFF;
-  max-height: 2px;
-  margin-top: 30px;
-  margin-bottom: 12px;
+  max-height: 3px;
+  margin-bottom: 50px;
+`
+
+export const LineFooter = styled.View`
+  flex: 1;
+  background-color: #FFFFFF;
+  max-height: 3px;
+  margin-top: 15px;
 `
 
 export const ContainerDescription = styled.View`
   background-color: #6bb1f1;
-  max-height: 600px;
-  height: 800px;
-  width: 400px;
-  max-width: 400px;
+  max-height: 750px;
+  height: 740px;
+  width: 540px;
+  max-width: 540px;
   border-radius: 20px;
   border-color: #FFFFFF;
-  border-width: 2PX;
-`;
-
-export const Description = styled.Text`
-  font-size: 30px;
-  padding: 20px;
-  text-align: center;
-  line-height: 38px;
+  border-width: 3px;
 `;
 
 export const ContainerHeader = styled.View`
@@ -74,7 +64,7 @@ export const ContainerMiddle = styled.View`
   flex: 1;
 `;
 
-export const MenuButton = styled.TouchableOpacity`
+export const MenuButton = styled.View`
       justify-content: center;
       align-items: center;
 `;
@@ -87,6 +77,9 @@ export const MenuText = styled.Text`
 export const CharacteristicText = styled.Text`
   font-size: 30px;
   font-weight: bold;
+  justify-content: center;
+  align-items: center;
+  margin-left: 30px;
 `;
 
 export const CharacteristicInput = styled.TextInput`
@@ -101,24 +94,30 @@ export const CharacteristicInput = styled.TextInput`
 `;
 
 export const PlaceHolder = {
-  fontSize: 28, 
+  fontSize: 24, 
   backgroundColor: "#FFFFFF", 
   borderColor: "#000000",
   borderWidth: 2, 
   borderRadius: 20, 
-  width: 250, 
-  marginStart: 5
+  width: 360,
+  paddingLeft: 10,
+  paddingRight: 10,
+  justifyContent: "center",
+  alignItems: "center"
 }
 
 export const ViewTextInput = styled.View`
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  margin-bottom: 30px;
 `;
 
 export const ManagerPicture = styled.Image`
   height: 200px;
   width: 200px;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const MenuIcon = styled.Image`
@@ -131,4 +130,34 @@ export const ContainerFooter = styled.View`
   text-align: center;
   background-color: #b5b4b4;
   height: 100px;
+  width: 100%;
+`;
+
+export const ContainerSelect = styled.View`
+  border-color: #000000;
+  border-width: 2px;
+  border-radius: 20px;
+  width: 180px;
+  height: 35px;
+  justify-content: center;
+`;
+
+export const ContainerRegisterButton = styled.View`
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+`;
+
+export const RegisterButton = styled.Text`
+  width: 200px;
+  height: 45px;
+  color: #FFFFFF;
+  font-size: 30px;
+  background-color: #000000;
+  border-radius: 30px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  border-color: #FFFFFF;
+  border-width: 2px;
 `;

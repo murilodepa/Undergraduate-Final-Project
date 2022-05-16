@@ -1,18 +1,24 @@
 import React from "react";
 import LottieView from "lottie-react-native";
-import { Container } from "./styles";
+import { Container, Venda, Mais, ContainerVendaMais } from "./styles";
+import { Text, View } from "react-native";
 
 const Splash = ({ navigation }) => {
   return (
+    <>
+    <ContainerVendaMais>
+    <Venda source={require("../../assets/venda.png")} />
+    <Mais source={require("../../assets/mais.png")} />
+    </ContainerVendaMais>
     <Container>
       <LottieView
         source={require("../../assets/store-splash.json")}
         autoPlay
-        speed={0.6}
         loop={false}
+        duration={6500}
         onAnimationFinish={() => navigation.navigate("Initial")}
-      />
-    </Container>
+        />
+    </Container></>
   );
 };
 

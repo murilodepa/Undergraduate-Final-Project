@@ -4,9 +4,9 @@
     "slug": "tabletFrontend",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/clothing_store.png",
+    "icon": "./src/assets/clothing-store-logo.png",
     "splash": {
-      "image": "./src/assets/clothing_store.png",
+      "image": "./src/assets/clothing-store-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff",
       "widht": 50
@@ -22,7 +22,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/clothing_store.png",
+        "foregroundImage": "./src/assets/clothing-store-logo.png",
         "backgroundColor": "#FFFFFF"
       }
     },
