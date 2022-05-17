@@ -1,16 +1,18 @@
 package com.api.tcc.controllers;
 
+import com.api.tcc.Utils.ManipulatingImage;
 import com.api.tcc.services.ClientImageService;
+import com.api.tcc.services.ClientService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotNull;
+import java.io.IOException;
+import java.nio.file.Files;
 
 @RestController
-@RequestMapping("/image")
+@RequestMapping("/client")
 public class ClientImageController {
 
     private final ClientImageService clientImageService;
@@ -20,9 +22,22 @@ public class ClientImageController {
     }
 
     @PostMapping("/sendImage")
-    public ResponseEntity<Object> sendImage(@RequestParam @NotNull String image) {
-        System.out.println("Imagem Recebida");
-        clientImageService.saveImage(image);
-        return ResponseEntity.ok("image was received successfully!");
+    public ResponseEntity<?> sendImage(@RequestPart(value = "image", required = false) MultipartFile image) throws Exception {
+        ManipulatingImage manipulatingImage = new ManipulatingImage();
+        final byte[] encodeImage;
+        long nextId = (clientImageService.lastId());
+        if (nextId > 0) {
+            final String fileName = manipulatingImage.fileName(true, (int) (nextId));
+            try {
+                Files.write(manipulatingImage.fileNameAndPath(true, fileName), image.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            encodeImage = manipulatingImage.encodeImage(true, fileName);
+            clientImageService.saveImage(encodeImage, nextId);
+            return ResponseEntity.ok("Image was received successfully!");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
+        }
     }
 }

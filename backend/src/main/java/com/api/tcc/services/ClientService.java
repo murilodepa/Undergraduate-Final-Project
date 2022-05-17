@@ -5,6 +5,7 @@ import com.api.tcc.repositories.ClientRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +28,7 @@ public class ClientService {
         return clientRepository.findAll();
     }
 
-    public Optional<ClientModel> findById(UUID id) {
+    public Optional<ClientModel> findById(long id) {
         return clientRepository.findById(id);
     }
 
@@ -40,7 +41,7 @@ public class ClientService {
         return clientRepository.existsByCpf(cpf);
     }
 
-    public UUID getIdByCpf(String searchCpf) {
+    public long getIdByCpf(String searchCpf) {
         return clientRepository.findByCpf(searchCpf).getId();
     }
 }

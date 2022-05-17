@@ -9,7 +9,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
-import java.util.UUID;
 
 @Entity
 @Setter
@@ -19,7 +18,7 @@ public class SellerModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_seller", updatable = false, unique = true, nullable = false)
-    private UUID id;
+    private long id;
     @Column(name = "name")
     @Size(min = 3, max = 100)
     private String name;
