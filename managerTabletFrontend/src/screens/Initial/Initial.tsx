@@ -27,10 +27,8 @@ const Initial = ({ navigation }) => {
     });
   }, []);
 
-  var test = "seller";
-
   const eventRegisterManager = async () => {
-    navigation.navigate("Capture", { paramKey: test });
+    navigation.navigate("ManagerRegistration");
   };
 
   return (

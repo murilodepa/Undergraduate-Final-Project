@@ -11,7 +11,7 @@ export class SendImageSellerService {
           uri: images,
         });
        
-        const result = await backendApi.post("/client/sendImage", image, {
+        const result = await backendApi.post("/seller/sendImage", image, {
             headers: {
               "Content-Type": "multipart/form-data",
             },

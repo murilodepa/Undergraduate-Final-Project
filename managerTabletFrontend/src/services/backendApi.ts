@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const backendApi = axios.create({
-    baseURL: "http://172.16.226.206:8080",
+    baseURL: "http://192.168.15.90:8080",
 })
 
 export default backendApi;

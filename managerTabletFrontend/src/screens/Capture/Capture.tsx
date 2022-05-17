@@ -73,7 +73,7 @@ const Capture = ({ route }: any) => {
       if(route.params.paramKey == "seller") { // Utilizar mesma tela para vendedor e funcionários
         result = await new SendImageSellerService().insertImage(image);
       } else {
-       // result = await new SendImageClientService().insertImage(image);
+        result = await new SendImageClientService().insertImage(image);
       }
     } catch (error) {
       console.error(error);

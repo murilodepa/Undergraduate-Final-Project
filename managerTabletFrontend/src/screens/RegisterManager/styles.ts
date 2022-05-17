@@ -87,7 +87,6 @@ export const CharacteristicInput = styled.TextInput`
   font-weight: bold;
   background-color: #FFFFFF;
   border-color: #000000;
-  border-width: 2px;
   border-radius: 20px;
   width: 250px;
   margin-left: 5px;
@@ -95,8 +94,7 @@ export const CharacteristicInput = styled.TextInput`
 
 export const PlaceHolder = {
   fontSize: 24, 
-  backgroundColor: "#FFFFFF", 
-  borderColor: "#000000",
+  backgroundColor: "#6bb1f1", 
   borderWidth: 2, 
   borderRadius: 20, 
   width: 360,
@@ -134,7 +132,6 @@ export const ContainerFooter = styled.View`
 `;
 
 export const ContainerSelect = styled.View`
-  border-color: #000000;
   border-width: 2px;
   border-radius: 20px;
   width: 180px;

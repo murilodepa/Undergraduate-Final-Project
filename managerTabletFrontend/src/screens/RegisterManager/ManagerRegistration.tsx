@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-import {
-  Text,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  BackHandler,
-} from "react-native";
+import { TouchableOpacity } from "react-native";
 import { TextInputMask } from "react-native-masked-text";
 import { Picker } from "@react-native-picker/picker";
 import { ISellerData } from "../../services/SellerService/SellerServiceInterface";
@@ -46,14 +40,36 @@ const ManagerRegistration = ({ navigation }) => {
       .replace(/(\d{4})(\d)/, "$1");
   };
 
-  const validateDate = (value) => {
-    if (validator.isDate(value)) {
-      console.log("Date is validated! - Date", sellerData.birth);
+  function isNumber(name: any) {
+    return !isNaN(parseFloat(name)) && isFinite(name);
+  }
+
+  function formataStringData(data: string) {
+    var dia  = data.split("/")[0];
+    var mes  = data.split("/")[1];
+    var ano  = data.split("/")[2];
+  
+    return ano + '-' + ("0"+mes).slice(-2) + '-' + ("0"+dia).slice(-2);
+    // Utilizo o .slice(-2) para garantir o formato com 2 digitos.
+  }
+  
+  console.log(formataStringData('02/03/2018'));
+  
+  const regexDate = /^(((0[1-9]|[12][0-9]|30)[-/]?(0[13-9]|1[012])|31[-/]?(0[13578]|1[02])|(0[1-9]|1[0-9]|2[0-8])[-/]?02)[-/]?[0-9]{4}|29[-/]?02[-/]?([0-9]{2}(([2468][048]|[02468][48])|[13579][26])|([13579][26]|[02468][048]|0[0-9]|1[0-6])00))$/
+  function validateDate (date: any) {
+
+    if(regexDate.test(date)){
+      const birth = formataStringData(date)
+      setSellerData({...sellerData, birth: date})
+      console.log("Date is validated! - Date", birth);
+      return true;
     } else {
       console.log("Date is invalid!");
+      return false;
     }
   };
 
+  const regexNumber = /[0-9]/;
   const genderList = ["Feminino", "Masculino", "Outros"];
   const sectorList = [
     "Camiseta",
@@ -65,6 +81,44 @@ const ManagerRegistration = ({ navigation }) => {
     "Short",
   ];
   const [sellerData, setSellerData] = useState<ISellerData>("");
+  const [inputNameColor, setInputNameColor] = useState("black");
+  const [inputGenderColor, setInputGenderColor] = useState("black");
+  const [inputBirthColor, setInputBirthColor] = useState("black");
+  const [inputSectorColor, setInputSectorColor] = useState("black");
+
+  const eventCapture = async () => {
+    var count = 0;
+    if (
+      sellerData.name != undefined &&
+      sellerData.name.length > 3 &&
+      !regexNumber.test(sellerData.name)
+    ) {
+      console.log("Name is valid!");
+      setInputNameColor("black");
+      count++;
+    } else {
+      setInputNameColor("red");
+      count--;
+    }
+    if (sellerData.gender == undefined) {
+      setSellerData({...sellerData, gender: genderList[0]})
+      console.log("Gender is valid!");
+    }
+    if (sellerData.sector == undefined) {
+      setSellerData({...sellerData, sector: sectorList[0]})
+      console.log("Sector is valid!");
+    }
+    if (sellerData.birth != undefined && validateDate(sellerData.birth)) {
+      setInputBirthColor("black");
+      count++;
+    } else {
+      setInputBirthColor("red");
+      count--;
+    }
+    if (count == 2) {
+      navigation.navigate("Capture", { paramKey: "seller" });
+    }
+  };
 
   return (
     <Container>
@@ -89,19 +143,19 @@ const ManagerRegistration = ({ navigation }) => {
               maxLength={100}
               keyboardType="default"
               placeholder=" Nome..."
+              style={[PlaceHolder, { borderColor: inputNameColor }]}
               onChangeText={(value) =>
                 setSellerData({
                   ...sellerData,
                   name: value,
                 })
               }
-              style={PlaceHolder}
             />
           </ViewTextInput>
 
           <ViewTextInput>
             <CharacteristicText> Genêro: </CharacteristicText>
-            <ContainerSelect>
+            <ContainerSelect style={{ borderColor: inputGenderColor }}>
               <Picker
                 selectedValue={sellerData.gender}
                 onValueChange={(itemValue) =>
@@ -137,10 +191,13 @@ const ManagerRegistration = ({ navigation }) => {
               onChangeText={(value) =>
                 setSellerData({
                   ...sellerData,
-                  birth: maskDate(value),
+                  birth: value,
                 })
               }
-              style={[PlaceHolder, { width: 175 }]}
+              style={[
+                PlaceHolder,
+                { width: 175, borderColor: inputBirthColor },
+              ]}
             />
             {console.log("name: ", sellerData.name)}
             {console.log("gender: ", sellerData.gender)}
@@ -150,7 +207,7 @@ const ManagerRegistration = ({ navigation }) => {
 
           <ViewTextInput>
             <CharacteristicText> Setor: </CharacteristicText>
-            <ContainerSelect>
+            <ContainerSelect style={{ borderColor: inputSectorColor }}>
               <Picker
                 selectedValue={sellerData.sector}
                 onValueChange={(itemValue) =>
@@ -173,7 +230,7 @@ const ManagerRegistration = ({ navigation }) => {
           <LineFooter />
 
           <ContainerRegisterButton>
-            <TouchableOpacity onPress={() => {}}>
+            <TouchableOpacity onPress={() => eventCapture()}>
               <RegisterButton style={{ textAlignVertical: "center" }}>
                 {" "}
                 Cadastrar{" "}
