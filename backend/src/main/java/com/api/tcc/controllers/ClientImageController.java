@@ -49,18 +49,4 @@ public class ClientImageController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
         }
     }
-
-
-/*
-
-    @PostMapping("/sendImageEntity")
-    public ResponseEntity<?> sendImageEntity(@RequestParam String image) throws IOException {
-        ClientImageModel clientImageModel = new ClientImageModel();
-
-      //  return ResponseEntity.status(HttpStatus.CREATED).body(clientImageService.save(clientImageModel));
-    }
-
-*/
-
-
 }
