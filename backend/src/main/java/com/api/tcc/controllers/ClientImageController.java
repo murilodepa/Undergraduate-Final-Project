@@ -2,18 +2,17 @@ package com.api.tcc.controllers;
 
 import com.api.tcc.Utils.ManipulatingImage;
 import com.api.tcc.services.ClientImageService;
+import com.api.tcc.services.ClientService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @RestController
-@RequestMapping("/clientImage")
+@RequestMapping("/client")
 public class ClientImageController {
 
     private final ClientImageService clientImageService;
@@ -23,17 +22,45 @@ public class ClientImageController {
     }
 
     @PostMapping("/sendImage")
-    public ResponseEntity<?> sendImage(@RequestPart(value = "image", required = false) MultipartFile image) throws IOException {
+    public ResponseEntity<?> sendImage(@RequestPart(value = "image", required = false) MultipartFile image) throws Exception {
         System.out.println("Imagens Recebidas: " + image.getInputStream());
 
-        StringBuilder filesName = new StringBuilder();
         ManipulatingImage manipulatingImage = new ManipulatingImage();
 
-        try {
-            Files.write(manipulatingImage.fileNameAndPath(true), image.getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();
+        final byte[] encodeImage;
+        long nextId = (clientImageService.lastId());
+        if (nextId > 0) {
+            final String fileName = manipulatingImage.fileName(true, (int) (nextId));
+
+            try {
+                Files.write(manipulatingImage.fileNameAndPath(true, fileName), image.getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            encodeImage = manipulatingImage.encodeImage(true, fileName);
+
+            System.out.println("nextId:" + nextId);
+
+            clientImageService.saveImage(encodeImage, nextId);
+
+            return ResponseEntity.ok("image was received successfully!");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
         }
-        return ResponseEntity.ok("image was received successfully!");
     }
+
+
+/*
+
+    @PostMapping("/sendImageEntity")
+    public ResponseEntity<?> sendImageEntity(@RequestParam String image) throws IOException {
+        ClientImageModel clientImageModel = new ClientImageModel();
+
+      //  return ResponseEntity.status(HttpStatus.CREATED).body(clientImageService.save(clientImageModel));
+    }
+
+*/
+
+
 }

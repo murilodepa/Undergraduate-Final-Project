@@ -27,7 +27,7 @@ public class SellerService {
         return sellerRepository.findAll();
     }
 
-    public Optional<SellerModel> findById(UUID id) {
+    public Optional<SellerModel> findById(long id) {
         return sellerRepository.findById(id);
     }
 
@@ -40,7 +40,7 @@ public class SellerService {
         return sellerRepository.existsByCpf(cpf);
     }
 
-    public UUID getIdByCpf(String searchCpf) {
+    public long getIdByCpf(String searchCpf) {
         return sellerRepository.findByCpf(searchCpf).getId();
     }
 }

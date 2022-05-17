@@ -42,7 +42,7 @@ public class SellerController {
     }
 
     @GetMapping("/getSeller/{id}")
-    public ResponseEntity<Object> getOneSeller(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> getOneSeller(@PathVariable(value = "id") long id) {
         Optional<SellerModel> sellerModelOptional = sellerService.findById(id);
         if (!sellerModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
@@ -51,7 +51,7 @@ public class SellerController {
     }
 
     @DeleteMapping("/removeSeller/{id}")
-    public ResponseEntity<Object> deleteSeller(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> deleteSeller(@PathVariable(value = "id") long id) {
         Optional<SellerModel> sellerModelOptional = sellerService.findById(id);
         if (!sellerModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
@@ -61,7 +61,7 @@ public class SellerController {
     }
 
     @PutMapping("/updateSeller/{id}")
-    public ResponseEntity<Object> updateClient(@PathVariable(value = "id") UUID id, @RequestBody @Valid SellerDTO sellerDTO) {
+    public ResponseEntity<Object> updateClient(@PathVariable(value = "id") long id, @RequestBody @Valid SellerDTO sellerDTO) {
         Optional<SellerModel> sellerModelOptional = sellerService.findById(id);
         if (!sellerModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");

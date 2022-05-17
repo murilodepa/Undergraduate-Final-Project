@@ -40,7 +40,7 @@ public class ClientController {
     }
 
     @GetMapping("/getClient/{id}")
-    public ResponseEntity<Object> getOneClient(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> getOneClient(@PathVariable(value = "id") long id) {
         Optional<ClientModel> clientModelOptional = clientService.findById(id);
         if (!clientModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
@@ -49,7 +49,7 @@ public class ClientController {
     }
 
     @DeleteMapping("/removeClient/{id}")
-    public ResponseEntity<Object> deleteClient(@PathVariable(value = "id") UUID id) {
+    public ResponseEntity<Object> deleteClient(@PathVariable(value = "id") long id) {
         Optional<ClientModel> clientModelOptional = clientService.findById(id);
         if (!clientModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
@@ -59,7 +59,7 @@ public class ClientController {
     }
 
     @PutMapping("/updateClient/{id}")
-    public ResponseEntity<Object> updateClient(@PathVariable(value = "id") UUID id, @RequestBody @Valid ClientDTO clientDTO) {
+    public ResponseEntity<Object> updateClient(@PathVariable(value = "id") long id, @RequestBody @Valid ClientDTO clientDTO) {
         Optional<ClientModel> clientModelOptional = clientService.findById(id);
         if (!clientModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");

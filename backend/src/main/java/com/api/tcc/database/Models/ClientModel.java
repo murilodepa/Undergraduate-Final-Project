@@ -8,7 +8,6 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -18,7 +17,7 @@ public class ClientModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_client", updatable = false, unique = true, nullable = false)
-    private UUID id;
+    private long id;
     @Column(name = "name")
     @Size(min = 3, max = 100)
     private String name;
@@ -31,7 +30,7 @@ public class ClientModel {
     @Column(name = "cpf")
     @CPF
     private String cpf;
-    @Column(name = "purchaseSuggestion")
+    @Column(name = "purchase_suggestion")
     @Size(min = 3, max = 20)
     private String purchaseSuggestion;
 }
