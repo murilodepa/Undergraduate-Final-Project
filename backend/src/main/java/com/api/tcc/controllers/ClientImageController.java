@@ -23,28 +23,19 @@ public class ClientImageController {
 
     @PostMapping("/sendImage")
     public ResponseEntity<?> sendImage(@RequestPart(value = "image", required = false) MultipartFile image) throws Exception {
-        System.out.println("Imagens Recebidas: " + image.getInputStream());
-
         ManipulatingImage manipulatingImage = new ManipulatingImage();
-
         final byte[] encodeImage;
         long nextId = (clientImageService.lastId());
         if (nextId > 0) {
             final String fileName = manipulatingImage.fileName(true, (int) (nextId));
-
             try {
                 Files.write(manipulatingImage.fileNameAndPath(true, fileName), image.getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
             encodeImage = manipulatingImage.encodeImage(true, fileName);
-
-            System.out.println("nextId:" + nextId);
-
             clientImageService.saveImage(encodeImage, nextId);
-
-            return ResponseEntity.ok("image was received successfully!");
+            return ResponseEntity.ok("Image was received successfully!");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
         }

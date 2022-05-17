@@ -28,9 +28,7 @@ public class SellerImageController {
     @PostMapping("/sendImage")
     public ResponseEntity<?> sendImage(@RequestPart(value = "image", required = false) MultipartFile image) throws Exception {
         System.out.println("Imagens Recebidas: " + image.getInputStream());
-
         ManipulatingImage manipulatingImage = new ManipulatingImage();
-
         final byte[] encodeImage;
         long nextId = (sellerImageService.lastId());
         if (nextId > 0) {
@@ -41,9 +39,8 @@ public class SellerImageController {
                 e.printStackTrace();
             }
             encodeImage = manipulatingImage.encodeImage(false, fileName);
-            System.out.println("nextId:" + nextId);
             sellerImageService.saveImage(encodeImage, nextId);
-            return ResponseEntity.ok("image was received successfully!");
+            return ResponseEntity.ok("Image was received successfully!");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller not found!");
         }
