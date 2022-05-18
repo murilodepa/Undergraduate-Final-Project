@@ -13,18 +13,18 @@ import {
   CameraEdge,
 } from "./styles";
 
-import ModalCapturedPicture from "../../Components/Modals/ModalCapturedPicture/ModalCapturedPicture";
+import ModalCapturedPicture from "../../Components/Modals/CapturedPicture/CapturedPicture";
 import { SendImageClientService } from "../../services/SendImageClientService/SendImageClientService";
 import { SendImageSellerService } from "../../services/SendImageSellerService/SendImageSellerService"
 
-const Capture = ({ route }: any) => {
+const Capture = ({ navigation, route }: any) => {
   const camRef = useRef(null);
   const [hasPermission, setHasPermission] = useState(null);
   const [capturedPhotoURI, setCapturedPhotoURI] = useState(null);
   const [openPicture, setOpenPicture] = useState(false);
-  const [capturedPicturesNumber, setCapturedPicturesNumber] = useState(1);
-  const [capturedPitureExpression, setCapturedPitureExpression] =
-    useState("Sorrindo");
+  const [capturedPicturesNumber, setCapturedPicturesNumber] = useState(0);
+  const [capturedPitureExpression, setCapturedPitureExpression] = useState("Sorrindo");
+  const maxPhotos = 25;
 
   const closePicture = () => {
     setOpenPicture(false);
@@ -35,18 +35,18 @@ const Capture = ({ route }: any) => {
     setOpenPicture(false);
     setCapturedPicturesNumber(capturedPicturesNumber + 1);
 
-    if(capturedPicturesNumber == 25) {
-      // Navega para home
+    if(capturedPicturesNumber >= (maxPhotos-1)) {
+      navigation.navigate("Menu");
     }
 
-    if (capturedPicturesNumber > 4) {
-      if (capturedPicturesNumber <= 9) {
+    if (capturedPicturesNumber > 3) {
+      if (capturedPicturesNumber <= 8) {
         setCapturedPitureExpression("Sério");
-      } else if (capturedPicturesNumber <= 14) {
+      } else if (capturedPicturesNumber <= 13) {
         setCapturedPitureExpression("Lado esquerdo do rosto");
-      } else if (capturedPicturesNumber <= 19) {
+      } else if (capturedPicturesNumber <= 18) {
         setCapturedPitureExpression("Lado direito do rosto");
-      } else if (capturedPicturesNumber >= 19) {
+      } else if (capturedPicturesNumber > 18) {
         setCapturedPitureExpression("Em baixo e em cima");
       }
     }
@@ -71,9 +71,9 @@ const Capture = ({ route }: any) => {
     try {
       var result: any;
       if(route.params.paramKey == "seller") { // Utilizar mesma tela para vendedor e funcionários
-        result = await new SendImageSellerService().insertImage(image);
+        //result = await new SendImageSellerService().insertImage(image);
       } else {
-        result = await new SendImageClientService().insertImage(image);
+        //result = await new SendImageClientService().insertImage(image);
       }
     } catch (error) {
       console.error(error);
@@ -93,7 +93,7 @@ const Capture = ({ route }: any) => {
     <Container>
       <ContainerHeaderCapture>
         <TextHeaderCapture style={{ textAlignVertical: "center" }}>
-          {`${capturedPicturesNumber} / 25 \n ${capturedPitureExpression}`}
+          {`${capturedPicturesNumber} / ${maxPhotos} \n ${capturedPitureExpression}`}
         </TextHeaderCapture>
       </ContainerHeaderCapture>
       <ContainerCamera>
@@ -102,7 +102,7 @@ const Capture = ({ route }: any) => {
             style={{
               flex: 1,
               borderRadius: 20,
-              borderColor: "#FFF"}}
+              borderColor: "#FFFFFF"}}
             type={Camera.Constants.Type.back}
             ref={camRef}
           />

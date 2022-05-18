@@ -18,7 +18,7 @@ import {
   ContainerLogo,
   Description,
   Line,
-} from "./stylesInitial";
+} from "./InitialStyles";
 
 const Initial = ({ navigation }) => {
   useEffect(() => {

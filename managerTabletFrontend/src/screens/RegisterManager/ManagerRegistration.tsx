@@ -3,13 +3,12 @@ import { TouchableOpacity } from "react-native";
 import { TextInputMask } from "react-native-masked-text";
 import { Picker } from "@react-native-picker/picker";
 import { ISellerData } from "../../services/SellerService/SellerServiceInterface";
-import validator from "validator";
 
 import {
   Container,
   ContainerHeader,
   ProfileImage,
-} from "../Initial/stylesInitial";
+} from "../Initial/InitialStyles";
 
 import {
   MenuIcon,
@@ -40,17 +39,11 @@ const ManagerRegistration = ({ navigation }) => {
       .replace(/(\d{4})(\d)/, "$1");
   };
 
-  function isNumber(name: any) {
-    return !isNaN(parseFloat(name)) && isFinite(name);
-  }
-
   function formataStringData(data: string) {
     var dia  = data.split("/")[0];
     var mes  = data.split("/")[1];
     var ano  = data.split("/")[2];
-  
     return ano + '-' + ("0"+mes).slice(-2) + '-' + ("0"+dia).slice(-2);
-    // Utilizo o .slice(-2) para garantir o formato com 2 digitos.
   }
   
   console.log(formataStringData('02/03/2018'));
@@ -82,9 +75,7 @@ const ManagerRegistration = ({ navigation }) => {
   ];
   const [sellerData, setSellerData] = useState<ISellerData>("");
   const [inputNameColor, setInputNameColor] = useState("black");
-  const [inputGenderColor, setInputGenderColor] = useState("black");
   const [inputBirthColor, setInputBirthColor] = useState("black");
-  const [inputSectorColor, setInputSectorColor] = useState("black");
 
   const eventCapture = async () => {
     var count = 0;
@@ -155,7 +146,7 @@ const ManagerRegistration = ({ navigation }) => {
 
           <ViewTextInput>
             <CharacteristicText> Genêro: </CharacteristicText>
-            <ContainerSelect style={{ borderColor: inputGenderColor }}>
+            <ContainerSelect>
               <Picker
                 selectedValue={sellerData.gender}
                 onValueChange={(itemValue) =>
@@ -207,7 +198,7 @@ const ManagerRegistration = ({ navigation }) => {
 
           <ViewTextInput>
             <CharacteristicText> Setor: </CharacteristicText>
-            <ContainerSelect style={{ borderColor: inputSectorColor }}>
+            <ContainerSelect>
               <Picker
                 selectedValue={sellerData.sector}
                 onValueChange={(itemValue) =>
