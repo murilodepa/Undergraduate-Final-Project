@@ -137,6 +137,7 @@ export const ContainerSelect = styled.View`
   width: 180px;
   height: 35px;
   justify-content: center;
+  border-color: #000000;
 `;
 
 export const ContainerRegisterButton = styled.View`

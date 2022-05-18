@@ -1,4 +1,5 @@
-import { View, TouchableOpacity, Image, Modal } from "react-native";
+import React from "react";
+import { TouchableOpacity, Modal } from "react-native";
 
 import {
   Containerfooter,
