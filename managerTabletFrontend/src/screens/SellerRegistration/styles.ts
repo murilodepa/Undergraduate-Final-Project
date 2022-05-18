@@ -14,33 +14,23 @@ export const ContainerProfileImage = styled.View`
   max-height: 250px;
 `;
 
-export const ProfileImage = styled.Image`
-  justify-content: center;
-  border-radius: 10px;
-  height: 90px;
-  width: 90px;
-  align-items: center;
-  margin-left: 30px;
-`;
-
 export const Line = styled.View`
   flex: 1;
   background-color: #FFFFFF;
   max-height: 3px;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 `
 
 export const LineFooter = styled.View`
   flex: 1;
   background-color: #FFFFFF;
   max-height: 3px;
-  margin-top: 15px;
 `
 
 export const ContainerDescription = styled.View`
   background-color: #6bb1f1;
-  max-height: 750px;
-  height: 740px;
+  max-height: 820px;
+  height: 820px;
   width: 540px;
   max-width: 540px;
   border-radius: 20px;
@@ -112,8 +102,8 @@ export const ViewTextInput = styled.View`
 `;
 
 export const ManagerPicture = styled.Image`
-  height: 200px;
-  width: 200px;
+  height: 190px;
+  width: 190px;
   justify-content: center;
   align-items: center;
 `;
@@ -143,12 +133,12 @@ export const ContainerSelect = styled.View`
 export const ContainerRegisterButton = styled.View`
   justify-content: center;
   align-items: center;
-  height: 100px;
+  height: 90px;
 `;
 
 export const RegisterButton = styled.Text`
   width: 200px;
-  height: 45px;
+  height: 50px;
   color: #FFFFFF;
   font-size: 30px;
   background-color: #000000;

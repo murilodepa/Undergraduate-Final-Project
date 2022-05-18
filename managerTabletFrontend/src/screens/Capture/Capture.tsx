@@ -15,7 +15,7 @@ import {
 
 import ModalCapturedPicture from "../../Components/Modals/CapturedPicture/CapturedPicture";
 import { SendImageClientService } from "../../services/SendImageClientService/SendImageClientService";
-import { SendImageSellerService } from "../../services/SendImageSellerService/SendImageSellerService"
+import { SendImageSellerService } from "../../services/SendImageSellerService/SendImageSellerService";
 
 const Capture = ({ navigation, route }: any) => {
   const camRef = useRef(null);
@@ -71,9 +71,9 @@ const Capture = ({ navigation, route }: any) => {
     try {
       var result: any;
       if(route.params.paramKey == "seller") { // Utilizar mesma tela para vendedor e funcionários
-        //result = await new SendImageSellerService().insertImage(image);
+        result = await new SendImageSellerService().insertImage(image);
       } else {
-        //result = await new SendImageClientService().insertImage(image);
+        result = await new SendImageClientService().insertImage(image);
       }
     } catch (error) {
       console.error(error);

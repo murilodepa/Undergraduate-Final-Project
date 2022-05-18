@@ -7,7 +7,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import Splash from '../screens/Splash/Splash';
 import Initial from '../screens/Initial/Initial';
 import Capture from '../screens/Capture/Capture';
-import ManagerRegistration from '../screens/RegisterManager/ManagerRegistration';
+import ManagerRegistration from '../screens/SellerRegistration/SellerRegistration';
 import Menu from '../screens/Menu/Menu'
 
 const Stack = createNativeStackNavigator();

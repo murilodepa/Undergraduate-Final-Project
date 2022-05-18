@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import { TextInputMask } from "react-native-masked-text";
 import { Picker } from "@react-native-picker/picker";
+import { SellerService } from "../../services/SellerService/SellerService";
 import { ISellerData } from "../../services/SellerService/SellerServiceInterface";
 
 import {
@@ -46,8 +47,7 @@ const ManagerRegistration = ({ navigation }) => {
     return ano + '-' + ("0"+mes).slice(-2) + '-' + ("0"+dia).slice(-2);
   }
   
-  console.log(formataStringData('02/03/2018'));
-  
+  const regexEmail = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
   const regexDate = /^(((0[1-9]|[12][0-9]|30)[-/]?(0[13-9]|1[012])|31[-/]?(0[13578]|1[02])|(0[1-9]|1[0-9]|2[0-8])[-/]?02)[-/]?[0-9]{4}|29[-/]?02[-/]?([0-9]{2}(([2468][048]|[02468][48])|[13579][26])|([13579][26]|[02468][048]|0[0-9]|1[0-6])00))$/
   function validateDate (date: any) {
 
@@ -76,6 +76,8 @@ const ManagerRegistration = ({ navigation }) => {
   const [sellerData, setSellerData] = useState<ISellerData>("");
   const [inputNameColor, setInputNameColor] = useState("black");
   const [inputBirthColor, setInputBirthColor] = useState("black");
+  const [inputEmailColor, setInputEmailColor] = useState("black");
+  const [inputPasswordColor, setInputPasswordColor] = useState("black");
 
   const eventCapture = async () => {
     var count = 0;
@@ -106,7 +108,35 @@ const ManagerRegistration = ({ navigation }) => {
       setInputBirthColor("red");
       count--;
     }
-    if (count == 2) {
+    if (
+      sellerData.email != undefined &&
+      sellerData.email.length > 5 &&
+      regexEmail.test(sellerData.email)
+    ) {
+      console.log("Email is valid!");
+      setInputEmailColor("black");
+      count++;
+    } else {
+      setInputEmailColor("red");
+      count--;
+    }
+    if (
+      sellerData.password != undefined &&
+      sellerData.password.length > 5
+    ) {
+      console.log("Password is valid!");
+      setInputPasswordColor("black");
+      count++;
+    } else {
+      setInputPasswordColor("red");
+      count--;
+    }
+    if (count == 4) {
+      try {
+       const responde = await new SellerService().insertSeller(sellerData);
+      } catch (error) {
+        console.error('Falha no cadastro', error)
+      }
       navigation.navigate("Capture", { paramKey: "seller" });
     }
   };
@@ -218,6 +248,39 @@ const ManagerRegistration = ({ navigation }) => {
               </Picker>
             </ContainerSelect>
           </ViewTextInput>
+
+          <ViewTextInput>
+            <CharacteristicText> E-mail: </CharacteristicText>
+            <CharacteristicInput
+              maxLength={100}
+              keyboardType="default"
+              placeholder=" E-mail..."
+              style={[PlaceHolder, { borderColor: inputEmailColor }]}
+              onChangeText={(value) =>
+                setSellerData({
+                  ...sellerData,
+                  email: value,
+                })
+              }
+            />
+          </ViewTextInput>
+
+          <ViewTextInput>
+            <CharacteristicText> Senha </CharacteristicText>
+            <CharacteristicInput
+              maxLength={100}
+              keyboardType="default"
+              placeholder=" Senha"
+              style={[PlaceHolder, { borderColor: inputPasswordColor, width: 200 }]}
+              onChangeText={(value) =>
+                setSellerData({
+                  ...sellerData,
+                  password: value,
+                })
+              }
+            />
+          </ViewTextInput>
+
           <LineFooter />
 
           <ContainerRegisterButton>
