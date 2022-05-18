@@ -13,8 +13,5 @@ public class ClientDTO {
     private String name;
     @Size(min = 1, max = 10)
     private String gender;
-    private Date birth;
-    @NotBlank
-    @CPF
-    private String cpf;
+    private String birth;
 }

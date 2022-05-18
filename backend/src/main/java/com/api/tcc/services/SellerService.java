@@ -35,12 +35,4 @@ public class SellerService {
     public void delete(SellerModel sellerModel) {
         sellerRepository.delete((sellerModel));
     }
-
-    public boolean existsByCpf(String cpf) {
-        return sellerRepository.existsByCpf(cpf);
-    }
-
-    public long getIdByCpf(String searchCpf) {
-        return sellerRepository.findByCpf(searchCpf).getId();
-    }
 }

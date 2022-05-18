@@ -26,10 +26,6 @@ public class ClientModel {
     private String gender;
     @Column(name = "birth")
     private Date birth;
-    @NotNull
-    @Column(name = "cpf")
-    @CPF
-    private String cpf;
     @Column(name = "purchase_suggestion")
     @Size(min = 3, max = 20)
     private String purchaseSuggestion;

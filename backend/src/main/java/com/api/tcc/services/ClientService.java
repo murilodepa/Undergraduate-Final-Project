@@ -36,12 +36,4 @@ public class ClientService {
     public void delete(ClientModel clientModel) {
         clientRepository.delete(clientModel);
     }
-
-    public boolean existsByCpf(String cpf) {
-        return clientRepository.existsByCpf(cpf);
-    }
-
-    public long getIdByCpf(String searchCpf) {
-        return clientRepository.findByCpf(searchCpf).getId();
-    }
 }

@@ -6,9 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ClientRepository extends JpaRepository<ClientModel, Long> {
-    ClientModel findByCpf(String cpf);
-
-    ClientModel findByName(String name);
-
-    boolean existsByCpf(String cpf);
 }

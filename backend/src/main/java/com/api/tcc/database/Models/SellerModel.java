@@ -40,8 +40,4 @@ public class SellerModel {
     @JsonIgnore
     @Column(name = "password")
     private String password;
-    @NotNull
-    @Column(name = "cpf")
-    @CPF
-    private String cpf;
 }

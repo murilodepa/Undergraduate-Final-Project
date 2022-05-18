@@ -14,7 +14,7 @@ public class SellerDTO {
     private String name;
     @Size(min = 1, max = 10)
     private String gender;
-    private Date birth;
+    private String birth;
     @Size(min = 3, max = 50)
     private String sector;
     private Boolean available;
@@ -23,7 +23,4 @@ public class SellerDTO {
     private String email;
     @Size(min = 5, max = 30)
     private String password;
-    @NotBlank
-    @CPF
-    private String cpf;
 }
