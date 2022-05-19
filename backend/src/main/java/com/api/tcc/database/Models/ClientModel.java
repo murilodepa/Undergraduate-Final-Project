@@ -5,9 +5,8 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -25,7 +24,7 @@ public class ClientModel {
     @Size(min = 1, max = 10)
     private String gender;
     @Column(name = "birth")
-    private Date birth;
+    private LocalDate birth;
     @Column(name = "purchase_suggestion")
     @Size(min = 3, max = 20)
     private String purchaseSuggestion;

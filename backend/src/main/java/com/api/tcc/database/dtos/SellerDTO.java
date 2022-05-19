@@ -1,12 +1,9 @@
 package com.api.tcc.database.dtos;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Date;
 
 @Data
 public class SellerDTO {
