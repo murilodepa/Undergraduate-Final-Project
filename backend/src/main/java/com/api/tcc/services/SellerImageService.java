@@ -25,7 +25,6 @@ public class SellerImageService {
     public SellerImageModel saveImage(byte[] encodedImage, long foreignKey) throws Exception {
         SellerImageModel sellerImageModel = new SellerImageModel();
         sellerImageModel.setImage(encodedImage);
-        sellerModel = sellerRepository.findAll();
         sellerImageModel.setSellerModel(sellerRepository.findById(foreignKey).orElseThrow(Exception::new));
         return sellerImageRepository.save(sellerImageModel);
     }

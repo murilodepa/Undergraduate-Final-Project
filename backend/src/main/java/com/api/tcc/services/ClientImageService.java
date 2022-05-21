@@ -25,7 +25,6 @@ public class ClientImageService {
     public ClientImageModel saveImage(byte[] encodedImage, long foreignKey) throws Exception {
         ClientImageModel clientImageModel = new ClientImageModel();
         clientImageModel.setImage(encodedImage);
-        clientModel = clientRepository.findAll();
         clientImageModel.setClientModel( clientRepository.findById(foreignKey).orElseThrow(Exception::new));
         return clientImageRepository.save(clientImageModel);
     }
