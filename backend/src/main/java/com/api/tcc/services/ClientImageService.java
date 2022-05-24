@@ -4,6 +4,7 @@ import com.api.tcc.database.Models.ClientImageModel;
 import com.api.tcc.database.Models.ClientModel;
 import com.api.tcc.repositories.ClientImageRepository;
 import com.api.tcc.repositories.ClientRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -12,14 +13,12 @@ import java.util.List;
 @Service
 public class ClientImageService {
 
-    private final ClientImageRepository clientImageRepository;
-    private final ClientRepository clientRepository;
-    List<ClientModel> clientModel;
+    @Autowired
+    ClientImageRepository clientImageRepository;
 
-    public ClientImageService(ClientImageRepository clientImageRepository, ClientRepository clientRepository) {
-        this.clientImageRepository = clientImageRepository;
-        this.clientRepository = clientRepository;
-    }
+    @Autowired
+    ClientRepository clientRepository;
+    List<ClientModel> clientModel;
 
     @Transactional
     public ClientImageModel saveImage(byte[] encodedImage, long foreignKey) throws Exception {

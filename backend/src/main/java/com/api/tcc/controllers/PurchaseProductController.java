@@ -1,9 +1,14 @@
 package com.api.tcc.controllers;
 
+import com.api.tcc.database.Models.ProductModel;
+import com.api.tcc.database.Models.PurchaseModel;
 import com.api.tcc.database.Models.PurchaseProductModel;
 import com.api.tcc.database.dtos.PurchaseProductDTO;
+import com.api.tcc.services.ProductService;
 import com.api.tcc.services.PurchaseProductService;
+import com.api.tcc.services.PurchaseService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,16 +25,25 @@ import java.util.UUID;
 @RequestMapping("/purchaseProduct")
 public class PurchaseProductController {
 
-    private final PurchaseProductService purchaseProductService;
+    @Autowired
+    PurchaseProductService purchaseProductService;
 
-    public PurchaseProductController(PurchaseProductService purchaseProductService) {
-        this.purchaseProductService = purchaseProductService;
-    }
+    @Autowired
+    PurchaseService purchaseService;
+
+    @Autowired
+    ProductService productService;
 
     @PostMapping("/insertPurchaseProduct")
     public ResponseEntity<Object> savePurchaseProduct(@RequestBody @Valid PurchaseProductDTO purchaseProductDTO) throws ParseException {
+        Optional<PurchaseModel> purchaseModelOptional = purchaseService.findById(purchaseProductDTO.getId_purchase());
+        Optional<ProductModel> productModelOptional = productService.findById(purchaseProductDTO.getId_product());
+        if (!purchaseModelOptional.isPresent() || !productModelOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Purchase or Product not found!");
+        }
         PurchaseProductModel purchaseProductModel = new PurchaseProductModel();
-        BeanUtils.copyProperties(purchaseProductDTO, purchaseProductModel);
+        purchaseProductModel.setPurchaseModel(purchaseModelOptional.get());
+        purchaseProductModel.setProductModel(productModelOptional.get());
         return ResponseEntity.status(HttpStatus.CREATED).body(purchaseProductService.save(purchaseProductModel));
     }
 
@@ -60,12 +74,15 @@ public class PurchaseProductController {
     @PutMapping("/updatePurchaseProduct/{id}")
     public ResponseEntity<Object> updatePurchaseProduct(@PathVariable(value = "id") UUID id, @RequestBody @Valid PurchaseProductDTO purchaseProductDTO) {
         Optional<PurchaseProductModel> purchaseProductModelOptional = purchaseProductService.findById(id);
-        if (!purchaseProductModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Attendance not found!");
+        Optional<PurchaseModel> purchaseModelOptional = purchaseService.findById(purchaseProductDTO.getId_purchase());
+        Optional<ProductModel> productModelOptional = productService.findById(purchaseProductDTO.getId_product());
+        if (!purchaseProductModelOptional.isPresent() || !purchaseModelOptional.isPresent() || !productModelOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Purchase Product not found!");
         }
         PurchaseProductModel purchaseProductModel = new PurchaseProductModel();
-        BeanUtils.copyProperties(purchaseProductDTO, purchaseProductModel);
         purchaseProductModel.setId(purchaseProductModelOptional.get().getId());
+        purchaseProductModel.setPurchaseModel(purchaseModelOptional.get());
+        purchaseProductModel.setProductModel(productModelOptional.get());
         return ResponseEntity.status(HttpStatus.OK).body(purchaseProductService.save(purchaseProductModel));
     }
 }

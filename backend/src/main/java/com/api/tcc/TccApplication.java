@@ -28,7 +28,7 @@ public class TccApplication {
 			System.out.println("threadSpringApplication - Error" + e);
 		}
 
-		faceDetection();
+		//faceDetection();
 
 
 	}

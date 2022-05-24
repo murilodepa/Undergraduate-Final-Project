@@ -68,6 +68,8 @@ public class Recognition {
 
                 if (canvasFrame.isVisible()) {
                     canvasFrame.showImage(capturedFrame);
+                } else {
+                    break;
                 }
             }
             canvasFrame.dispose();

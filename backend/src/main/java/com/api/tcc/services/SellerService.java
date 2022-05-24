@@ -2,6 +2,7 @@ package com.api.tcc.services;
 
 import com.api.tcc.database.Models.SellerModel;
 import com.api.tcc.repositories.SellerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -11,11 +12,8 @@ import java.util.Optional;
 @Service
 public class SellerService {
 
-    private final SellerRepository sellerRepository;
-
-    public SellerService(SellerRepository sellerRepository) {
-        this.sellerRepository = sellerRepository;
-    }
+    @Autowired
+    SellerRepository sellerRepository;
 
     @Transactional
     public SellerModel save(SellerModel sellerModel) {

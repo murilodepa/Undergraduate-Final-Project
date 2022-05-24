@@ -3,6 +3,7 @@ package com.api.tcc.services;
 import com.api.tcc.database.Models.ClientModel;
 import com.api.tcc.database.Models.ClientSellerModel;
 import com.api.tcc.repositories.ClientSellerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -13,11 +14,8 @@ import java.util.UUID;
 @Service
 public class ClientSellerService {
 
-    private final ClientSellerRepository clientSellerRepository;
-
-    public ClientSellerService(ClientSellerRepository clientSellerRepository) {
-        this.clientSellerRepository = clientSellerRepository;
-    }
+    @Autowired
+    ClientSellerRepository clientSellerRepository;
 
     @Transactional
     public ClientSellerModel save(ClientSellerModel clientSellerModel) {

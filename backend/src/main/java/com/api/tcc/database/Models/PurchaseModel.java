@@ -17,7 +17,9 @@ public class PurchaseModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_purchase", updatable = false, unique = true, nullable = false)
     private UUID id;
-    @Column(name = "localDateTime")
+    @Column(name = "category")
+    private String category;
+    @Column(name = "time")
     private LocalDateTime localDateTime;
     @ManyToOne
     @JoinColumn(name = "id_client")
