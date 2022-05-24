@@ -11,8 +11,8 @@ import java.util.UUID;
 @Entity
 @Setter
 @Getter
-@Table(name = "TB_ATTENTION_CUSTOMER")
-public class AttentionCustomerModel {
+@Table(name = "TB_CLIENT_SELLER")
+public class ClientSellerModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_client_seller", updatable = false, unique = true, nullable = false)

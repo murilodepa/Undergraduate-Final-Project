@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -16,8 +17,10 @@ public class PurchaseModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_purchase", updatable = false, unique = true, nullable = false)
     private UUID id;
-    @Column(name = "timestamp")
-    private Timestamp timestamp;
+    @Column(name = "category")
+    private String category;
+    @Column(name = "time")
+    private LocalDateTime localDateTime;
     @ManyToOne
     @JoinColumn(name = "id_client")
     private ClientModel clientModel;

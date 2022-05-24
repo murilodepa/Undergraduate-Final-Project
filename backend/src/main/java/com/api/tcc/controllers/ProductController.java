@@ -4,6 +4,7 @@ import com.api.tcc.database.Models.ProductModel;
 import com.api.tcc.database.dtos.ProductDTO;
 import com.api.tcc.services.ProductService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,11 +18,8 @@ import java.util.UUID;
 @RequestMapping("/product")
 public class ProductController {
 
-    private final ProductService productService;
-
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
+    @Autowired
+    ProductService productService;
 
     @PostMapping("/insertProduct")
     public ResponseEntity<Object> saveProduct(@RequestBody @Valid ProductDTO productDTO) {

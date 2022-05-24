@@ -4,6 +4,7 @@ import com.api.tcc.database.Models.SellerImageModel;
 import com.api.tcc.database.Models.SellerModel;
 import com.api.tcc.repositories.SellerImageRepository;
 import com.api.tcc.repositories.SellerRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -12,20 +13,17 @@ import java.util.List;
 @Service
 public class SellerImageService {
 
-    private final SellerImageRepository sellerImageRepository;
-    private final SellerRepository sellerRepository;
-    List<SellerModel> sellerModel;
+    @Autowired
+    SellerImageRepository sellerImageRepository;
 
-    public SellerImageService(SellerImageRepository sellerImageRepository, SellerRepository sellerRepository) {
-        this.sellerImageRepository = sellerImageRepository;
-        this.sellerRepository = sellerRepository;
-    }
+    @Autowired
+    SellerRepository sellerRepository;
+    List<SellerModel> sellerModel;
 
     @Transactional
     public SellerImageModel saveImage(byte[] encodedImage, long foreignKey) throws Exception {
         SellerImageModel sellerImageModel = new SellerImageModel();
         sellerImageModel.setImage(encodedImage);
-        sellerModel = sellerRepository.findAll();
         sellerImageModel.setSellerModel(sellerRepository.findById(foreignKey).orElseThrow(Exception::new));
         return sellerImageRepository.save(sellerImageModel);
     }

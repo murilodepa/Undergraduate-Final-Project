@@ -5,6 +5,7 @@ import com.api.tcc.database.Models.SellerModel;
 import com.api.tcc.database.dtos.SellerDTO;
 import com.api.tcc.services.SellerService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,19 +21,16 @@ import java.util.UUID;
 @RequestMapping("/seller")
 public class SellerController {
 
-    private final SellerService sellerService;
-
-    public SellerController(SellerService sellerService) {
-        this.sellerService = sellerService;
-    }
+    @Autowired
+    SellerService sellerService;
 
     @PostMapping("/insertSeller")
     public ResponseEntity<Object> saveSeller(@RequestBody @Valid SellerDTO sellerDTO) throws ParseException {
-        ManipulatingDates manipulatingDates = new ManipulatingDates();
         SellerModel sellerModel = new SellerModel();
         BeanUtils.copyProperties(sellerDTO, sellerModel);
         sellerModel.setAvailable(true);
         sellerModel.setAttendances(0);
+        ManipulatingDates manipulatingDates = new ManipulatingDates();
         sellerModel.setBirth(manipulatingDates.ConvertDateToDatabase(sellerDTO.getBirth()));
         return ResponseEntity.status(HttpStatus.CREATED).body(sellerService.save(sellerModel));
     }
@@ -62,7 +60,7 @@ public class SellerController {
     }
 
     @PutMapping("/updateSeller/{id}")
-    public ResponseEntity<Object> updateClient(@PathVariable(value = "id") long id, @RequestBody @Valid SellerDTO sellerDTO) {
+    public ResponseEntity<Object> updateClient(@PathVariable(value = "id") long id, @RequestBody @Valid SellerDTO sellerDTO) throws ParseException {
         Optional<SellerModel> sellerModelOptional = sellerService.findById(id);
         if (!sellerModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
@@ -70,6 +68,8 @@ public class SellerController {
         SellerModel sellerModel = new SellerModel();
         BeanUtils.copyProperties(sellerDTO, sellerModel);
         sellerModel.setId(sellerModelOptional.get().getId());
+        ManipulatingDates manipulatingDates = new ManipulatingDates();
+        sellerModel.setBirth(manipulatingDates.ConvertDateToDatabase(sellerDTO.getBirth()));
         return ResponseEntity.status(HttpStatus.OK).body(sellerService.save(sellerModel));
     }
 }

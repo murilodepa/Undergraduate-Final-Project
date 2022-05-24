@@ -3,6 +3,7 @@ package com.api.tcc.controllers;
 import com.api.tcc.Utils.ManipulatingImage;
 import com.api.tcc.services.ClientImageService;
 import com.api.tcc.services.ClientService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +16,8 @@ import java.nio.file.Files;
 @RequestMapping("/client")
 public class ClientImageController {
 
-    private final ClientImageService clientImageService;
-
-    public ClientImageController(ClientImageService clientImageService) {
-        this.clientImageService = clientImageService;
-    }
+    @Autowired
+    ClientImageService clientImageService;
 
     @PostMapping("/sendImage")
     public ResponseEntity<?> sendImage(@RequestPart(value = "image", required = false) MultipartFile image) throws Exception {

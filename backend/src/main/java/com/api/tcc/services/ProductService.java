@@ -2,6 +2,7 @@ package com.api.tcc.services;
 
 import com.api.tcc.database.Models.ProductModel;
 import com.api.tcc.repositories.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -11,11 +12,9 @@ import java.util.UUID;
 
 @Service
 public class ProductService {
-    private final ProductRepository productRepository;
 
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+    @Autowired
+    ProductRepository productRepository;
 
     @Transactional
     public ProductModel save(ProductModel productModel) {
