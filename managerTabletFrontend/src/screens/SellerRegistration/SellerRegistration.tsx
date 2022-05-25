@@ -133,7 +133,7 @@ const ManagerRegistration = ({ navigation }) => {
     }
     if (count == 4) {
       try {
-       const responde = await new SellerService().insertSeller(sellerData);
+       const response = await new SellerService().insertSeller(sellerData);
       } catch (error) {
         console.error('Falha no cadastro', error)
       }

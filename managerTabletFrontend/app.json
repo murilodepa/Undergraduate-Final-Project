@@ -24,7 +24,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/clothing-store-logo.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.murilodepa.tabletFrontend"
     },
     "web": {
       "favicon": "./src/assets/favicon.png"
