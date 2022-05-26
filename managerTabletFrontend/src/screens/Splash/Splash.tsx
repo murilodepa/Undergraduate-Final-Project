@@ -2,6 +2,10 @@ import React from "react";
 import LottieView from "lottie-react-native";
 import { Container, Venda, Mais, ContainerVendaMais } from "./styles";
 import { SellerService } from "../../services/SellerService/SellerService";
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreAllLogs();
 
 const Splash = ({ navigation }) => {
 
@@ -10,12 +14,12 @@ const Splash = ({ navigation }) => {
    /* try {
       data = await new SellerService().getSellers();
     } catch (error) {
-      console.error("Falha no cadastro", error);
+      console.error("Error to register", error);
     }
-    if (data.length === 0) { 
+    if (data.length === 0) { */
       navigation.navigate("Initial");
-    } else {*/
-      navigation.navigate("Menu");
+  // } else {
+     // navigation.navigate("Menu");
   //  }
   };
 

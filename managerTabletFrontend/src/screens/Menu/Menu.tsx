@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { TouchableOpacity } from "react-native";
 import ModalProfileSettings from "../../Components/Modals/ProfileSettings/ProfileSettings";
+import ModalEditProfile from "../../Components/Modals/EditProfile/EditProfile";
+import { SellerService } from "../../services/SellerService/SellerService";
 
 import {
   Container,
@@ -11,29 +13,51 @@ import {
   SellerClientButton,
   SellerClientText,
 } from "./styles";
+import { ISellerData } from "../../services/SellerService/SellerServiceInterface";
+import { IGetSellerData } from "../../services/SellerService/SellerServiceInterface";
 
 const ManagerRegistration = ({ navigation }) => {
-
   const [openProfileSettings, setOpenProfileSettings] = useState(false);
   const [openEditProfile, setOpenEditProfile] = useState(false);
 
-  const closeProfileSettings = () => {
+  const [placeholderInputs, setPlaceholderInputs] = useState<ISellerData>();
+  const [managerData, setManagerData] = useState<IGetSellerData>();
+
+  function reformatDate(dateStr: string) {
+    const dArr = dateStr.split("-");
+    return dArr[2] + "/" + dArr[1] + "/" + dArr[0]; 
+  }
+
+  const closeProfileSettings = async () => {
     setOpenProfileSettings(false);
   };
 
-  const closeEditProfile = () => {
+  const closeEditProfile = async () => {
     setOpenEditProfile(false);
     setOpenProfileSettings(true);
   };
 
-  const EditProfile = () => {
+  const EditProfile = async () => {
     setOpenProfileSettings(false);
     setOpenEditProfile(true);
   };
 
   const eventProfileSetting = async () => {
     console.log("Settings");
+    let data: any;
+    try {
+      data = await new SellerService().getManager();
+    } catch (error) {
+      console.error("Error to get manager date", error);
+    }
+    data.birth = reformatDate(data.birth)
+    console.log("birth: ", data.birth)
+
+    setPlaceholderInputs(data);
+    setManagerData(data);
+
     setOpenProfileSettings(true);
+    console.log("xxxxxxxxxx: ", placeholderInputs.name);
   };
 
   const eventSellerMenu = async () => {
@@ -56,14 +80,22 @@ const ManagerRegistration = ({ navigation }) => {
       </ContainerHeader>
 
       {
-        <ModalProfileSettings
-        openProfileSettings={openProfileSettings}
-        closeProfileSettings={closeProfileSettings}
-        EditProfile={EditProfile}
-        closeEditProfile={closeEditProfile}
+        <ModalEditProfile
+          openEditProfile={openEditProfile}
+          closeEditProfile={closeEditProfile}
+          placeholderInputs={placeholderInputs}
         />
       }
-      
+
+      {
+        <ModalProfileSettings
+          openProfileSettings={openProfileSettings}
+          closeProfileSettings={closeProfileSettings}
+          EditProfile={EditProfile}
+          managerData={managerData}
+        />
+      }
+
       <ContainerButtons>
         <ContainerSellerClientButton>
           <TouchableOpacity onPress={() => eventSellerMenu()}>

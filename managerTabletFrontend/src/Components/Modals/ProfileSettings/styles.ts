@@ -46,7 +46,7 @@ export const Name = styled.Text`
 export const Description = styled.Text`
   font-size: 28px;
   text-align: center;
-  line-height: 38px;
+  line-height: 46px;
   color: white;
   margin-top: 10px;
 `;

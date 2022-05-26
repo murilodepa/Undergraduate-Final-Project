@@ -12,14 +12,14 @@ import {
   ContainerButtons,
   ProfileDescription,
   Name,
-  Description
+  Description,
 } from "./styles";
 
-export default function ModalCapturedPicture({
+export default function ModalProfileSettings({
   openProfileSettings,
   closeProfileSettings,
   EditProfile,
-  closeEditProfile,
+  managerData,
 }) {
   return (
     <Modal
@@ -49,18 +49,18 @@ export default function ModalCapturedPicture({
             />
           </ContainerProfileImage>
 
-          <ContainerDescription>
-              <ProfileDescription>
 
-              <Name>
-                Murilo Araujo
-              </Name>
+          <ContainerDescription>
+            <ProfileDescription>
+              <Name>  
+              {managerData && 
+                `${managerData.name}`}           
+                     </Name>
               <Line />
               <Description>
-              {`Email \n Senha \n 42 anos \n Masculino \n Camiseta \ 100 Atendimentos`}
-            </Description>
-
-              </ProfileDescription>
+                {managerData && `${managerData.email} \n ${managerData.birth} \n ${managerData.gender} \n ${managerData.sector} \n ${managerData.attendances} Atendimentos `}
+              </Description>
+            </ProfileDescription>
           </ContainerDescription>
         </ContainerModal>
       </Container>
