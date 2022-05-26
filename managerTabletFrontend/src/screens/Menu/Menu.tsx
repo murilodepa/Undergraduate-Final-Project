@@ -1,5 +1,5 @@
-import React from "react";
-import { TouchableOpacity } from "react-native";
+import React, { useEffect } from "react";
+import { TouchableOpacity, BackHandler } from "react-native";
 import HeaderProfile from "../../Components/HeaderProfile/HeaderProfile";
 
 import {
@@ -11,19 +11,24 @@ import {
 } from "./styles";
 
 const Menu = ({ navigation }) => {
+  useEffect(() => {
+    BackHandler.addEventListener("hardwareBackPress", () => {
+      return true;
+    });
+  }, []);
+
   const eventSellerMenu = async () => {
-    console.log("Seller");
     navigation.navigate("SellerMenu");
   };
 
   const eventClientMenu = async () => {
     console.log("Clients");
+    navigation.navigate("ClientMenu");
   };
 
   return (
     <Container>
       <HeaderProfile name="Murilo Araujo" navigation={navigation} />
-
       <ContainerButtons>
         <ContainerSellerClientButton>
           <TouchableOpacity onPress={() => eventSellerMenu()}>
