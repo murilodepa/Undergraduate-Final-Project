@@ -9,15 +9,11 @@ import {
 } from "../Initial/InitialStyles";
 
 import {
-  MenuIcon,
   ContainerMiddle,
   ContainerDescription,
-  MenuText,
-  MenuButton,
-  ContainerFooter,
 } from "./styles";
 
-const ManagerRegistration = ({ navigation }) => {
+const SellerRegistration = ({ navigation }) => {
 
   const [placeholderInputs, setPlaceholderInputs] = useState<ISellerData>({
     name: "Name...",
@@ -42,15 +38,8 @@ const ManagerRegistration = ({ navigation }) => {
         <SellerInputs navigation={navigation} buttonName="Cadastrar" placeholderInputs={placeholderInputs} sellerData={managerData} />
         </ContainerDescription>
       </ContainerMiddle>
-
-      <ContainerFooter>
-        <MenuButton style={{ flexDirection: "row" }}>
-          <MenuIcon source={require("../../assets//menu.png")} />
-          <MenuText> Menu </MenuText>
-        </MenuButton>
-      </ContainerFooter>
     </Container>
   );
 };
 
-export default ManagerRegistration;
+export default SellerRegistration;

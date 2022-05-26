@@ -66,7 +66,6 @@ const SellerInputs = (props: any) => {
     "Short",
   ];
   const [sellerData, setSellerData] = useState<ISellerData>(props.sellerData);
-  console.log("aaaaaaaaaaaa", sellerData);
   const [inputNameColor, setInputNameColor] = useState("black");
   const [inputBirthColor, setInputBirthColor] = useState("black");
   const [inputEmailColor, setInputEmailColor] = useState("black");
@@ -82,7 +81,7 @@ const SellerInputs = (props: any) => {
       sellerData.name.length > 3 &&
       !regexNumber.test(sellerData.name)
     ) {
-      console.log("Name is valid!");
+      console.log("Name is valid! +1");
       setInputNameColor("black");
       count++;
     } else {
@@ -94,7 +93,7 @@ const SellerInputs = (props: any) => {
       count--;
     } else {
       setInputGenderColor("black");
-      console.log("Gender is valid!");
+      console.log("Gender is valid! +1");
       count++;
     }
     if (sellerData.sector == undefined || sellerData.sector == null) {
@@ -102,7 +101,7 @@ const SellerInputs = (props: any) => {
       count--;
     } else {
       setInputSectorColor("black");
-      console.log("Sector is valid!");
+      console.log("Sector is valid! +1");
       count++;
     }
     if (sellerData.birth != undefined && validateDate(sellerData.birth)) {
@@ -110,14 +109,14 @@ const SellerInputs = (props: any) => {
       count++;
     } else {
       setInputBirthColor("red");
-      count--;
+      count = count - 1;
     }
     if (
       sellerData.email != undefined &&
       sellerData.email.length > 5 &&
       regexEmail.test(sellerData.email)
     ) {
-      console.log("Email is valid!");
+      console.log("Email is valid! +1");
       setInputEmailColor("black");
       count++;
     } else {
@@ -149,12 +148,13 @@ const SellerInputs = (props: any) => {
           console.error("Falha no cadastro", error);
         }
         props.navigation.navigate("Capture", { paramKey: "seller" });
-      }
-    } else {
-      try {
-        const response = await new SellerService().updateSeller(sellerData);
-      } catch (error) {
-        console.error("Error to edit!", error);
+      } else {
+        try {
+          const response = await new SellerService().updateSeller(sellerData);
+        } catch (error) {
+          console.error("Error to edit!", error);
+        }
+        console.log("EDITOOU");
       }
     }
   };
@@ -167,7 +167,6 @@ const SellerInputs = (props: any) => {
         />
       </ContainerProfileImage>
 
-      {() => eventVerifyEditOrRegister}
       <Line />
       <ViewTextInput>
         <CharacteristicText> Nome: </CharacteristicText>
@@ -272,12 +271,6 @@ const SellerInputs = (props: any) => {
       </ViewTextInput>
       <ViewTextInput>
         <CharacteristicText> Senha: </CharacteristicText>
-
-        {console.log(
-          "props.placeholderInputs.password: ",
-          props.placeholderInputs.password
-        )}
-
         <ContainerPasswordInput style={{ borderColor: inputPasswordColor }}>
           <PasswordInput
             maxLength={100}

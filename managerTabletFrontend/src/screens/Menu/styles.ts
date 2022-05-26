@@ -7,23 +7,6 @@ export const Container = styled.View`
   background-color: #c4c4c4;
 `;
 
-export const ProfileImage = styled.Image`
-  justify-content: center;
-  height: 160px;
-  width: 160px;
-  align-items: center;
-  margin-left: 30px;
-  margin-top: 25px;
-`;
-
-export const ContainerHeader = styled.View`
-  background-color: #B5B4B4;
-  height: 200px;
-  width: 100%;
-  justify-content: flex-start;
-  align-items: flex-start;
-`;
-
 export const ContainerButtons = styled.View`
   flex: 1;
   justify-content: center;
