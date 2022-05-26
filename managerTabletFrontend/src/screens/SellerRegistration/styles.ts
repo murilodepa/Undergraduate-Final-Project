@@ -1,16 +1,5 @@
 import styled from "styled-components/native";
 
-export const Container = styled.View`
-  flex: 1;
-  justify-content: center;
-  background-color: #c4c4c4;
-`;
-
-export const MenuIcon = styled.Image`
-  height: 70px;
-  width: 70px;
-`;
-
 export const ContainerDescription = styled.View`
   background-color: #6bb1f1;
   max-height: 820px;
@@ -36,23 +25,5 @@ export const ContainerMiddle = styled.View`
   justify-content: center;
   align-items: center;
   flex: 1;
-`;
-
-export const MenuButton = styled.View`
-      justify-content: center;
-      align-items: center;
-`;
-
-export const MenuText = styled.Text`
-  font-size: 38px;
-  font-weight: bold;
-`;
-
-export const ContainerFooter = styled.View`
-  justify-content: center;
-  text-align: center;
-  background-color: #b5b4b4;
-  height: 100px;
-  width: 100%;
 `;
 

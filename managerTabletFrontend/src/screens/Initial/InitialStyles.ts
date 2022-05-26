@@ -10,10 +10,16 @@ export const Container = styled.View`
 export const ProfileImage = styled.Image`
   justify-content: center;
   border-radius: 10px;
-  height: 90px;
-  width: 90px;
+  height: 110px;
+  width: 110px;
   align-items: center;
   margin-left: 30px;
+`;
+
+export const ProfileText = styled.Image`
+  font-size: 30px;
+  font-weight: bold;
+  margin-left: 10px;
 `;
 
 export const NextArrow = styled.Image`
@@ -40,10 +46,10 @@ export const StoreLogo = styled.Image`
 
 export const Line = styled.View`
   flex: 1;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   max-height: 3px;
   margin-bottom: 12px;
-`
+`;
 
 export const ContainerDescription = styled.View`
   background-color: #6bb1f1;
@@ -52,7 +58,7 @@ export const ContainerDescription = styled.View`
   width: 430px;
   max-width: 430px;
   border-radius: 20px;
-  border-color: #FFFFFF;
+  border-color: #ffffff;
   border-width: 3px;
 `;
 

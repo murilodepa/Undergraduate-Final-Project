@@ -17,9 +17,9 @@ const Splash = ({ navigation }) => {
       console.error("Error to register", error);
     }
     if (data.length === 0) { */
-      navigation.navigate("Initial");
+   //   navigation.navigate("Initial");
   // } else {
-     // navigation.navigate("Menu");
+      navigation.navigate("Menu");
   //  }
   };
 

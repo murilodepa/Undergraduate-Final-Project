@@ -28,7 +28,7 @@ const Initial = ({ navigation }) => {
   }, []);
 
   const eventRegisterManager = async () => {
-    navigation.navigate("ManagerRegistration");
+    navigation.navigate("SellerRegistration");
   };
 
   return (
