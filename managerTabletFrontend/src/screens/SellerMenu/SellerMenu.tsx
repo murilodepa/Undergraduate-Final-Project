@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { TouchableOpacity } from "react-native";
 import HeaderProfile from "../../Components/HeaderProfile/HeaderProfile";
 import FooterMenu from "../../Components/FooterMenu/FooterMenu";
@@ -21,6 +21,7 @@ const SellerMenu = ({ navigation }) => {
 
   const eventRegisterSeller = async () => {
     console.log("Register Seller");
+    navigation.navigate("SellerRegistration");
   };
 
   const eventRemoveSeller = async () => {

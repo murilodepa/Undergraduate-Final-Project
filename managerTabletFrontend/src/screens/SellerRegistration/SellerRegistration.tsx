@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import SellerInputs from "../../Components/SellerInputs/SellerInputs";
-import { ISellerData } from "../../services/SellerService/SellerServiceInterface";
+import React, { useState, useEffect } from 'react';
+import { BackHandler } from "react-native";
+import SellerInputs from '../../Components/SellerInputs/SellerInputs';
+import { ISellerData } from '../../services/SellerService/SellerServiceInterface';
+import HeaderProfile from '../../Components/HeaderProfile/HeaderProfile';
 
 import {
   Container,
-  ContainerHeader,
-  ProfileImage,
 } from "../Initial/InitialStyles";
 
 import {
@@ -28,11 +28,7 @@ const SellerRegistration = ({ navigation }) => {
 
   return (
     <Container>
-      <ContainerHeader>
-        <ProfileImage
-          source={require("../../assets/profile-image-setting.png")}
-        />
-      </ContainerHeader>
+      <HeaderProfile name="Murilo Araujo" navigation={navigation} />
       <ContainerMiddle>
         <ContainerDescription>
         <SellerInputs navigation={navigation} buttonName="Cadastrar" placeholderInputs={placeholderInputs} sellerData={managerData} />
