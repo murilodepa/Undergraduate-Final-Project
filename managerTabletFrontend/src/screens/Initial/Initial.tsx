@@ -1,11 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  Text,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  BackHandler,
-} from "react-native";
+import { TouchableOpacity, BackHandler } from "react-native";
 import {
   Container,
   ContainerHeader,
@@ -43,7 +37,7 @@ const Initial = ({ navigation }) => {
       <ContainerMiddle>
         <ContainerDescription>
           <ContainerLogo>
-          <StoreLogo source={require("../../assets/venda-mais-logo.png")} />
+            <StoreLogo source={require("../../assets/venda-mais-logo.png")} />
           </ContainerLogo>
           <Line />
           <Description>

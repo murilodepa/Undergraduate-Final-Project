@@ -4,7 +4,7 @@ import HeaderProfile from "../../Components/HeaderProfile/HeaderProfile";
 import FooterMenu from "../../Components/FooterMenu/FooterMenu";
 
 import {
-  Container
+  Container,
 } from "../Initial/InitialStyles";
 
 import {
@@ -12,19 +12,15 @@ import {
   ContainerButton,
   ImageButton,
   TextButton,
-} from "./styles";
+} from "../SellerMenu/styles";
 
-const SellerMenu = ({ navigation }) => {
+const ClientMenu = ({ navigation }) => {
   const eventSearchSeller = async () => {
-    console.log("Search Seller");
+    console.log("Search Client");
   };
 
   const eventRegisterSeller = async () => {
-    console.log("Register Seller");
-  };
-
-  const eventRemoveSeller = async () => {
-    console.log("Remove Seller");
+    console.log("Register Client");
   };
 
   return (
@@ -33,28 +29,22 @@ const SellerMenu = ({ navigation }) => {
       <ContainerMiddle>
         <TouchableOpacity onPress={() => eventSearchSeller()}>
           <ContainerButton>
-            <ImageButton source={require("../../assets/search-seller.png")} />
-            <TextButton> Buscar Funcionário </TextButton>
+            <ImageButton source={require("../../assets/search-client.png")} />
+            <TextButton> Buscar Cliente </TextButton>
           </ContainerButton>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => eventRegisterSeller()}>
           <ContainerButton>
-            <ImageButton source={require("../../assets/register-seller.png")} />
-            <TextButton> Cadastrar Funcionário </TextButton>
+            <ImageButton source={require("../../assets/register-client.png")} />
+            <TextButton> Cadastrar Cliente </TextButton>
           </ContainerButton>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => eventRemoveSeller()}>
-          <ContainerButton style={{ marginBottom: 60 }}>
-            <ImageButton source={require("../../assets/remove-seller.png")} />
-            <TextButton> Remover Funcionário </TextButton>
-          </ContainerButton>
-        </TouchableOpacity>
       </ContainerMiddle>
       <FooterMenu navigation={navigation} />
     </Container>
   );
 };
 
-export default SellerMenu;
+export default ClientMenu;
