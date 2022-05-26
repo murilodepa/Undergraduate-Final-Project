@@ -207,7 +207,7 @@ const SellerInputs = (props: any) => {
       </ViewTextInput>
       <ViewTextInput>
         <CharacteristicText>
-          {"     "}
+          {" "}
           Data de {"\n"} Nascimento:{" "}
         </CharacteristicText>
         <TextInputMask

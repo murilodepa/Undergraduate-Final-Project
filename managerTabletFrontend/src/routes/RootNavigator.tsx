@@ -10,6 +10,7 @@ import SellerRegistration from '../screens/SellerRegistration/SellerRegistration
 import Menu from '../screens/Menu/Menu'
 import SellerMenu from '../screens/SellerMenu/SellerMenu'
 import ClientMenu from '../screens/ClientMenu/ClientMenu'
+import ClientRegistration from '../screens/ClientRegistration/ClientRegistration';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +27,7 @@ export function RootNavigator() {
         <Screen name='Menu' component={Menu} />
         <Screen name='SellerMenu' component={SellerMenu} />
         <Screen name='ClientMenu' component={ClientMenu} />
+        <Screen name='ClientRegistration' component={ClientRegistration} />
       </Navigator>
     </NavigationContainer>
   )
