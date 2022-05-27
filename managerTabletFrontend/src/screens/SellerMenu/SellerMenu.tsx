@@ -1,7 +1,8 @@
-import React from "react";
-import { TouchableOpacity } from "react-native";
-import HeaderProfile from "../../Components/HeaderProfile/HeaderProfile";
-import FooterMenu from "../../Components/FooterMenu/FooterMenu";
+import React, { useState } from 'react';
+import { TouchableOpacity } from 'react-native';
+import HeaderProfile from '../../Components/HeaderProfile/HeaderProfile';
+import FooterMenu from '../../Components/FooterMenu/FooterMenu';
+import ModalSearch from '../../Components/Modals/Search/Search'
 
 import {
   Container
@@ -15,8 +16,16 @@ import {
 } from "./styles";
 
 const SellerMenu = ({ navigation }) => {
+
+  const [openModalSearch, setOpenModalSearch] = useState(false);
+
+  const closeModalSearch = async () => {
+    setOpenModalSearch(false);
+  };
+
   const eventSearchSeller = async () => {
     console.log("Search Seller");
+    setOpenModalSearch(true);
   };
 
   const eventRegisterSeller = async () => {
@@ -30,6 +39,13 @@ const SellerMenu = ({ navigation }) => {
 
   return (
     <Container>
+            {
+        <ModalSearch
+          openModalSearch={openModalSearch}
+          closeModalSearch={closeModalSearch}
+          clientOrSeller={"funcionário"}
+        />
+      }
       <HeaderProfile name="Murilo Araujo" navigation={navigation} />
       <ContainerMiddle>
         <TouchableOpacity onPress={() => eventSearchSeller()}>

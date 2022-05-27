@@ -154,7 +154,7 @@ const SellerInputs = (props: any) => {
         } catch (error) {
           console.error("Error to edit!", error);
         }
-        console.log("EDITOOU");
+        console.log("EDITED");
       }
     }
   };
@@ -208,7 +208,7 @@ const SellerInputs = (props: any) => {
       <ViewTextInput>
         <CharacteristicText>
           {" "}
-          Data de {"\n"} Nascimento:{" "}
+,          Data de {"\n"} Nascimento:{" "}
         </CharacteristicText>
         <TextInputMask
           type={"datetime"}

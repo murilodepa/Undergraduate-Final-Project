@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { TouchableOpacity } from "react-native";
-import ModalProfileSettings from "../../Components/Modals/ProfileSettings/ProfileSettings";
-import ModalEditProfile from "../../Components/Modals/EditProfile/EditProfile";
-import { SellerService } from "../../services/SellerService/SellerService";
-import { ISellerData } from "../../services/SellerService/SellerServiceInterface";
-import { IGetSellerData } from "../../services/SellerService/SellerServiceInterface";
+import React, { useState } from 'react';
+import { TouchableOpacity } from 'react-native';
+import ModalProfileSettings from '../../Components/Modals/ProfileSettings/ProfileSettings';
+import ModalEditProfile from '../../Components/Modals/EditProfile/EditProfile';
+import { SellerService } from '../../services/SellerService/SellerService';
+import { ISellerData } from '../../services/SellerService/SellerServiceInterface';
+import { IGetSellerData } from '../../services/SellerService/SellerServiceInterface';
 
 import { ContainerHeader, ProfileImage, ProfileText } from "./styles";
 

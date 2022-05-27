@@ -8,6 +8,7 @@ export const Container = styled.View`
 `;
 
 export const ContainerModal = styled.View`
+  flex: 1;
   background-color: #6bb1f1;
   max-height: 820px;
   height: 820px;
@@ -32,6 +33,5 @@ export const EditCloseProfileButton = styled.Image`
   max-height: 45px;
   height: 45px;
   width: 45px;
-
 `;
 

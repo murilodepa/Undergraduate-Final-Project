@@ -10,9 +10,9 @@ export const ProfileImage = styled.Image`
 `;
 
 export const ProfileText = styled.Text`
-  font-size: 30px;
+  font-size: 40px;
   font-weight: bold;
-  margin-left: 10px;
+  margin-left: 20px;
 `;
 
 export const ContainerHeader = styled.View`
