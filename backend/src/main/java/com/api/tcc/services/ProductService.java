@@ -14,7 +14,7 @@ import java.util.UUID;
 public class ProductService {
 
     @Autowired
-    ProductRepository productRepository;
+    private ProductRepository productRepository;
 
     @Transactional
     public ProductModel save(ProductModel productModel) {

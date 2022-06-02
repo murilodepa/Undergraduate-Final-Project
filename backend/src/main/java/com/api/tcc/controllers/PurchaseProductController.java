@@ -7,7 +7,6 @@ import com.api.tcc.database.dtos.PurchaseProductDTO;
 import com.api.tcc.services.ProductService;
 import com.api.tcc.services.PurchaseProductService;
 import com.api.tcc.services.PurchaseService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,8 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.text.ParseException;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -26,13 +23,13 @@ import java.util.UUID;
 public class PurchaseProductController {
 
     @Autowired
-    PurchaseProductService purchaseProductService;
+    private PurchaseProductService purchaseProductService;
 
     @Autowired
-    PurchaseService purchaseService;
+    private PurchaseService purchaseService;
 
     @Autowired
-    ProductService productService;
+    private ProductService productService;
 
     @PostMapping("/insertPurchaseProduct")
     public ResponseEntity<Object> savePurchaseProduct(@RequestBody @Valid PurchaseProductDTO purchaseProductDTO) throws ParseException {

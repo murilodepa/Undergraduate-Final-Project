@@ -1,11 +1,11 @@
-package com.api.tcc.Utils;
+package com.api.tcc.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 
-public class ManipulatingDates {
+public class FormattingDates {
 
     public LocalDate ConvertDateToDatabase(final String date) throws ParseException {
         Date inSDF = new SimpleDateFormat("dd/MM/yyyy").parse(date);

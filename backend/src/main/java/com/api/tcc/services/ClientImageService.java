@@ -9,31 +9,36 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ClientImageService {
 
     @Autowired
-    ClientImageRepository clientImageRepository;
+    private ClientImageRepository clientImageRepository;
 
     @Autowired
-    ClientRepository clientRepository;
+    private ClientRepository clientRepository;
     List<ClientModel> clientModel;
 
     @Transactional
     public ClientImageModel saveImage(byte[] encodedImage, long foreignKey) throws Exception {
         ClientImageModel clientImageModel = new ClientImageModel();
         clientImageModel.setImage(encodedImage);
-        clientImageModel.setClientModel( clientRepository.findById(foreignKey).orElseThrow(Exception::new));
+        clientImageModel.setClientModel(clientRepository.findById(foreignKey).orElseThrow(Exception::new));
         return clientImageRepository.save(clientImageModel);
     }
 
-    public long lastId() {
+    public long getClientId() {
         clientModel = clientRepository.findAll();
-        if(clientModel.size() > 0) {
+        if (clientModel.size() > 0) {
             return clientModel.get((clientModel.size() - 1)).getId();
         } else {
             return (-1);
         }
+    }
+
+    public Optional<List<ClientImageModel>> findClientImages(long id) {
+        return clientImageRepository.findClientImages(id);
     }
 }

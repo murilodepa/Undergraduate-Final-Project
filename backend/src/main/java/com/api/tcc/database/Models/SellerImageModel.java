@@ -2,8 +2,10 @@ package com.api.tcc.database.Models;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Setter
@@ -13,9 +15,10 @@ public class SellerImageModel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_seller_image", updatable = false, unique = true, nullable = false)
-    private long id;
+    private UUID id;
     @Lob
-    @Column(name = "image", length = Integer.MAX_VALUE)
+    @Type(type = "org.hibernate.type.ImageType")
+    @Column(name = "image")
     private byte[] image;
     @ManyToOne
     @JoinColumn(name = "id_seller")

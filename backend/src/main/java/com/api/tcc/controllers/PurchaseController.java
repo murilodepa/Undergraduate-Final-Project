@@ -23,10 +23,10 @@ import java.util.UUID;
 public class PurchaseController {
 
     @Autowired
-    PurchaseService purchaseService;
+    private PurchaseService purchaseService;
 
     @Autowired
-    ClientService clientService;
+    private ClientService clientService;
 
     @PostMapping("/insertPurchase")
     public ResponseEntity<Object> savePurchase(@RequestBody @Valid PurchaseDTO purchaseDTO) throws ParseException {

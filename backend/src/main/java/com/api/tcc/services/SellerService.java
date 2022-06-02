@@ -13,7 +13,7 @@ import java.util.Optional;
 public class SellerService {
 
     @Autowired
-    SellerRepository sellerRepository;
+    private SellerRepository sellerRepository;
 
     @Transactional
     public SellerModel save(SellerModel sellerModel) {
@@ -31,5 +31,19 @@ public class SellerService {
     @Transactional
     public void delete(SellerModel sellerModel) {
         sellerRepository.delete((sellerModel));
+    }
+
+    public String[] getClientIdsAndNames() {
+        String[] idsAndNames = new String[100];
+        int i=0;
+        List<SellerModel> sellerModelList = sellerRepository.findAll();
+
+        for(SellerModel sellerModel: sellerModelList) {
+            idsAndNames[i] = String.valueOf(sellerModel.getId());
+            i++;
+            idsAndNames[i] = sellerModel.getName();
+            i++;
+        }
+        return idsAndNames;
     }
 }

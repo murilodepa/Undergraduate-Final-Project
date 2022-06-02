@@ -1,6 +1,6 @@
 package com.api.tcc.controllers;
 
-import com.api.tcc.Utils.ManipulatingDates;
+import com.api.tcc.utils.FormattingDates;
 import com.api.tcc.database.Models.ClientModel;
 import com.api.tcc.database.dtos.ClientDTO;
 import com.api.tcc.services.ClientService;
@@ -20,14 +20,14 @@ import java.util.Optional;
 public class ClientController {
 
     @Autowired
-    ClientService clientService;
+    private ClientService clientService;
 
     @PostMapping("/insertClient")
     public ResponseEntity<Object> saveClient(@RequestBody @Valid ClientDTO clientDTO) throws ParseException {
         ClientModel clientModel = new ClientModel();
         BeanUtils.copyProperties(clientDTO, clientModel);
-        ManipulatingDates manipulatingDates = new ManipulatingDates();
-        clientModel.setBirth(manipulatingDates.ConvertDateToDatabase(clientDTO.getBirth()));
+        FormattingDates formattingDates = new FormattingDates();
+        clientModel.setBirth(formattingDates.ConvertDateToDatabase(clientDTO.getBirth()));
         return ResponseEntity.status(HttpStatus.CREATED).body(clientService.save(clientModel));
     }
 
@@ -64,8 +64,8 @@ public class ClientController {
         ClientModel clientModel = new ClientModel();
         BeanUtils.copyProperties(clientDTO, clientModel);
         clientModel.setId(clientModelOptional.get().getId());
-        ManipulatingDates manipulatingDates = new ManipulatingDates();
-        clientModel.setBirth(manipulatingDates.ConvertDateToDatabase(clientDTO.getBirth()));
+        FormattingDates formattingDates = new FormattingDates();
+        clientModel.setBirth(formattingDates.ConvertDateToDatabase(clientDTO.getBirth()));
         return ResponseEntity.status(HttpStatus.OK).body(clientService.save(clientModel));
     }
 }

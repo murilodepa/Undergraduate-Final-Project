@@ -14,7 +14,7 @@ import java.util.UUID;
 public class PurchaseProductService {
 
     @Autowired
-    PurchaseProductRepository purchaseProductRepository;
+    private PurchaseProductRepository purchaseProductRepository;
 
     @Transactional
     public PurchaseProductModel save(PurchaseProductModel purchaseProductModel) {

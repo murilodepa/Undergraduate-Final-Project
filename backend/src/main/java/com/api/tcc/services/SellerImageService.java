@@ -9,15 +9,16 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SellerImageService {
+    @Autowired
+    private SellerImageRepository sellerImageRepository;
 
     @Autowired
-    SellerImageRepository sellerImageRepository;
+    private SellerRepository sellerRepository;
 
-    @Autowired
-    SellerRepository sellerRepository;
     List<SellerModel> sellerModel;
 
     @Transactional
@@ -28,12 +29,16 @@ public class SellerImageService {
         return sellerImageRepository.save(sellerImageModel);
     }
 
-    public long lastId() {
+    public long getSellerId() {
         sellerModel = sellerRepository.findAll();
         if(sellerModel.size() > 0) {
             return sellerModel.get((sellerModel.size() - 1)).getId();
         } else {
             return (-1);
         }
+    }
+
+    public Optional<List<SellerImageModel>> findSellerImages(long id) {
+        return sellerImageRepository.findSellerImages(id);
     }
 }

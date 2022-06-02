@@ -25,13 +25,13 @@ import java.util.UUID;
 public class ClientSellerController {
 
     @Autowired
-    ClientSellerService clientSellerService;
+    private ClientSellerService clientSellerService;
 
     @Autowired
-    ClientService clientService;
+    private ClientService clientService;
 
     @Autowired
-    SellerService sellerService;
+    private SellerService sellerService;
 
     @PostMapping("/insertAttendance")
     public ResponseEntity<Object> saveAttendance(@RequestBody @Valid ClientSellerDTO clientSellerDTO) throws ParseException {

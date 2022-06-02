@@ -1,6 +1,6 @@
 package com.api.tcc.controllers;
 
-import com.api.tcc.Utils.ManipulatingDates;
+import com.api.tcc.utils.FormattingDates;
 import com.api.tcc.database.Models.SellerModel;
 import com.api.tcc.database.dtos.SellerDTO;
 import com.api.tcc.services.SellerService;
@@ -11,18 +11,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/seller")
 public class SellerController {
 
     @Autowired
-    SellerService sellerService;
+    private SellerService sellerService;
 
     @PostMapping("/insertSeller")
     public ResponseEntity<Object> saveSeller(@RequestBody @Valid SellerDTO sellerDTO) throws ParseException {
@@ -30,8 +28,8 @@ public class SellerController {
         BeanUtils.copyProperties(sellerDTO, sellerModel);
         sellerModel.setAvailable(true);
         sellerModel.setAttendances(0);
-        ManipulatingDates manipulatingDates = new ManipulatingDates();
-        sellerModel.setBirth(manipulatingDates.ConvertDateToDatabase(sellerDTO.getBirth()));
+        FormattingDates formattingDates = new FormattingDates();
+        sellerModel.setBirth(formattingDates.ConvertDateToDatabase(sellerDTO.getBirth()));
         return ResponseEntity.status(HttpStatus.CREATED).body(sellerService.save(sellerModel));
     }
 
@@ -68,8 +66,8 @@ public class SellerController {
         SellerModel sellerModel = new SellerModel();
         BeanUtils.copyProperties(sellerDTO, sellerModel);
         sellerModel.setId(sellerModelOptional.get().getId());
-        ManipulatingDates manipulatingDates = new ManipulatingDates();
-        sellerModel.setBirth(manipulatingDates.ConvertDateToDatabase(sellerDTO.getBirth()));
+        FormattingDates formattingDates = new FormattingDates();
+        sellerModel.setBirth(formattingDates.ConvertDateToDatabase(sellerDTO.getBirth()));
         return ResponseEntity.status(HttpStatus.OK).body(sellerService.save(sellerModel));
     }
 }

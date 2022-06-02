@@ -1,17 +1,16 @@
-package com.api.tcc.Utils;
+package com.api.tcc.utils;
 
 import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
+import javax.xml.bind.DatatypeConverter;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
 
 public class ManipulatingImage {
 
@@ -29,9 +28,11 @@ public class ManipulatingImage {
         }
         File[] list = directory.listFiles();
 
-        for (File file : list) {
-            if (file.isFile()) {
-                count++;
+        if(list != null) {
+            for (File file : list) {
+                if (file.isFile()) {
+                    count++;
+                }
             }
         }
         return (double) count;
@@ -61,33 +62,23 @@ public class ManipulatingImage {
     }
 
     public byte[] encodeImage(final boolean isClient, final String fileName) throws IOException {
-        // Encode da Image
         byte[] fileContent = null;
         if(isClient) {
            fileContent = FileUtils.readFileToByteArray(new File(clientPhotosPath + "\\" + fileName));
         } else {
            fileContent = FileUtils.readFileToByteArray(new File(sellerPhotosPath + "\\" + fileName));
         }
-        String encodedImage = Base64.getEncoder().encodeToString(fileContent);
-
-        byte[] outputEncodedImage = encodedImage.getBytes(StandardCharsets.UTF_8);
-
-        return (outputEncodedImage);
+        return (fileContent);
     }
 
-    public void decodeImage(byte[] inputEncodedImage, boolean isClient) throws IOException {
-
-        String encodedImage = new String(inputEncodedImage, StandardCharsets.UTF_8);
-        byte[] decodedBytes = Base64.getDecoder().decode(encodedImage);
-        InputStream is = new ByteArrayInputStream(decodedBytes);
-        BufferedImage newBi = ImageIO.read(is);
-        Path destination;
-
-        if(isClient) {
-            destination = Paths.get(clientPhotosPath + "\\" + "murilo.jpg");
-        } else {
-            destination = Paths.get(sellerPhotosPath + "\\" + "murilo.jpg");
-        }
-        ImageIO.write(newBi, "png", destination.toFile());
+    public String decodeImage(byte[] inputEncodedImage) throws IOException {
+        String imagePath = "src\\main\\resources\\photos\\profileImage\\imageLast.jpg";
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(inputEncodedImage);
+        BufferedImage bufferedImage = ImageIO.read(byteArrayInputStream);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
+        System.out.println("Image Created!");
+        String data = DatatypeConverter.printBase64Binary(byteArrayOutputStream.toByteArray());
+        return "data:image/jpeg;base64," + data;
     }
 }
