@@ -7,6 +7,9 @@ export const ProfileImage = styled.Image`
   align-items: center;
   margin-left: 30px;
   margin-top: 25px;
+  border-radius: 80px;
+  border-color: #000000;
+  border-width: 2px;
 `;
 
 export const ProfileText = styled.Text`

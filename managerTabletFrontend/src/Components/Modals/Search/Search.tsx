@@ -77,12 +77,12 @@ export default function ModalSearch({
           </ContainerButtons>
 
           <ContainerList>
-          <FlatList
-            data={list}
-            style={{flex: 1}}
-            renderItem={({ item }) => <ListItem data={item} />}
-            keyExtractor={(item) => item.id}
-          />
+            <FlatList
+              data={list}
+              style={{ width: 350, marginLeft: 100}}
+              renderItem={({ item }) => <ListItem data={item} />}
+              keyExtractor={(item) => item.id}
+            />
           </ContainerList>
         </ContainerModal>
       </Container>

@@ -5,13 +5,15 @@ import ModalEditProfile from '../../Components/Modals/EditProfile/EditProfile';
 import { SellerService } from '../../services/SellerService/SellerService';
 import { ISellerData } from '../../services/SellerService/SellerServiceInterface';
 import { IGetSellerData } from '../../services/SellerService/SellerServiceInterface';
+import { ISellerImageAndName } from '../../services/SendImageSellerService/SendImageSellerServiceInterface'
 
 import { ContainerHeader, ProfileImage, ProfileText } from "./styles";
+import { SendImageSellerService } from '../../services/SendImageSellerService/SendImageSellerService';
 
 const SellerInputs = (props: any) => {
+  const [imageAndName, setImageAndName] = useState<ISellerImageAndName>();
   const [openProfileSettings, setOpenProfileSettings] = useState(false);
   const [openEditProfile, setOpenEditProfile] = useState(false);
-
   const [placeholderInputs, setPlaceholderInputs] = useState<ISellerData>();
   const [managerData, setManagerData] = useState<IGetSellerData>();
 
@@ -34,6 +36,18 @@ const SellerInputs = (props: any) => {
     setOpenEditProfile(true);
   };
 
+  const getImageAndName = async () => {
+    let response: ISellerImageAndName;
+    try {
+      response = await new SendImageSellerService().getSellerImageAndName(1);
+    } catch (error) {
+      console.error("Error to get manager date", error);
+    }
+    console.log("GetClientImage: ", response);
+    setImageAndName({...imageAndName, name: response.name});
+    setImageAndName({...imageAndName, profileImage: response.profileImage});
+  };
+
   const eventProfileSetting = async () => {
     console.log("Settings");
     let data: any;
@@ -53,6 +67,7 @@ const SellerInputs = (props: any) => {
 
   return (
     <ContainerHeader>
+    {getImageAndName()}
       {
         <ModalProfileSettings
           openProfileSettings={openProfileSettings}
@@ -61,6 +76,7 @@ const SellerInputs = (props: any) => {
           managerData={managerData}
         />
       }
+            
       {
         <ModalEditProfile
           openEditProfile={openEditProfile}
@@ -70,10 +86,10 @@ const SellerInputs = (props: any) => {
       }
       <TouchableOpacity onPress={() => eventProfileSetting()}>
         <ProfileImage
-          source={require("../../assets/profile-image-setting.png")}
+          source={{uri: imageAndName.profileImage}}
         />
       </TouchableOpacity>
-      <ProfileText>{props.name}</ProfileText>
+      <ProfileText>{imageAndName.name}</ProfileText>
     </ContainerHeader>
   );
 };
