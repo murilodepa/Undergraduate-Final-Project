@@ -1,12 +1,8 @@
 package com.tcc.websocket;
 
-
-import com.tcc.utils.ControlThreads;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-
 
 public class Server {
 
@@ -33,7 +29,6 @@ public class Server {
 
         @Override
         public void run() {
-
 
             try {
                 int bytesRead;

@@ -55,7 +55,11 @@ public class FaceRecognitionLBPH {
 
                     IntPointer label = new IntPointer(1);
                     DoublePointer trust = new DoublePointer(1);
+                    System.out.println("THREAD " + Thread.currentThread() + " - I'm waiting for the classifier file update!");
+                    ControlThreads.SEMAPHORE.acquire();
+                    System.out.println("THREAD " + Thread.currentThread() + "I get the new classifier file!");
                     getFaceRecognizer().predict(capturedFace, label, trust);
+                    ControlThreads.SEMAPHORE.release();
                     int predict = label.get(0);
 
                     String name;
@@ -83,6 +87,3 @@ public class FaceRecognitionLBPH {
         }
     }
 }
-
-
-

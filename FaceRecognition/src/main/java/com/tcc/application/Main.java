@@ -8,8 +8,8 @@ import java.util.concurrent.ExecutorService;
 
 public class Main {
 
-    public static void main(String[] args) {
-	// write your code here
+    public static void main(String[] args) throws InterruptedException {
+        // write your code here
   /*      System.out.println("aaaaaaaa");
 
         BackendAPI backendAPI = BackendAPI.getInstance();
@@ -17,11 +17,9 @@ public class Main {
         String[] idAndNames = backendAPI.requestNamesAndIndex();
         System.out.println(Arrays.toString(idAndNames));*/
 
-       // new Thread(serverThread).start();
-       // new ControlThreads().lockResourceOpenSave(false);
+        // new Thread(serverThread).start();
         new Thread(faceRecognitionThread).start();
-
-        //new Server();
+        new ControlThreads().lockResourceOpenSave();
 
     }
 

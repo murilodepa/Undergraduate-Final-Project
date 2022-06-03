@@ -4,29 +4,25 @@ import com.tcc.recognition.FaceRecognitionLBPH;
 import org.bytedeco.javacpp.opencv_face;
 
 import java.io.*;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.Semaphore;
 
 import static org.bytedeco.javacpp.opencv_face.createLBPHFaceRecognizer;
 
 public class ControlThreads {
 
-    private Lock lock = new ReentrantLock();
+    public static final Semaphore SEMAPHORE = new Semaphore(1);
+    private static final opencv_face.FaceRecognizer faceRecognizer = createLBPHFaceRecognizer();
     private FaceRecognitionLBPH faceRecognitionLBPH = new FaceRecognitionLBPH();
-    private opencv_face.FaceRecognizer faceRecognizer = createLBPHFaceRecognizer();
-
-    public Lock getLock() {
-        return lock;
-    }
-
-    public void setLock(Lock lock) {
-        this.lock = lock;
-    }
 
     public ControlThreads() {
     }
 
-    public void lockResourceOpenSave() {
+    public void lockResourceOpenSave() throws InterruptedException {
+        SEMAPHORE.acquire();
+
+        System.out.println("THREAD " + Thread.currentThread() + " - will update the classifier file!");
+
+        Thread.sleep(5000);
         String classifierPath = "src\\main\\resources\\classifiers\\LBPHClassifier.yml";
         String newClassifierPath = "src\\main\\resources\\classifiers\\LBPHClassifier2.yml";
         File deleteClassifier = new File(classifierPath);
@@ -40,5 +36,7 @@ public class ControlThreads {
         }
         faceRecognizer.load(classifierPath);
         faceRecognitionLBPH.setFaceRecognizer(faceRecognizer);
+        System.out.println("THREAD " + Thread.currentThread() + " - Update successfully th classifier file!");
+        SEMAPHORE.release();
     }
 }
