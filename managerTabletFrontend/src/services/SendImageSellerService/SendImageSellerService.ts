@@ -2,6 +2,7 @@ import backendApi from "../backendApi";
 import {
   ISellerImageAndName,
   IGetSellerImageAndNameProps,
+  ISellerIdNameImageList,
 } from "./SendImageSellerServiceInterface";
 
 export class SendImageSellerService implements IGetSellerImageAndNameProps {
@@ -23,9 +24,13 @@ export class SendImageSellerService implements IGetSellerImageAndNameProps {
   }
 
   getSellerImageAndName = async (id: number): Promise<ISellerImageAndName> => {
-    //{{host}}/client/getUserImage/1
     const { data } = await backendApi.get("/seller/getSellerImage/" + id);
-    console.log(data);
     return data;
   };
+
+  getSellerIdNameImage = async (): Promise<ISellerIdNameImageList> => {
+    const { data } = await backendApi.get("/seller/getSellerImageNameList");
+    console.log("response", data);
+    return data;
+  }
 }

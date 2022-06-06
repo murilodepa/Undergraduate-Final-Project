@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { TouchableOpacity } from "react-native";
 import { TextInputMask } from "react-native-masked-text";
 import { Picker } from "@react-native-picker/picker";
 import { SellerService } from "../../services/SellerService/SellerService";
 import { ISellerData } from "../../services/SellerService/SellerServiceInterface";
 import { Ionicons } from "@expo/vector-icons";
+import { useGlobalContext } from "../../context/managerContext";
 
 import {
   Line,
@@ -21,15 +22,10 @@ import {
   ContainerPasswordInput,
   PasswordInput,
 } from "./styles";
+import { ISellerIdNameImageList } from "../../services/SendImageSellerService/SendImageSellerServiceInterface";
+import { SendImageSellerService } from "../../services/SendImageSellerService/SendImageSellerService";
 
 const SellerInputs = (props: any) => {
-  const maskDate = (value: string) => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/(\d{2})(\d)/, "$1/$2")
-      .replace(/(\d{2})(\d)/, "$1/$2")
-      .replace(/(\d{4})(\d)/, "$1");
-  };
 
   function formataStringData(data: string) {
     var dia = data.split("/")[0];
@@ -60,8 +56,7 @@ const SellerInputs = (props: any) => {
     "Camiseta",
     "Calça",
     "Vestido",
-    "Blusas",
-    "Roupas Íntimas",
+    "Blusa",
     "Saia",
     "Short",
   ];
@@ -73,6 +68,17 @@ const SellerInputs = (props: any) => {
   const [inputGenderColor, setInputGenderColor] = useState("black");
   const [inputSectorColor, setInputSectorColor] = useState("black");
   const [hidePassword, setHidePassword] = useState(true);
+  const { setName, setResultSellerData } = useGlobalContext();
+
+  async function getSellerData() {
+    let response: ISellerIdNameImageList;
+    try {
+      response = await new SendImageSellerService().getSellerIdNameImage();
+    } catch (error) {
+      console.error("Error to get seller date", error);
+    }
+    setResultSellerData(response);
+  };
 
   const eventCaptureOrEdit = async () => {
     var count = 0;
@@ -142,19 +148,42 @@ const SellerInputs = (props: any) => {
     }
     if (count == 6) {
       if (props.buttonName == "Cadastrar") {
+        var errorRegister = false;
+
         try {
           const response = await new SellerService().insertSeller(sellerData);
         } catch (error) {
-          console.error("Falha no cadastro", error);
+          errorRegister = true;
+          setInputEmailColor("red");
+          count--;
         }
-        props.navigation.navigate("Capture", { paramKey: "seller" });
+        if (errorRegister == false) {
+          props.navigation.navigate("Capture", { paramKey: "seller" });
+        }
       } else {
+        console.log("sellerData", sellerData);
+        if (sellerData.password == undefined || sellerData.password == "") {
+          setSellerData({
+            ...sellerData,
+            password: null,
+          })
+        }
+        let response: any;
         try {
-          const response = await new SellerService().updateSeller(sellerData);
+          response = await new SellerService().updateSeller(sellerData);
         } catch (error) {
           console.error("Error to edit!", error);
         }
-        console.log("EDITED");
+        console.log(response.status, "EDITED");
+
+        if (sellerData.id == 1) {
+          if (response.name != sellerData.name) {
+            setName(sellerData.name)
+          }
+        } else if (response.name != sellerData.name) {
+          getSellerData();
+        }
+        props.closeEditProfileAndBack();
       }
     }
   };
@@ -163,10 +192,9 @@ const SellerInputs = (props: any) => {
     <>
       <ContainerProfileImage style={{ alignContent: "center" }}>
         <ManagerPicture
-          source={require("../../assets/profile-image-setting.png")}
+          source={{ uri: props.image }}
         />
       </ContainerProfileImage>
-
       <Line />
       <ViewTextInput>
         <CharacteristicText> Nome: </CharacteristicText>
@@ -208,7 +236,7 @@ const SellerInputs = (props: any) => {
       <ViewTextInput>
         <CharacteristicText>
           {" "}
-,          Data de {"\n"} Nascimento:{" "}
+          Data de {"\n"} Nascimento:{" "}
         </CharacteristicText>
         <TextInputMask
           type={"datetime"}

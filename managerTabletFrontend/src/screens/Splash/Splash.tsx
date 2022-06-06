@@ -1,6 +1,9 @@
 import React from "react";
 import LottieView from "lottie-react-native";
 import { Container, Venda, Mais, ContainerVendaMais } from "./styles";
+import { useGlobalContext } from "../../context/managerContext";
+import { ISellerImageAndName } from "../../services/SendImageSellerService/SendImageSellerServiceInterface";
+import { SendImageSellerService } from "../../services/SendImageSellerService/SendImageSellerService";
 import { SellerService } from "../../services/SellerService/SellerService";
 import { LogBox } from 'react-native';
 
@@ -9,18 +12,25 @@ LogBox.ignoreAllLogs();
 
 const Splash = ({ navigation }) => {
 
+  const {setName, setProfileImage} = useGlobalContext();
+
   const eventOnAnimationFinish = async () => {
-    let data: any;
-   /* try {
-      data = await new SellerService().getSellers();
+
+    let response: ISellerImageAndName;
+    try {
+      response = await new SendImageSellerService().getSellerImageAndName(1);
     } catch (error) {
-      console.error("Error to register", error);
+      console.error("Error to get manager date", error);
     }
-    if (data.length === 0) { */
-   //   navigation.navigate("Initial");
-  // } else {
+ /*   if (response.profileImage != null && response.profileImage != undefined) {
+      setProfileImage(response.profileImage);
+      setName(response.name);
       navigation.navigate("Menu");
-  //  }
+      console.log("Atualizando name and foto");
+    } else {
+     navigation.navigate("Initial");
+    }*/
+    navigation.navigate("SellerMenu");
   };
 
   return (

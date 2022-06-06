@@ -8,8 +8,8 @@ export const ProfileImage = styled.Image`
   margin-left: 30px;
   margin-top: 25px;
   border-radius: 80px;
-  border-color: #000000;
   border-width: 2px;
+  border-color: #000000;
 `;
 
 export const ProfileText = styled.Text`

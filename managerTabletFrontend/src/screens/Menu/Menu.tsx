@@ -28,7 +28,7 @@ const Menu = ({ navigation }) => {
 
   return (
     <Container>
-      <HeaderProfile name="Murilo Araujo" navigation={navigation} />
+      <HeaderProfile/>
       <ContainerButtons>
         <ContainerSellerClientButton>
           <TouchableOpacity onPress={() => eventSellerMenu()}>

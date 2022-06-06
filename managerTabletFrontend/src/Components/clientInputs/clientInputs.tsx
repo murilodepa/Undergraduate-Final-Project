@@ -18,6 +18,9 @@ import {
   ContainerSelect,
   ContainerProfileImage,
 } from "./styles";
+import { useGlobalContext } from "../../context/managerContext";
+import { IClientIdNameImageList } from "../../services/SendImageClientService/SendImageClientServiceInterface";
+import { SendImageClientService } from "../../services/SendImageClientService/SendImageClientService";
 
 const ClientInputs = (props: any) => {
   const maskDate = (value: string) => {
@@ -29,10 +32,10 @@ const ClientInputs = (props: any) => {
   };
 
   function formataStringData(data: string) {
-    var dia = data.split("/")[0];
-    var mes = data.split("/")[1];
-    var ano = data.split("/")[2];
-    return ano + "-" + ("0" + mes).slice(-2) + "-" + ("0" + dia).slice(-2);
+    var day = data.split("/")[0];
+    var month = data.split("/")[1];
+    var year = data.split("/")[2];
+    return year + "-" + ("0" + month).slice(-2) + "-" + ("0" + day).slice(-2);
   }
 
   const regexDate =
@@ -55,6 +58,24 @@ const ClientInputs = (props: any) => {
   const [inputNameColor, setInputNameColor] = useState("black");
   const [inputBirthColor, setInputBirthColor] = useState("black");
   const [inputGenderColor, setInputGenderColor] = useState("black");
+  const [name, setName] = useState('');
+  const { setResultClientData } = useGlobalContext();
+
+  async function getClientData() {
+    let response: IClientIdNameImageList;
+    try {
+      response = await new SendImageClientService().getClientIdNameImage();
+    } catch (error) {
+      console.error("Error to get seller date", error);
+    }
+    setResultClientData(response);
+  };
+
+  function clone(obj: string) {
+
+    // Handle the 3 simple types, and null or undefined
+    if (null == obj || "object" != typeof obj) return obj;
+  }
 
   const eventCaptureOrEdit = async () => {
     var count = 0;
@@ -94,12 +115,24 @@ const ClientInputs = (props: any) => {
         }
         props.navigation.navigate("Capture", { paramKey: "client" });
       } else {
-    /*    try {
+        console.log("clientData", clientData);
+
+        const name = clone(clientData.name);
+        try {
           const response = await new ClientService().updateClient(clientData);
         } catch (error) {
           console.error("Error to edit!", error);
-        }*/
-        console.log("EDITOOU");
+        }
+
+      if (name != clientData.name) {
+        getClientData();
+        console.log("name", name, "EDITED");
+        console.log("clientData.name", clientData.name, "EDITED");
+        } else {
+          console.log("name", name, "NOOOT EDITED");
+          console.log("clientData.name", clientData.name, "NOOOT EDITED");
+        }
+        props.closeEditClientProfileAndBack();
       }
     }
   };
@@ -188,3 +221,7 @@ const ClientInputs = (props: any) => {
 };
 
 export default ClientInputs;
+
+function structuredClone(object: any) {
+  throw new Error("Function not implemented.");
+}

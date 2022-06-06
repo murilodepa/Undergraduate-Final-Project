@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useState } from 'react';
 import { TouchableOpacity } from "react-native";
 import HeaderProfile from "../../Components/HeaderProfile/HeaderProfile";
 import FooterMenu from "../../Components/FooterMenu/FooterMenu";
+import ModalSearch from '../../Components/Modals/Search/Search';
+import { useGlobalContext } from "../../context/managerContext";
 
 import {
   Container,
@@ -15,8 +17,21 @@ import {
 } from "../SellerMenu/styles";
 
 const ClientMenu = ({ navigation }) => {
+
+  const [openModalSearch, setOpenModalSearch] = useState(false);
+  const [buttonColor, setButtonColor] = useState('white');
+  const [buttonText, setButtonText] = useState('');
+  const { resultClientData } = useGlobalContext();
+
+  const closeModalSearch = async () => {
+    setOpenModalSearch(false);
+  };
+
   const eventSearchClient = async () => {
     console.log("Search Client");
+    setButtonColor('#4197E5');
+    setButtonText('Selecionar');
+    setOpenModalSearch(true);
   };
 
   const eventRegisterClient = async () => {
@@ -26,7 +41,17 @@ const ClientMenu = ({ navigation }) => {
 
   return (
     <Container>
-      <HeaderProfile name="Murilo Araujo" navigation={navigation} />
+      {
+        <ModalSearch
+          openModalSearch={openModalSearch}
+          closeModalSearch={closeModalSearch}
+          clientOrSeller={"cliente"}
+          buttonColor={buttonColor}
+          buttonText={buttonText}
+          resultData={resultClientData}
+        />
+      }
+      <HeaderProfile />
       <ContainerMiddle>
         <TouchableOpacity onPress={() => eventSearchClient()}>
           <ContainerButton>
@@ -36,7 +61,7 @@ const ClientMenu = ({ navigation }) => {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => eventRegisterClient()}>
-        <ContainerButton style={{ marginBottom: 60, marginTop: 100 }}>
+          <ContainerButton style={{ marginBottom: 60, marginTop: 100 }}>
             <ImageButton source={require("../../assets/register-client.png")} />
             <TextButton> Cadastrar Cliente </TextButton>
           </ContainerButton>

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import { TouchableOpacity, Modal } from "react-native";
 
 import {
@@ -20,7 +20,10 @@ export default function ModalProfileSettings({
   closeProfileSettings,
   EditProfile,
   managerData,
+  age,
+  profileImage
 }) {
+
   return (
     <Modal
       animationType="slide"
@@ -45,10 +48,9 @@ export default function ModalProfileSettings({
 
           <ContainerProfileImage>
             <ProfileImage
-              source={require("../../../assets/profile-image-setting.png")}
+                source={{uri: profileImage}}
             />
           </ContainerProfileImage>
-
 
           <ContainerDescription>
             <ProfileDescription>
@@ -58,7 +60,7 @@ export default function ModalProfileSettings({
                      </Name>
               <Line />
               <Description>
-                {managerData && `${managerData.email} \n ${managerData.birth} \n ${managerData.gender} \n ${managerData.sector} \n ${managerData.attendances} Atendimentos `}
+                {managerData && `${managerData.email} \n ${age} anos \n ${managerData.gender} \n ${managerData.sector} \n ${managerData.attendances} Atendimentos `}
               </Description>
             </ProfileDescription>
           </ContainerDescription>

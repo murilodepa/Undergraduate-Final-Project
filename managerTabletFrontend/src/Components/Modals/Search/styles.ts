@@ -31,8 +31,8 @@ export const ContainerSearchImage = styled.View`
 `;
 
 export const SearchImage = styled.Image`
-  height: 50px;
-  width: 50px;
+  height: 45px;
+  width: 45px;
 `;
 
 export const ContainerButtons = styled.View`

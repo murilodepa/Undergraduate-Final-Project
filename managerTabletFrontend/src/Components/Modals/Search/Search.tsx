@@ -20,32 +20,42 @@ export default function ModalSearch({
   openModalSearch,
   closeModalSearch,
   clientOrSeller,
+  buttonColor,
+  buttonText,
+  resultData
 }) {
   const [searchText, setSearchText] = useState("");
-  const [list, setList] = useState(results);
+  const [list, setList] = useState(resultData);
 
   useEffect(() => {
-    if (searchText === "") {
-      setList(results);
-    } else {
-      setList(
-        results.filter(
-          (item) =>
-            item.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1
-        )
-      );
+    if (resultData != null) {
+      if (searchText === "") {
+        setList(resultData);
+      } else {
+        setList(
+          resultData.filter(
+            (item) =>
+              item.name.toLowerCase().indexOf(searchText.toLowerCase()) > -1
+          )
+        );
+      }
     }
   }, [searchText]);
 
-  // Ordenar a lista de nomes
+  // Sort by names
   const handleOrderList = () => {
-    let newList = [...results];
+    let newList = [...resultData];
 
     newList.sort((x, y): any =>
       x.name > y.name ? 1 : y.name > x.name ? -1 : 0
     );
 
     setList(newList);
+  };
+
+  const clearSearchText = async () => {
+    console.log("clearSearchText");
+    setSearchText("");
   };
 
   return (
@@ -61,7 +71,7 @@ export default function ModalSearch({
               <Input
                 maxLength={100}
                 keyboardType="default"
-                placeholder={"Buscar " + clientOrSeller}
+                placeholder={"Buscar " + clientOrSeller + "..."}
                 style={PlaceHolder}
                 value={searchText}
                 onChangeText={(text) => setSearchText(text)}
@@ -79,8 +89,8 @@ export default function ModalSearch({
           <ContainerList>
             <FlatList
               data={list}
-              style={{ width: 350, marginLeft: 100}}
-              renderItem={({ item }) => <ListItem data={item} />}
+              style={{ width: 360, alignContent: "center" }}
+              renderItem={({ item }) => <ListItem key={item.id} data={item} buttonColor={buttonColor} buttonText={buttonText} clientOrSeller={clientOrSeller} closeModalSearch={closeModalSearch.bind()} clearSearchText={clearSearchText} />}
               keyExtractor={(item) => item.id}
             />
           </ContainerList>
