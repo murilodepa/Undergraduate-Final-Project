@@ -13,5 +13,5 @@ import java.util.UUID;
 @Repository
 public interface ClientImageRepository extends JpaRepository<ClientImageModel, UUID> {
     @Query("select q from ClientImageModel q where q.clientModel.id =:id_client")
-    Optional<List<ClientImageModel>> findClientImages(@Param("id_client") long id_client);
+    List<ClientImageModel> findClientImages(@Param("id_client") long id_client);
 }

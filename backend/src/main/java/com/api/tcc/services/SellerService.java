@@ -33,6 +33,10 @@ public class SellerService {
         sellerRepository.delete((sellerModel));
     }
 
+    public boolean existsByEmail(String email) {
+        return sellerRepository.existsByEmail(email);
+    }
+
     public String[] getClientIdsAndNames() {
         String[] idsAndNames = new String[100];
         int i=0;

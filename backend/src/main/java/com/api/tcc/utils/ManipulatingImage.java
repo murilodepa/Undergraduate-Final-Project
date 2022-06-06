@@ -46,7 +46,7 @@ public class ManipulatingImage {
         }
     }
 
-    public String fileName(final boolean isClient, int nextId) {
+    public String fileName(final boolean isClient, int userId) {
         int index = 0;
         double quantityOfFiles = getQuantityOfFiles(isClient) + 1;
 
@@ -54,10 +54,10 @@ public class ManipulatingImage {
         if(index == 0) {
             index = 25;
         }
-        if(quantityOfFiles < 225) {
-            return ("person.0" + nextId + "." + index + ".jpg");
+        if(userId < 10) {
+            return ("person.0" + userId + "." + index + ".jpg");
         } else {
-            return ("person." + ((int)(Math.ceil(quantityOfFiles / 25))) + "." + index + ".jpg");
+            return ("person." + userId + "." + index + ".jpg");
         }
     }
 
