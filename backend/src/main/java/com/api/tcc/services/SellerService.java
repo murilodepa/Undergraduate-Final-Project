@@ -2,10 +2,12 @@ package com.api.tcc.services;
 
 import com.api.tcc.database.Models.SellerModel;
 import com.api.tcc.repositories.SellerRepository;
+import com.api.tcc.utils.IndexAndName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,17 +39,13 @@ public class SellerService {
         return sellerRepository.existsByEmail(email);
     }
 
-    public String[] getClientIdsAndNames() {
-        String[] idsAndNames = new String[100];
-        int i=0;
+    public List<IndexAndName> getSellerNames() {
+        List<IndexAndName> sellerDate = new ArrayList<>();
         List<SellerModel> sellerModelList = sellerRepository.findAll();
 
         for(SellerModel sellerModel: sellerModelList) {
-            idsAndNames[i] = String.valueOf(sellerModel.getId());
-            i++;
-            idsAndNames[i] = sellerModel.getName();
-            i++;
+            sellerDate.add(new IndexAndName(sellerModel.getId(), sellerModel.getName()));
         }
-        return idsAndNames;
+        return sellerDate;
     }
 }

@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 
 public class ManipulatingImage {
 
+    private static final int QUANTITY_OF_PHOTOS = 5;
     String clientPhotosPath = "src\\main\\resources\\photos\\clients";
     String sellerPhotosPath = "src\\main\\resources\\photos\\sellers";
 
@@ -21,14 +22,14 @@ public class ManipulatingImage {
         int count = 0;
         File directory;
 
-        if(isClient) {
+        if (isClient) {
             directory = new File(clientPhotosPath);
         } else {
             directory = new File(sellerPhotosPath);
         }
         File[] list = directory.listFiles();
 
-        if(list != null) {
+        if (list != null) {
             for (File file : list) {
                 if (file.isFile()) {
                     count++;
@@ -40,7 +41,7 @@ public class ManipulatingImage {
 
     public Path fileNameAndPath(final boolean isClient, final String fileName) {
         if (isClient) {
-           return Paths.get(clientPhotosPath + "\\" + fileName);
+            return Paths.get(clientPhotosPath + "\\" + fileName);
         } else {
             return Paths.get(sellerPhotosPath + "\\" + fileName);
         }
@@ -50,11 +51,11 @@ public class ManipulatingImage {
         int index = 0;
         double quantityOfFiles = getQuantityOfFiles(isClient) + 1;
 
-        index = (int) (quantityOfFiles % 25);
-        if(index == 0) {
-            index = 25;
+        index = (int) (quantityOfFiles % QUANTITY_OF_PHOTOS);
+        if (index == 0) {
+            index = QUANTITY_OF_PHOTOS;
         }
-        if(userId < 10) {
+        if (userId < 10) {
             return ("person.0" + userId + "." + index + ".jpg");
         } else {
             return ("person." + userId + "." + index + ".jpg");
@@ -63,10 +64,10 @@ public class ManipulatingImage {
 
     public byte[] encodeImage(final boolean isClient, final String fileName) throws IOException {
         byte[] fileContent = null;
-        if(isClient) {
-           fileContent = FileUtils.readFileToByteArray(new File(clientPhotosPath + "\\" + fileName));
+        if (isClient) {
+            fileContent = FileUtils.readFileToByteArray(new File(clientPhotosPath + "\\" + fileName));
         } else {
-           fileContent = FileUtils.readFileToByteArray(new File(sellerPhotosPath + "\\" + fileName));
+            fileContent = FileUtils.readFileToByteArray(new File(sellerPhotosPath + "\\" + fileName));
         }
         return (fileContent);
     }

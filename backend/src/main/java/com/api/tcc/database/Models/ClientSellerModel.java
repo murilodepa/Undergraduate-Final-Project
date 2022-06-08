@@ -17,8 +17,11 @@ public class ClientSellerModel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_client_seller", updatable = false, unique = true, nullable = false)
     private UUID id;
-    @Column(name = "time")
-    private LocalDateTime dateTime;
+    @Column(name = "start_time")
+    private LocalDateTime startTime;
+
+    @Column(name = "end_time")
+    private LocalDateTime endTime;
     @NotNull
     @ManyToOne
     @JoinColumn(name = "id_client")
