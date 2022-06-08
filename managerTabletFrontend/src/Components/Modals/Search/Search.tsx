@@ -22,7 +22,8 @@ export default function ModalSearch({
   clientOrSeller,
   buttonColor,
   buttonText,
-  resultData
+  resultData,
+  closeModalSearchAndBack
 }) {
   const [searchText, setSearchText] = useState("");
   const [list, setList] = useState(resultData);
@@ -41,17 +42,6 @@ export default function ModalSearch({
       }
     }
   }, [searchText]);
-
-  // Sort by names
-  const handleOrderList = () => {
-    let newList = [...resultData];
-
-    newList.sort((x, y): any =>
-      x.name > y.name ? 1 : y.name > x.name ? -1 : 0
-    );
-
-    setList(newList);
-  };
 
   const clearSearchText = async () => {
     console.log("clearSearchText");
@@ -90,7 +80,7 @@ export default function ModalSearch({
             <FlatList
               data={list}
               style={{ width: 360, alignContent: "center" }}
-              renderItem={({ item }) => <ListItem key={item.id} data={item} buttonColor={buttonColor} buttonText={buttonText} clientOrSeller={clientOrSeller} closeModalSearch={closeModalSearch.bind()} clearSearchText={clearSearchText} />}
+              renderItem={({ item }) => <ListItem key={item.id} data={item} buttonColor={buttonColor} buttonText={buttonText} clientOrSeller={clientOrSeller} closeModalSearch={closeModalSearchAndBack.bind()} clearSearchText={clearSearchText} />}
               keyExtractor={(item) => item.id}
             />
           </ContainerList>

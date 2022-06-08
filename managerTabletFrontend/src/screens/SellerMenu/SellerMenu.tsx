@@ -28,6 +28,11 @@ const SellerMenu = ({ navigation }) => {
     setOpenModalSearch(false);
   };
 
+  const closeModalSearchAndBack = async () => {
+    setOpenModalSearch(false);
+    navigation.navigate("Menu");
+  };
+
   const eventSearchSeller = async () => {
     console.log("Search Seller");
     setButtonColor('#4197E5');
@@ -57,6 +62,7 @@ const SellerMenu = ({ navigation }) => {
           buttonColor={buttonColor}
           buttonText={buttonText}
           resultData={resultSellerData}
+          closeModalSearchAndBack={closeModalSearchAndBack}
         />
       }
       <HeaderProfile />

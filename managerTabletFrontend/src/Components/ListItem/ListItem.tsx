@@ -67,6 +67,8 @@ const ListItem = (props: any) => {
   const closeEditProfileAndBack = async () => {
     setOpenEditProfile(false);
     props.closeModalSearch();
+    console.log("teste");
+    props.navigation.navigate("Menu");
   };
 
   const closeEditClientProfileAndBack = async () => {

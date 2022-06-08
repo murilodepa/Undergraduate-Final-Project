@@ -28,10 +28,25 @@ const Capture = ({ navigation, route }: any) => {
   const [capturedPicturesNumber, setCapturedPicturesNumber] = useState(0);
   const [capturedPitureExpression, setCapturedPitureExpression] = useState("Sorrindo");
   const { setName, setProfileImage, setResultSellerData, setResultClientData } = useGlobalContext();
-  const maxPhotos = 20;
+  const maxPhotos = 5;
 
   const closePicture = () => {
     setOpenPicture(false);
+  };
+
+  async function handleOrderList(list: any, isSeller: boolean) {
+
+    list.sort((x, y): any =>
+      x.name > y.name ? 1 : y.name > x.name ? -1 : 0
+    );
+
+    if (isSeller) {
+      console.log("Seller - Sort result data list by names");
+      setResultSellerData(list);
+    } else {
+      console.log("Client - Sort result data list by names");
+      setResultClientData(list);
+    }
   };
 
   async function getSellerData() {
@@ -41,7 +56,7 @@ const Capture = ({ navigation, route }: any) => {
     } catch (error) {
       console.error("Error to get seller date", error);
     }
-    setResultSellerData(response);
+    handleOrderList(response, true);
   };
 
   async function getClientData() {
@@ -51,8 +66,7 @@ const Capture = ({ navigation, route }: any) => {
     } catch (error) {
       console.error("Error to get client date", error);
     }
-    setResultClientData(response);
-    console.log("response", response)
+    handleOrderList(response, false);
   };
 
   async function getProfileImage() {
@@ -74,32 +88,46 @@ const Capture = ({ navigation, route }: any) => {
     setOpenPicture(false);
     setCapturedPicturesNumber(capturedPicturesNumber + 1);
 
-    if (capturedPicturesNumber > 3) {
-      if (capturedPicturesNumber <= 8) {
-        if (capturedPicturesNumber == 4) {
-          getProfileImage();
+    /* When is defined 25 photos
+        if (capturedPicturesNumber > 3) {
+          if (capturedPicturesNumber <= 8) {
+            if (capturedPicturesNumber == 4) {
+              getProfileImage();
+              if (route.params.paramKey == "seller") {
+                getSellerData();
+              } else {
+                getClientData();
+              }
+            }
+            setCapturedPitureExpression("Sério");
+          } else if (capturedPicturesNumber <= 13) {
+            setCapturedPitureExpression("Lado esquerdo do rosto");
+          } else if (capturedPicturesNumber <= 18) {
+            setCapturedPitureExpression("Lado direito do rosto");
+          } else if (capturedPicturesNumber > 18) {
+            setCapturedPitureExpression("Em baixo e em cima");
+            if (capturedPicturesNumber >= (maxPhotos - 1)) {
+              navigation.navigate("Menu");
+            }
+          }
         }
+    */
+
+    if (capturedPicturesNumber > 2 && capturedPicturesNumber < 5) {
+      if (capturedPicturesNumber == 3) {
         setCapturedPitureExpression("Sério");
-      } else if (capturedPicturesNumber <= 13) {
-        setCapturedPitureExpression("Lado esquerdo do rosto");
-      } else if (capturedPicturesNumber <= 18) {
-        setCapturedPitureExpression("Lado direito do rosto");
-      } else if (capturedPicturesNumber > 18) {
-        setCapturedPitureExpression("Em baixo e em cima");
-        if (capturedPicturesNumber >= (maxPhotos - 1)) {
-          navigation.navigate("Menu");
+        if (route.params.paramKey == "seller") {
+          getSellerData();
+        } else {
+          getClientData();
         }
       }
     }
+  }
 
-    if (route.params.paramKey == "seller") { // Utilizar mesma tela para vendedor e funcionários
-      getSellerData();
-    } else {
-      getClientData();
-    }
-
+  if (capturedPicturesNumber == 5) {
     navigation.navigate("Menu");
-    console.log("aaaaaaaaaaaaaffffffffffffff")
+    console.log("Usuário cadastrado com sucesso - Indo para o Menu");
   };
 
   useEffect(() => {

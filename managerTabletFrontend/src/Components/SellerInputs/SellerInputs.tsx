@@ -26,7 +26,6 @@ import { ISellerIdNameImageList } from "../../services/SendImageSellerService/Se
 import { SendImageSellerService } from "../../services/SendImageSellerService/SendImageSellerService";
 
 const SellerInputs = (props: any) => {
-
   function formataStringData(data: string) {
     var dia = data.split("/")[0];
     var mes = data.split("/")[1];
@@ -34,12 +33,22 @@ const SellerInputs = (props: any) => {
     return ano + "-" + ("0" + mes).slice(-2) + "-" + ("0" + dia).slice(-2);
   }
 
+  function validateYear(data: string) {
+    var year = parseInt(data.split("/")[2]);
+    const currentYear = new Date().getFullYear();
+    if(year > currentYear || year < (currentYear-120)) {
+      return false;
+    }
+    return true;
+  }
+
   const regexEmail =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
   const regexDate =
     /^(((0[1-9]|[12][0-9]|30)[-/]?(0[13-9]|1[012])|31[-/]?(0[13578]|1[02])|(0[1-9]|1[0-9]|2[0-8])[-/]?02)[-/]?[0-9]{4}|29[-/]?02[-/]?([0-9]{2}(([2468][048]|[02468][48])|[13579][26])|([13579][26]|[02468][048]|0[0-9]|1[0-6])00))$/;
-  function validateDate(date: any) {
-    if (regexDate.test(date)) {
+  
+    function validateDate(date: any) {
+    if (regexDate.test(date) && validateYear(date)) {
       const birth = formataStringData(date);
       setSellerData({ ...sellerData, birth: date });
       console.log("Date is validated! - Date", birth);
@@ -162,28 +171,16 @@ const SellerInputs = (props: any) => {
         }
       } else {
         console.log("sellerData", sellerData);
-        if (sellerData.password == undefined || sellerData.password == "") {
-          setSellerData({
-            ...sellerData,
-            password: null,
-          })
-        }
-        let response: any;
+
         try {
-          response = await new SellerService().updateSeller(sellerData);
+          const response = await new SellerService().updateSeller(sellerData);
         } catch (error) {
           console.error("Error to edit!", error);
         }
-        console.log(response.status, "EDITED");
-
-        if (sellerData.id == 1) {
-          if (response.name != sellerData.name) {
-            setName(sellerData.name)
-          }
-        } else if (response.name != sellerData.name) {
+        if (props.placeholderInputs.name != sellerData.name) {
           getSellerData();
         }
-        props.closeEditProfileAndBack();
+        props.closeEditClientProfileAndBack();
       }
     }
   };

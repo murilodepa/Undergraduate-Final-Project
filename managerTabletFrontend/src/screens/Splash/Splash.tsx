@@ -7,12 +7,12 @@ import { SendImageSellerService } from "../../services/SendImageSellerService/Se
 import { SellerService } from "../../services/SellerService/SellerService";
 import { LogBox } from 'react-native';
 
-LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+LogBox.ignoreLogs(['Warning: ...']);
 LogBox.ignoreAllLogs();
 
 const Splash = ({ navigation }) => {
 
-  const {setName, setProfileImage} = useGlobalContext();
+  const { setName, setProfileImage } = useGlobalContext();
 
   const eventOnAnimationFinish = async () => {
 
@@ -22,15 +22,14 @@ const Splash = ({ navigation }) => {
     } catch (error) {
       console.error("Error to get manager date", error);
     }
- /*   if (response.profileImage != null && response.profileImage != undefined) {
+    if (response.profileImage != null && response.profileImage != undefined) {
       setProfileImage(response.profileImage);
       setName(response.name);
       navigation.navigate("Menu");
-      console.log("Atualizando name and foto");
+      console.log("Updating name and photo of the manager");
     } else {
-     navigation.navigate("Initial");
-    }*/
-    navigation.navigate("SellerMenu");
+      navigation.navigate("Initial");
+    }
   };
 
   return (

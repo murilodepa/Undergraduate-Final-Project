@@ -27,6 +27,11 @@ const ClientMenu = ({ navigation }) => {
     setOpenModalSearch(false);
   };
 
+  const closeModalSearchAndBack = async () => {
+    setOpenModalSearch(false);
+    navigation.navigate("Menu");
+  };
+
   const eventSearchClient = async () => {
     console.log("Search Client");
     setButtonColor('#4197E5');
@@ -49,6 +54,7 @@ const ClientMenu = ({ navigation }) => {
           buttonColor={buttonColor}
           buttonText={buttonText}
           resultData={resultClientData}
+          closeModalSearchAndBack={closeModalSearchAndBack}
         />
       }
       <HeaderProfile />

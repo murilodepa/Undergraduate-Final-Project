@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { TouchableOpacity } from "react-native";
 import SellerInputs from '../../Components/SellerInputs/SellerInputs';
 import { ISellerData } from '../../services/SellerService/SellerServiceInterface';
