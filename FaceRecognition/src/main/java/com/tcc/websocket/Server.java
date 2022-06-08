@@ -7,10 +7,15 @@ import java.net.Socket;
 public class Server {
 
     private Socket socket;
+    private static final int LOCAL_PORT = 5555;
 
     public Server() {
+        initializationServerSocket();
+    }
+
+    private void initializationServerSocket() {
         try {
-            ServerSocket serverSocket = new ServerSocket(5555);
+            ServerSocket serverSocket = new ServerSocket(LOCAL_PORT);
             System.out.println("Server On! ");
             while (true) {
                 socket = serverSocket.accept();
@@ -35,21 +40,20 @@ public class Server {
                 DataInputStream clientData = new DataInputStream(
                         socket.getInputStream());
 
-
                 String fileName = clientData.readUTF();
-                String caminhoCompleto = "src\\main\\resources\\classifiers\\LBPHClassifier2.yml";
-                OutputStream output = new FileOutputStream((caminhoCompleto));
+                String filePath = "src\\main\\resources\\classifiers\\LBPHClassifier2.yml";
+                OutputStream outputStream = new FileOutputStream((filePath));
                 long size = clientData.readLong();
                 byte[] buffer = new byte[1024];
                 while (size > 0
                         && (bytesRead = clientData.read(buffer, 0,
                         (int) Math.min(buffer.length, size))) != -1) {
-                    output.write(buffer, 0, bytesRead);
+                    outputStream.write(buffer, 0, bytesRead);
                     size -= bytesRead;
                 }
-                output.close();
-                System.out.println("Arquivo " + fileName
-                        + " recebido pelo cliente.");
+                outputStream.close();
+                System.out.println("File " + fileName
+                        + " received for client!");
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -12,7 +12,7 @@ public class ControlThreads {
 
     public static final Semaphore SEMAPHORE = new Semaphore(1);
     private static final opencv_face.FaceRecognizer faceRecognizer = createLBPHFaceRecognizer();
-    private FaceRecognitionLBPH faceRecognitionLBPH = new FaceRecognitionLBPH();
+    private final FaceRecognitionLBPH faceRecognitionLBPH = new FaceRecognitionLBPH();
 
     public ControlThreads() {
     }
@@ -20,9 +20,9 @@ public class ControlThreads {
     public void lockResourceOpenSave() throws InterruptedException {
         SEMAPHORE.acquire();
 
-        System.out.println("THREAD " + Thread.currentThread() + " - will update the classifier file!");
+        //System.out.println("THREAD " + Thread.currentThread() + " - will update the classifier file!");
 
-        Thread.sleep(5000);
+        //Thread.sleep(5000);
         String classifierPath = "src\\main\\resources\\classifiers\\LBPHClassifier.yml";
         String newClassifierPath = "src\\main\\resources\\classifiers\\LBPHClassifier2.yml";
         File deleteClassifier = new File(classifierPath);

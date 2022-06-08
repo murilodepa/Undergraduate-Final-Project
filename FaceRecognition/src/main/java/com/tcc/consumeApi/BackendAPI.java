@@ -4,15 +4,16 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -28,22 +29,20 @@ public class BackendAPI {
     }
 
     public static BackendAPI getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new BackendAPI();
         }
         return instance;
     }
 
-    public void recognizedClient(String name) {
+    public void recognizedClient(long userId) {
         try {
-            String params = URLEncoder.encode(name, StandardCharsets.UTF_8);
-            HttpPost httpPost = new HttpPost(BackendAPI.URLBase + "/client/recognizedClient?name=" + params);
-
+            HttpPost httpPost = new HttpPost(BackendAPI.URLBase + "/recognizedUser?userId=" + userId);
             ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
                 @Override
                 public String handleResponse(HttpResponse httpResponse) throws ClientProtocolException, IOException {
                     int status = httpResponse.getStatusLine().getStatusCode();
-                    if(status >= 200 && status < 300) {
+                    if (status >= 200 && status < 300) {
                         HttpEntity entity = httpResponse.getEntity();
                         return entity != null ? EntityUtils.toString(entity) : null;
                     } else {
@@ -57,38 +56,35 @@ public class BackendAPI {
         } catch (IOException e) {
             Logger.getLogger(BackendAPI.class.getName()).log(Level.SEVERE, null, e);
         }
-
     }
 
-
-
-    public String[] requestNamesAndIndex() {
-        String[] responseBody = null;
+    public void postUnknownUserPhoto(int index) {
         try {
-            HttpGet httpGet = new HttpGet(BackendAPI.URLBase);
-
-            ResponseHandler<String[]> responseHandler = new ResponseHandler<String[]>() {
-                @Override
-                public String[] handleResponse(final HttpResponse httpResponse) throws ClientProtocolException, IOException {
-                    int status = httpResponse.getStatusLine().getStatusCode();
-
-                    if(status >= 200 && status < 300) {
-                        HttpEntity entity = httpResponse.getEntity();
-
-                        String[] entityArray = new String[] {EntityUtils.toString(entity)}[0].split(",");
-
-                        return entity != null ? entityArray : null;
-                    } else {
-                        throw new ClientProtocolException("Unexpected response status: " + status);
-                    }
+            HttpPost httpPost = new HttpPost(BackendAPI.URLBase + "/recognizedUser?unknownUserPhoto=" + decodeImage(index));
+            ResponseHandler<String> responseHandler = httpResponse -> {
+                int status = httpResponse.getStatusLine().getStatusCode();
+                if (status >= 200 && status < 300) {
+                    HttpEntity entity = httpResponse.getEntity();
+                    return entity != null ? EntityUtils.toString(entity) : null;
+                } else {
+                    throw new ClientProtocolException("Unexpected response status: " + status);
                 }
             };
-
-            responseBody = this.clientHTTP.execute(httpGet, responseHandler);
-            System.out.println("---------------------------------------------------");
+            String responseBody = this.clientHTTP.execute(httpPost, responseHandler);
+            System.out.println("-----------------------------------------------------");
+            System.out.println(responseBody);
         } catch (IOException e) {
             Logger.getLogger(BackendAPI.class.getName()).log(Level.SEVERE, null, e);
         }
-        return responseBody;
+    }
+
+    public ByteArrayOutputStream decodeImage(int index) throws IOException {
+        String imagePath = "src\\main\\resources\\Unknown_Client\\UnknownClient_" + index + ".jpg";
+        File fileImage = new File(imagePath);
+        BufferedImage bufferedImage = ImageIO.read(fileImage);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
+        System.out.println("Image created");
+        return byteArrayOutputStream;
     }
 }
