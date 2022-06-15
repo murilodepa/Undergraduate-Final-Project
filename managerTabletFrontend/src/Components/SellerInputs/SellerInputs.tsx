@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { TouchableOpacity } from "react-native";
 import { TextInputMask } from "react-native-masked-text";
 import { Picker } from "@react-native-picker/picker";
 import { SellerService } from "../../services/SellerService/SellerService";
 import { ISellerData } from "../../services/SellerService/SellerServiceInterface";
 import { Ionicons } from "@expo/vector-icons";
+import { useGlobalContext } from "../../context/managerContext";
 
 import {
   Line,
@@ -21,16 +22,10 @@ import {
   ContainerPasswordInput,
   PasswordInput,
 } from "./styles";
+import { ISellerIdNameImageList } from "../../services/SendImageSellerService/SendImageSellerServiceInterface";
+import { SendImageSellerService } from "../../services/SendImageSellerService/SendImageSellerService";
 
 const SellerInputs = (props: any) => {
-  const maskDate = (value: string) => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/(\d{2})(\d)/, "$1/$2")
-      .replace(/(\d{2})(\d)/, "$1/$2")
-      .replace(/(\d{4})(\d)/, "$1");
-  };
-
   function formataStringData(data: string) {
     var dia = data.split("/")[0];
     var mes = data.split("/")[1];
@@ -38,12 +33,22 @@ const SellerInputs = (props: any) => {
     return ano + "-" + ("0" + mes).slice(-2) + "-" + ("0" + dia).slice(-2);
   }
 
+  function validateYear(data: string) {
+    var year = parseInt(data.split("/")[2]);
+    const currentYear = new Date().getFullYear();
+    if(year > currentYear || year < (currentYear-120)) {
+      return false;
+    }
+    return true;
+  }
+
   const regexEmail =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
   const regexDate =
     /^(((0[1-9]|[12][0-9]|30)[-/]?(0[13-9]|1[012])|31[-/]?(0[13578]|1[02])|(0[1-9]|1[0-9]|2[0-8])[-/]?02)[-/]?[0-9]{4}|29[-/]?02[-/]?([0-9]{2}(([2468][048]|[02468][48])|[13579][26])|([13579][26]|[02468][048]|0[0-9]|1[0-6])00))$/;
-  function validateDate(date: any) {
-    if (regexDate.test(date)) {
+  
+    function validateDate(date: any) {
+    if (regexDate.test(date) && validateYear(date)) {
       const birth = formataStringData(date);
       setSellerData({ ...sellerData, birth: date });
       console.log("Date is validated! - Date", birth);
@@ -60,8 +65,7 @@ const SellerInputs = (props: any) => {
     "Camiseta",
     "Calça",
     "Vestido",
-    "Blusas",
-    "Roupas Íntimas",
+    "Blusa",
     "Saia",
     "Short",
   ];
@@ -73,6 +77,17 @@ const SellerInputs = (props: any) => {
   const [inputGenderColor, setInputGenderColor] = useState("black");
   const [inputSectorColor, setInputSectorColor] = useState("black");
   const [hidePassword, setHidePassword] = useState(true);
+  const { setName, setResultSellerData } = useGlobalContext();
+
+  async function getSellerData() {
+    let response: ISellerIdNameImageList;
+    try {
+      response = await new SendImageSellerService().getSellerIdNameImage();
+    } catch (error) {
+      console.error("Error to get seller date", error);
+    }
+    setResultSellerData(response);
+  };
 
   const eventCaptureOrEdit = async () => {
     var count = 0;
@@ -142,19 +157,30 @@ const SellerInputs = (props: any) => {
     }
     if (count == 6) {
       if (props.buttonName == "Cadastrar") {
+        var errorRegister = false;
+
         try {
           const response = await new SellerService().insertSeller(sellerData);
         } catch (error) {
-          console.error("Falha no cadastro", error);
+          errorRegister = true;
+          setInputEmailColor("red");
+          count--;
         }
-        props.navigation.navigate("Capture", { paramKey: "seller" });
+        if (errorRegister == false) {
+          props.navigation.navigate("Capture", { paramKey: "seller" });
+        }
       } else {
+        console.log("sellerData", sellerData);
+
         try {
           const response = await new SellerService().updateSeller(sellerData);
         } catch (error) {
           console.error("Error to edit!", error);
         }
-        console.log("EDITOOU");
+        if (props.placeholderInputs.name != sellerData.name) {
+          getSellerData();
+        }
+        props.closeEditClientProfileAndBack();
       }
     }
   };
@@ -163,10 +189,9 @@ const SellerInputs = (props: any) => {
     <>
       <ContainerProfileImage style={{ alignContent: "center" }}>
         <ManagerPicture
-          source={require("../../assets/profile-image-setting.png")}
+          source={{ uri: props.image }}
         />
       </ContainerProfileImage>
-
       <Line />
       <ViewTextInput>
         <CharacteristicText> Nome: </CharacteristicText>

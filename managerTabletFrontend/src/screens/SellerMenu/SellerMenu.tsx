@@ -1,7 +1,9 @@
-import React from "react";
-import { TouchableOpacity } from "react-native";
-import HeaderProfile from "../../Components/HeaderProfile/HeaderProfile";
-import FooterMenu from "../../Components/FooterMenu/FooterMenu";
+import React, { useState } from 'react';
+import { TouchableOpacity } from 'react-native';
+import HeaderProfile from '../../Components/HeaderProfile/HeaderProfile';
+import FooterMenu from '../../Components/FooterMenu/FooterMenu';
+import ModalSearch from '../../Components/Modals/Search/Search';
+import { useGlobalContext } from '../../context/managerContext';
 
 import {
   Container
@@ -14,23 +16,56 @@ import {
   TextButton,
 } from "./styles";
 
+
 const SellerMenu = ({ navigation }) => {
+
+  const [openModalSearch, setOpenModalSearch] = useState(false);
+  const [buttonColor, setButtonColor] = useState('white');
+  const [buttonText, setButtonText] = useState('');
+  const { resultSellerData } = useGlobalContext();
+
+  const closeModalSearch = async () => {
+    setOpenModalSearch(false);
+  };
+
+  const closeModalSearchAndBack = async () => {
+    setOpenModalSearch(false);
+    navigation.navigate("Menu");
+  };
+
   const eventSearchSeller = async () => {
     console.log("Search Seller");
+    setButtonColor('#4197E5');
+    setButtonText('Selecionar');
+    setOpenModalSearch(true);
   };
 
   const eventRegisterSeller = async () => {
     console.log("Register Seller");
-    navigation.navigate("SellerRegistration");
+    navigation.navigate("SellerRegistration", { paramKey: "seller" });
   };
 
   const eventRemoveSeller = async () => {
     console.log("Remove Seller");
+    setButtonColor('#FF0000');
+    setButtonText('Remover');
+    setOpenModalSearch(true);
   };
 
   return (
     <Container>
-      <HeaderProfile name="Murilo Araujo" navigation={navigation} />
+      {
+        <ModalSearch
+          openModalSearch={openModalSearch}
+          closeModalSearch={closeModalSearch}
+          clientOrSeller={"funcionário"}
+          buttonColor={buttonColor}
+          buttonText={buttonText}
+          resultData={resultSellerData}
+          closeModalSearchAndBack={closeModalSearchAndBack}
+        />
+      }
+      <HeaderProfile />
       <ContainerMiddle>
         <TouchableOpacity onPress={() => eventSearchSeller()}>
           <ContainerButton>

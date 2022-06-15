@@ -1,7 +1,6 @@
 import styled from "styled-components/native";
 
 export const Container = styled.View`
-  flex: 1;
   justify-content: center;
   align-items: center;
   margin-top: 170px;
@@ -32,6 +31,5 @@ export const EditCloseProfileButton = styled.Image`
   max-height: 45px;
   height: 45px;
   width: 45px;
-
 `;
 

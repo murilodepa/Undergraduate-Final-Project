@@ -6,13 +6,15 @@ import {
   Container,
   ContainerModal,
   ContainerButtons,
-  EditCloseProfileButton,
+  EditCloseProfileButton
 } from "./styles";
 
 export default function ModalEditProfile({
   openEditProfile,
   closeEditProfile,
-  placeholderInputs
+  placeholderInputs,
+  profileImage,
+  closeEditProfileAndBack
 }) {
   return (
     <Modal
@@ -23,13 +25,13 @@ export default function ModalEditProfile({
       <Container>
         <ContainerModal>
           <ContainerButtons>
-            <TouchableOpacity  onPress={() => closeEditProfile()}>
+            <TouchableOpacity onPress={() => closeEditProfile()}>
               <EditCloseProfileButton
                 source={require("../../../assets/window-close.png")}
               />
             </TouchableOpacity>
-            </ContainerButtons>
-            <SellerInputs buttonName="Editar" placeholderInputs={placeholderInputs} sellerData={placeholderInputs} />
+          </ContainerButtons>
+          <SellerInputs buttonName="Editar" placeholderInputs={placeholderInputs} sellerData={placeholderInputs} image={profileImage} closeEditProfileAndBack={closeEditProfileAndBack.bind()} />
         </ContainerModal>
       </Container>
     </Modal>

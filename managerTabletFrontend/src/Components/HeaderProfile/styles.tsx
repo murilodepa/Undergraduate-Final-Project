@@ -7,12 +7,15 @@ export const ProfileImage = styled.Image`
   align-items: center;
   margin-left: 30px;
   margin-top: 25px;
+  border-radius: 80px;
+  border-width: 2px;
+  border-color: #000000;
 `;
 
 export const ProfileText = styled.Text`
-  font-size: 30px;
+  font-size: 40px;
   font-weight: bold;
-  margin-left: 10px;
+  margin-left: 20px;
 `;
 
 export const ContainerHeader = styled.View`

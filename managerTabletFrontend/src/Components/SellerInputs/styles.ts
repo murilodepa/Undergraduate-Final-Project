@@ -93,10 +93,13 @@ export const ViewTextInput = styled.View`
 `;
 
 export const ManagerPicture = styled.Image`
-  height: 190px;
-  width: 190px;
+  height: 200px;
+  width: 200px;
   justify-content: center;
   align-items: center;
+  border-radius: 100px;
+  border-width: 2px;
+  border-color: #000000;
 `;
 
 export const ContainerSelect = styled.View`

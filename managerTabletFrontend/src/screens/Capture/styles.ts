@@ -14,8 +14,10 @@ export const ContainerCamera = styled.View`
 
 export const CameraEdge = styled.View`
       flex: 1;
-      max-height: 760px;
-      width: 575px;
+      max-height: 585px;
+      max-width: 585px;
+      height: 585px;
+      width: 585px;
       align-content: center;
       border-width: 5px;
       border-color: #000000;
