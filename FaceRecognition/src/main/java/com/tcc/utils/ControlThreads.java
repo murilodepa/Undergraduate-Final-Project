@@ -14,10 +14,13 @@ public class ControlThreads {
     private static final opencv_face.FaceRecognizer faceRecognizer = createLBPHFaceRecognizer();
     private final FaceRecognitionLBPH faceRecognitionLBPH = new FaceRecognitionLBPH();
 
-    public ControlThreads() {
+    public ControlThreads() throws InterruptedException {
+        System.out.println("ENTROU NO CONSTRUTOR");
+        lockResourceOpenSave();
     }
 
     public void lockResourceOpenSave() throws InterruptedException {
+        System.out.println("Lock current thread to update file!");
         SEMAPHORE.acquire();
 
         //System.out.println("THREAD " + Thread.currentThread() + " - will update the classifier file!");
@@ -26,17 +29,18 @@ public class ControlThreads {
         String classifierPath = "src\\main\\resources\\classifiers\\LBPHClassifier.yml";
         String newClassifierPath = "src\\main\\resources\\classifiers\\LBPHClassifier2.yml";
         File deleteClassifier = new File(classifierPath);
-        if (deleteClassifier.exists()) {
-            deleteClassifier.delete();
-        }
 
         File newClassifier = new File(newClassifierPath);
         if (newClassifier.exists()) {
+            if (deleteClassifier.exists()) {
+                deleteClassifier.delete();
+            }
             newClassifier.renameTo(new File(classifierPath));
+            faceRecognizer.load(classifierPath);
+            FaceRecognitionLBPH.faceRecognizer = faceRecognizer;
+            System.out.println("THREAD " + Thread.currentThread() + " - Update successfully the classifier file!");
         }
-        faceRecognizer.load(classifierPath);
-        faceRecognitionLBPH.setFaceRecognizer(faceRecognizer);
-        System.out.println("THREAD " + Thread.currentThread() + " - Update successfully th classifier file!");
+
         SEMAPHORE.release();
     }
 }

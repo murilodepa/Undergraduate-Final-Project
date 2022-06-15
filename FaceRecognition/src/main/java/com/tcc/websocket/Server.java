@@ -1,5 +1,7 @@
 package com.tcc.websocket;
 
+import com.tcc.utils.ControlThreads;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -54,8 +56,12 @@ public class Server {
                 outputStream.close();
                 System.out.println("File " + fileName
                         + " received for client!");
+                new ControlThreads();
+                System.out.println("PASSOU!");
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
     }

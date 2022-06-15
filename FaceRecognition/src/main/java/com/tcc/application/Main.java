@@ -16,10 +16,11 @@ public class Main {
      /*   String[] idAndNames = backendAPI.requestNamesAndIndex();
         System.out.println(Arrays.toString(idAndNames));*/
 
-        //new Thread(serverThread).start();
+      //  new ControlThreads().lockResourceOpenSave();
+       // new Thread(serverThread).start();
+        System.out.println("Tentando captar imagem de uma camera...");
         new Thread(faceRecognitionThread).start();
-       // new ControlThreads().lockResourceOpenSave();
-
+      //
     }
 
     private static final Runnable faceRecognitionThread = () -> {
