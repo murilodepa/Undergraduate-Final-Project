@@ -31,7 +31,6 @@ export class SendImageClientService implements IGetClientImageAndNameProps {
   getClientIdNameImage = async (): Promise<IClientIdNameImageList> => {
     const { data } = await backendApi.get("/client/getClientImageNameList");
     console.log("response", data);
-    console.log("responsexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
     return data;
   }
 } 

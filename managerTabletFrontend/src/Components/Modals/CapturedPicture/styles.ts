@@ -38,8 +38,10 @@ export const CapturedImage = styled.Image`
   justify-content: center;
   align-items: center;
   margin: 16px;
-  width: 575px;
-  max-height: 760px;
+  max-height: 585px;
+  max-width: 585px;
+  height: 585px;
+  width: 585px;
   border-width: 5px;
   border-color: #000000;
 `;
