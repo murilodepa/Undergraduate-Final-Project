@@ -1,21 +1,47 @@
-import React, { useEffect } from "react";
-import { TouchableOpacity, BackHandler } from "react-native";
+import React from "react";
+
 import HeaderProfile from "../../components/HeaderProfile/HeaderProfile";
 
-import { Container, Line, Description, ContainerDescription, Logo} from "./styles";
+import {
+  Container,
+  Line,
+  ClientImage,
+  ClientName,
+  ContainerClientName,
+  Button,
+  DescriptionButton,
+} from "./styles";
 
 const ClientAttendance = ({ navigation }) => {
+  const eventClientFound = async () => {
+    console.log("Button - Cliente encontrado");
+    navigation.navigate("ClientInformations");
+  };
+
+  const eventClientNotFound = async () => {
+    console.log("Button - Cliente não encontrado");
+    navigation.navigate("Menu");
+  };
+
   return (
     <Container>
       <HeaderProfile />
 
       <Line />
-      <Logo source={require("../../assets/venda-mais-logo.png")} />
-      <Line />
 
-      <ContainerDescription>
-        <Description>Nenhum cliente na loja para ser atendido.</Description>
-      </ContainerDescription>
+      <ClientImage source={require("../../assets/client-profile.jpg")} />
+
+      <ContainerClientName>
+        <ClientName>Murilo Araujo</ClientName>
+      </ContainerClientName>
+
+      <Button onPress={() => eventClientFound()}>
+        <DescriptionButton> Cliente Encontrado </DescriptionButton>
+      </Button>
+
+      <Button style={{ backgroundColor: "red" }} onPress={() => eventClientNotFound()}>
+        <DescriptionButton>Cliente não encontrado</DescriptionButton>
+      </Button>
     </Container>
   );
 };

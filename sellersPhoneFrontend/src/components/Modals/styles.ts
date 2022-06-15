@@ -69,6 +69,9 @@ export const ProfileImage = styled.Image`
   align-items: center;
   justify-content: center;
   margin-top: 10px;
+  border-radius: 20px;
+  border-color: #000000;
+  border-width: 2px;
 `;
 
 export const ContainerButtons = styled.View`

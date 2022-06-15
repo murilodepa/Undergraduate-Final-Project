@@ -48,7 +48,7 @@ const SellerInputs = () => {
         />
       }
       <TouchableOpacity onPress={() => eventProfileSetting()}>
-         <ProfileImage/> 
+      <ProfileImage source={require("../../assets/Profile.png")} />
       </TouchableOpacity>
       <ProfileText>Murilo</ProfileText>
     </ContainerHeader>

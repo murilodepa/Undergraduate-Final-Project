@@ -9,7 +9,8 @@ LogBox.ignoreAllLogs();
 const Splash = ({ navigation }) => {
 
   const eventOnAnimationFinish = async () => {
-      navigation.navigate("Initial");
+      //navigation.navigate("Initial");
+      navigation.navigate("ClientInformations");
   };
 
   return (

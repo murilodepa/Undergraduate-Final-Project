@@ -38,7 +38,7 @@ export default function ModalSellerInformations({
 
           <ContainerProfileImage>
             <ProfileImage
-              source={require("../../assets/icon.png")}
+              source={require("../../assets/Profile.png")}
             />
           </ContainerProfileImage>
 

@@ -6,6 +6,14 @@ export const Container = styled.View`
   background-color: #c4c4c4;
 `;
 
+export const ContainerScrollView = styled.View`
+  flex: 1;
+  align-items: center;
+  background-color: #3A93E3;
+  border-color: #000000;
+  border-width: 2px;
+`;
+
 export const Line = styled.View`
   flex: 1;
   background-color: #FFFFFF;
@@ -15,33 +23,50 @@ export const Line = styled.View`
   height: 3px;
 `
 
-export const ClientImage = styled.Image`
-  margin-top: 10%;
-  margin-bottom: 10%;
-  height: 190px;
-  width: 190px;
-  border-radius: 10px;
-  border-color: #000000;
-  border-width: 2px;
-`;
+export const LineDescription = styled.View`
+  flex: 1;
+  background-color: #000000;
+  max-width: 100%;
+  width: 100%;
+  max-height: 2px;
+  height: 2px;
+`
+
+export const LineItens = styled.View`
+  flex: 1;
+  background-color: #000000;
+  max-width: 100%;
+  width: 100%;
+  max-height: 2px;
+  height: 2px;
+  margin-top: 2%;
+  margin-bottom: 2%;
+`
 
 export const ContainerClientName = styled.View`
   background-color: #3A93E3;
-  align-items: center;
-  justify-content: center;
-  height: 11%;
-  width: 85%;
-  border-radius: 50px;
+  height: 20%;
+  width: 80%;
+  border-radius: 40px;
   border-color: #000000;
   border-width: 2px;
   margin-bottom: 3%;
+  margin-top: 10%;
 `;
 
 export const ClientName = styled.Text`
-  font-size: 32px;
+  font-size: 30px;
   text-align: center;
   color: #FFFFFF;
+  margin-bottom: 1%;
   font-weight: bold;
+`;
+
+export const ClientDescription = styled.Text`
+  font-size: 22px;
+  text-align: center;
+  color: #FFFFFF;
+  line-height: 30px;
 `;
 
 export const DescriptionButton = styled.Text`
@@ -50,6 +75,11 @@ export const DescriptionButton = styled.Text`
   color: #FFFFFF;
   font-weight: bold;
   line-height: 25px;
+`;
+
+export const DescriptionItens = styled.Text`
+  font-size: 18px;
+  color: #ffffff;
 `;
 
 export const Button = styled.TouchableOpacity`
@@ -61,5 +91,5 @@ export const Button = styled.TouchableOpacity`
   border-radius: 20px;
   border-color: #000000;
   border-width: 2px;
-  margin-top: 7%;
+  margin-top: 10%;
 `;
