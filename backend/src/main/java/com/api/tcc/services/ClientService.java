@@ -2,10 +2,12 @@ package com.api.tcc.services;
 
 import com.api.tcc.database.Models.ClientModel;
 import com.api.tcc.repositories.ClientRepository;
+import com.api.tcc.utils.IndexAndName;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,17 +35,13 @@ public class ClientService {
         clientRepository.delete(clientModel);
     }
 
-    public String[] getClientIdsAndNames() {
-        String[] idsAndNames = new String[100];
-        int i=0;
+    public List<IndexAndName> getClientNames() {
+        List<IndexAndName> sellerDate = new ArrayList<>();
         List<ClientModel> clientModelList = clientRepository.findAll();
 
         for(ClientModel clientModel: clientModelList) {
-            idsAndNames[i] = String.valueOf(clientModel.getId());
-            i++;
-            idsAndNames[i] = clientModel.getName();
-            i++;
+            sellerDate.add(new IndexAndName(clientModel.getId(), clientModel.getName()));
         }
-        return idsAndNames;
+        return sellerDate;
     }
 }

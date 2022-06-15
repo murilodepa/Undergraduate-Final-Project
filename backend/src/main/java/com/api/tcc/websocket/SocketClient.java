@@ -5,31 +5,35 @@ import java.net.Socket;
 
 public class SocketClient {
 
-    private Socket socket;
-    private ObjectOutputStream outputStream;
+    private static final int LOCAL_PORT = 5555;
 
     public SocketClient() throws IOException {
-        this.socket = new Socket("localhost", 5555);
-        this.outputStream = new ObjectOutputStream(socket.getOutputStream());
+        sendFile();
+    }
+
+    private void sendFile() throws IOException {
+        Socket socket = new Socket("localhost", LOCAL_PORT);
+        ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
 
         try {
             String filePath = "src\\main\\resources\\classifiers\\LBPHClassifier.yml";
-            File LBPHClassifier = new File(filePath);
-            byte[] LBPHClassifierByte = new byte[(int) LBPHClassifier.length()];
+            File classifier = new File(filePath);
+            byte[] classifierByte = new byte[(int) classifier.length()];
+            FileInputStream fis = new FileInputStream(classifier);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            DataInputStream dis = new DataInputStream(bis);
 
-            FileInputStream inputStream = new FileInputStream(LBPHClassifier);
-            BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-            DataInputStream dataInputStream = new DataInputStream(bufferedInputStream);
+            dis.readFully(classifierByte, 0, classifierByte.length);
+            OutputStream os = socket.getOutputStream();
 
-            dataInputStream.readFully(LBPHClassifierByte,0, LBPHClassifierByte.length);
-            DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
-            dataOutputStream.writeUTF(LBPHClassifier.getName());
-            dataOutputStream.writeLong(LBPHClassifierByte.length);
-            dataOutputStream.write(LBPHClassifierByte, 0, LBPHClassifierByte.length);
-            dataOutputStream.flush();
-            System.out.println("LBPHClassifier file has been sent to server!");
+            DataOutputStream dos = new DataOutputStream(os);
+            dos.writeUTF(classifier.getName());
+            dos.writeLong(classifierByte.length);
+            dos.write(classifierByte, 0, classifierByte.length);
+            dos.flush();
+            System.out.println(" Sending updated LBPHClassifier classifier File to the Server!");
         } catch (FileNotFoundException e) {
-            System.err.println("This file not exist!");
+            System.err.println("File doesn't exist!");
         }
     }
 }

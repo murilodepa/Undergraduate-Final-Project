@@ -1,5 +1,6 @@
 package com.api.tcc.controllers;
 
+import com.api.tcc.services.SellerImageService;
 import com.api.tcc.utils.FormattingDates;
 import com.api.tcc.database.Models.SellerModel;
 import com.api.tcc.database.dtos.SellerDTO;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.text.ParseException;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -22,8 +24,14 @@ public class SellerController {
     @Autowired
     private SellerService sellerService;
 
+    @Autowired
+    SellerImageService sellerImageService;
+
     @PostMapping("/insertSeller")
     public ResponseEntity<Object> saveSeller(@RequestBody @Valid SellerDTO sellerDTO) throws ParseException {
+        if(sellerService.existsByEmail(sellerDTO.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Seller email is already in use!");
+        }
         SellerModel sellerModel = new SellerModel();
         BeanUtils.copyProperties(sellerDTO, sellerModel);
         sellerModel.setAvailable(true);
@@ -47,24 +55,38 @@ public class SellerController {
         return ResponseEntity.status(HttpStatus.OK).body(sellerModelOptional.get());
     }
 
+    @GetMapping("/getAllSellerAvailable")
+    public ResponseEntity<List<SellerModel>> getAllSellerAvailable() {
+        return ResponseEntity.status(HttpStatus.OK).body(sellerService.findAllSellerAvailable());
+    }
+
+
     @DeleteMapping("/removeSeller/{id}")
     public ResponseEntity<Object> deleteSeller(@PathVariable(value = "id") long id) {
         Optional<SellerModel> sellerModelOptional = sellerService.findById(id);
         if (!sellerModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
         }
+        sellerImageService.deleteSellerImage(sellerModelOptional.get().getId());
         sellerService.delete(sellerModelOptional.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Client delected successfully!");
+        return ResponseEntity.status(HttpStatus.OK).body("Client deleted successfully!");
     }
 
     @PutMapping("/updateSeller/{id}")
     public ResponseEntity<Object> updateClient(@PathVariable(value = "id") long id, @RequestBody @Valid SellerDTO sellerDTO) throws ParseException {
         Optional<SellerModel> sellerModelOptional = sellerService.findById(id);
         if (!sellerModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller not found!");
+        }
+        if(!Objects.equals(sellerModelOptional.get().getEmail(), sellerDTO.getEmail()) && sellerService.existsByEmail(sellerDTO.getEmail())) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: Seller email is already in use!");
         }
         SellerModel sellerModel = new SellerModel();
         BeanUtils.copyProperties(sellerDTO, sellerModel);
+        if(sellerModel.getPassword() == null) {
+            sellerModel.setPassword(sellerModelOptional.get().getPassword());
+
+        }
         sellerModel.setId(sellerModelOptional.get().getId());
         FormattingDates formattingDates = new FormattingDates();
         sellerModel.setBirth(formattingDates.ConvertDateToDatabase(sellerDTO.getBirth()));

@@ -13,5 +13,5 @@ import java.util.UUID;
 @Repository
 public interface SellerImageRepository extends JpaRepository<SellerImageModel, UUID> {
     @Query("select q from SellerImageModel q where q.sellerModel.id =:id_seller")
-    Optional<List<SellerImageModel>> findSellerImages(@Param("id_seller") long id_seller);
+    List<SellerImageModel> findSellerImages(@Param("id_seller") long id_seller);
 }

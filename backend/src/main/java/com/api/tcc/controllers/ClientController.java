@@ -1,5 +1,6 @@
 package com.api.tcc.controllers;
 
+import com.api.tcc.services.ClientImageService;
 import com.api.tcc.utils.FormattingDates;
 import com.api.tcc.database.Models.ClientModel;
 import com.api.tcc.database.dtos.ClientDTO;
@@ -21,6 +22,9 @@ public class ClientController {
 
     @Autowired
     private ClientService clientService;
+
+    @Autowired
+    private ClientImageService clientImageService;
 
     @PostMapping("/insertClient")
     public ResponseEntity<Object> saveClient(@RequestBody @Valid ClientDTO clientDTO) throws ParseException {
@@ -51,8 +55,9 @@ public class ClientController {
         if (!clientModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
         }
+        clientImageService.deleteClientImage(clientModelOptional.get().getId());
         clientService.delete(clientModelOptional.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Client delected successfully!");
+        return ResponseEntity.status(HttpStatus.OK).body("Client deleted successfully!");
     }
 
     @PutMapping("/updateClient/{id}")
