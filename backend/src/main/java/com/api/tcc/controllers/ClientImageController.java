@@ -4,6 +4,7 @@ import com.api.tcc.database.Models.ClientImageModel;
 import com.api.tcc.database.Models.ClientModel;
 import com.api.tcc.database.dtos.IdImageNameDTO;
 import com.api.tcc.database.dtos.ImageAndNamesDTO;
+import com.api.tcc.faceRecognition.Training;
 import com.api.tcc.services.ClientService;
 import com.api.tcc.utils.ManipulatingImage;
 import com.api.tcc.services.ClientImageService;
@@ -25,7 +26,7 @@ public class ClientImageController {
     private ClientImageService clientImageService;
     @Autowired
     private ClientService clientService;
-    private ManipulatingImage manipulatingImage = new ManipulatingImage();
+    private final ManipulatingImage manipulatingImage = new ManipulatingImage();
 
     @PostMapping("/sendImage")
     public ResponseEntity<?> sendImage(@RequestPart(value = "image", required = false) MultipartFile image) throws Exception {
@@ -38,6 +39,10 @@ public class ClientImageController {
                 Files.write(manipulatingImage.fileNameAndPath(true, fileName), image.getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+            if(Integer.parseInt(fileName.split("\\.")[1]) == ManipulatingImage.QUANTITY_OF_PHOTOS) {
+                System.out.println("Generating an updated classifier file!");
+                new Training();
             }
             encodeImage = manipulatingImage.encodeImage(true, fileName);
             clientImageService.saveImage(encodeImage, clientId);

@@ -33,6 +33,7 @@ public class RecognizedUserController {
     @Autowired
     ClientService clientService;
 
+
     @PostMapping("/recognizedUser")
     public ResponseEntity<Object> recognizedUser(@RequestParam @Valid long userId) throws ParseException {
 
@@ -43,11 +44,15 @@ public class RecognizedUserController {
 
             Optional<ClientModel> clientModelOptional = clientService.findById(userId);
             if (clientModelOptional.isPresent()) {
-                ClientSellerModel clientSellerModel = new ClientSellerModel();
-                clientSellerModel.setStartTime(LocalDateTime.now(ZoneId.of("UTC")));
-                clientSellerModel.setClientModel(clientModelOptional.get());
-                System.out.println("The user was registered in entity of attendance... Now, notify a seller available to server the client!");
-                return ResponseEntity.status(HttpStatus.CREATED).body(clientSellerService.save(clientSellerModel));
+                if(clientSellerService.isBeingAttended(userId)) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The client is being attended or he is leaving the store!");
+                } else {
+                    ClientSellerModel clientSellerModel = new ClientSellerModel();
+                    clientSellerModel.setStartTime(LocalDateTime.now(ZoneId.of("UTC")));
+                    clientSellerModel.setClientModel(clientModelOptional.get());
+                    System.out.println("The user was registered in entity of attendance... Now, notify a seller available to server the client!");
+                    return ResponseEntity.status(HttpStatus.CREATED).body(clientSellerService.save(clientSellerModel));
+                }
             }
         } else {
             indexAndName = recognizedUserService.verifyRecognizedSeller(userId);

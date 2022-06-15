@@ -4,6 +4,7 @@ import com.api.tcc.database.Models.SellerImageModel;
 import com.api.tcc.database.Models.SellerModel;
 import com.api.tcc.database.dtos.IdImageNameDTO;
 import com.api.tcc.database.dtos.ImageAndNamesDTO;
+import com.api.tcc.faceRecognition.Training;
 import com.api.tcc.services.SellerService;
 import com.api.tcc.utils.ManipulatingImage;
 import com.api.tcc.services.SellerImageService;
@@ -40,6 +41,10 @@ public class SellerImageController {
                 Files.write(manipulatingImage.fileNameAndPath(false, fileName), image.getBytes());
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+            if(Integer.parseInt(fileName.split("\\.")[1]) == ManipulatingImage.QUANTITY_OF_PHOTOS) {
+                System.out.println("Generating an updated classifier file!");
+                new Training();
             }
             encodeImage = manipulatingImage.encodeImage(false, fileName);
             sellerImageService.saveImage(encodeImage, sellerId);

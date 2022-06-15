@@ -26,6 +26,10 @@ public class SellerService {
         return sellerRepository.findAll();
     }
 
+    public List<SellerModel> findAllSellerAvailable() {
+        return sellerRepository.findAllSellerAvailable();
+    }
+
     public Optional<SellerModel> findById(long id) {
         return sellerRepository.findById(id);
     }

@@ -1,5 +1,7 @@
 package com.api.tcc.utils;
 
+import com.api.tcc.faceRecognition.Training;
+import com.api.tcc.websocket.SocketClient;
 import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
@@ -14,7 +16,7 @@ import java.nio.file.Paths;
 
 public class ManipulatingImage {
 
-    private static final int QUANTITY_OF_PHOTOS = 5;
+    public static final int QUANTITY_OF_PHOTOS = 6;
     String clientPhotosPath = "src\\main\\resources\\photos\\clients";
     String sellerPhotosPath = "src\\main\\resources\\photos\\sellers";
 
@@ -36,7 +38,7 @@ public class ManipulatingImage {
                 }
             }
         }
-        return (double) count;
+        return count;
     }
 
     public Path fileNameAndPath(final boolean isClient, final String fileName) {
@@ -47,8 +49,9 @@ public class ManipulatingImage {
         }
     }
 
-    public String fileName(final boolean isClient, int userId) {
-        int index = 0;
+    public String fileName(final boolean isClient, int userId) throws IOException {
+        int index;
+        String fileName = null;
         double quantityOfFiles = getQuantityOfFiles(isClient) + 1;
 
         index = (int) (quantityOfFiles % QUANTITY_OF_PHOTOS);
@@ -56,10 +59,12 @@ public class ManipulatingImage {
             index = QUANTITY_OF_PHOTOS;
         }
         if (userId < 10) {
-            return ("person.0" + userId + "." + index + ".jpg");
+            fileName = ("person.0" + userId + "." + index + ".jpg");
         } else {
-            return ("person." + userId + "." + index + ".jpg");
+            fileName = ("person." + userId + "." + index + ".jpg");
         }
+
+        return fileName;
     }
 
     public byte[] encodeImage(final boolean isClient, final String fileName) throws IOException {
@@ -73,7 +78,7 @@ public class ManipulatingImage {
     }
 
     public String decodeImage(byte[] inputEncodedImage) throws IOException {
-        String imagePath = "src\\main\\resources\\photos\\profileImage\\imageLast.jpg";
+        //String imagePath = "src\\main\\resources\\photos\\profileImage\\imageLast.jpg";
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(inputEncodedImage);
         BufferedImage bufferedImage = ImageIO.read(byteArrayInputStream);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();

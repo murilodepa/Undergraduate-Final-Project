@@ -55,6 +55,12 @@ public class SellerController {
         return ResponseEntity.status(HttpStatus.OK).body(sellerModelOptional.get());
     }
 
+    @GetMapping("/getAllSellerAvailable")
+    public ResponseEntity<List<SellerModel>> getAllSellerAvailable() {
+        return ResponseEntity.status(HttpStatus.OK).body(sellerService.findAllSellerAvailable());
+    }
+
+
     @DeleteMapping("/removeSeller/{id}")
     public ResponseEntity<Object> deleteSeller(@PathVariable(value = "id") long id) {
         Optional<SellerModel> sellerModelOptional = sellerService.findById(id);

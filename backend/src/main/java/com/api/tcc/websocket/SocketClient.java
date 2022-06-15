@@ -31,8 +31,7 @@ public class SocketClient {
             dos.writeLong(classifierByte.length);
             dos.write(classifierByte, 0, classifierByte.length);
             dos.flush();
-
-            System.out.println("LBPHClassifier File has been sent to client!");
+            System.out.println(" Sending updated LBPHClassifier classifier File to the Server!");
         } catch (FileNotFoundException e) {
             System.err.println("File doesn't exist!");
         }

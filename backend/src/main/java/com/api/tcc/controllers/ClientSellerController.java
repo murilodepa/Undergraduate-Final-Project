@@ -1,5 +1,6 @@
 package com.api.tcc.controllers;
 
+import com.api.tcc.database.Models.ClientImageModel;
 import com.api.tcc.database.Models.ClientModel;
 import com.api.tcc.database.Models.ClientSellerModel;
 import com.api.tcc.database.Models.SellerModel;
@@ -85,5 +86,10 @@ public class ClientSellerController {
         clientSellerModel.setClientModel(clientModelOptional.get());
         clientSellerModel.setSellerModel(sellerModelOptional.get());
         return ResponseEntity.status(HttpStatus.OK).body(clientSellerService.save(clientSellerModel));
+    }
+
+    @GetMapping("/clientIsServed/{id}")
+    public ResponseEntity<Object> verifyClientService(@PathVariable(value = "id") long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(clientSellerService.isBeingAttended(id));
     }
 }
