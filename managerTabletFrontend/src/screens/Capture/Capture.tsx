@@ -28,7 +28,7 @@ const Capture = ({ navigation, route }: any) => {
   const [capturedPicturesNumber, setCapturedPicturesNumber] = useState(0);
   const [capturedPitureExpression, setCapturedPitureExpression] = useState("Sorrindo");
   const { setName, setProfileImage, setResultSellerData, setResultClientData } = useGlobalContext();
-  const maxPhotos = 5;
+  const maxPhotos = 6;
 
   const closePicture = () => {
     setOpenPicture(false);
@@ -113,22 +113,21 @@ const Capture = ({ navigation, route }: any) => {
         }
     */
 
-    if (capturedPicturesNumber > 2 && capturedPicturesNumber < 5) {
-      if (capturedPicturesNumber == 3) {
+      if (capturedPicturesNumber == 2) {
         setCapturedPitureExpression("Sério");
         if (route.params.paramKey == "seller") {
           getSellerData();
         } else {
           getClientData();
         }
-      }
+      } else if (capturedPicturesNumber == 3) { 
+        setCapturedPitureExpression("Lateral do rosto");
+      } else if (capturedPicturesNumber == 5) { 
+        navigation.navigate("Menu");
+        console.log("user registered successfully - going to Menu");
+      };
     }
-  }
 
-  if (capturedPicturesNumber == 5) {
-    navigation.navigate("Menu");
-    console.log("Usuário cadastrado com sucesso - Indo para o Menu");
-  };
 
   useEffect(() => {
     (async () => {
