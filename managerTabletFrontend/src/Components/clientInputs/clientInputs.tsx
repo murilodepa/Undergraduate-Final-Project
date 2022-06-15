@@ -18,27 +18,32 @@ import {
   ContainerSelect,
   ContainerProfileImage,
 } from "./styles";
+import { useGlobalContext } from "../../context/managerContext";
+import { IClientIdNameImageList } from "../../services/SendImageClientService/SendImageClientServiceInterface";
+import { SendImageClientService } from "../../services/SendImageClientService/SendImageClientService";
 
 const ClientInputs = (props: any) => {
-  const maskDate = (value: string) => {
-    return value
-      .replace(/\D/g, "")
-      .replace(/(\d{2})(\d)/, "$1/$2")
-      .replace(/(\d{2})(\d)/, "$1/$2")
-      .replace(/(\d{4})(\d)/, "$1");
-  };
-
   function formataStringData(data: string) {
-    var dia = data.split("/")[0];
-    var mes = data.split("/")[1];
-    var ano = data.split("/")[2];
-    return ano + "-" + ("0" + mes).slice(-2) + "-" + ("0" + dia).slice(-2);
+    var day = data.split("/")[0];
+    var month = data.split("/")[1];
+    var year = data.split("/")[2];
+    return year + "-" + ("0" + month).slice(-2) + "-" + ("0" + day).slice(-2);
+  }
+
+  function validateYear(data: string) {
+    var year = parseInt(data.split("/")[2]);
+    const currentYear = new Date().getFullYear();
+    if(year > currentYear || year < (currentYear-120)) {
+      return false;
+    }
+    return true;
   }
 
   const regexDate =
     /^(((0[1-9]|[12][0-9]|30)[-/]?(0[13-9]|1[012])|31[-/]?(0[13578]|1[02])|(0[1-9]|1[0-9]|2[0-8])[-/]?02)[-/]?[0-9]{4}|29[-/]?02[-/]?([0-9]{2}(([2468][048]|[02468][48])|[13579][26])|([13579][26]|[02468][048]|0[0-9]|1[0-6])00))$/;
-  function validateDate(date: any) {
-    if (regexDate.test(date)) {
+  
+    function validateDate(date: any) {
+    if (regexDate.test(date) && validateYear(date)) {
       const birth = formataStringData(date);
       setClientData({ ...clientData, birth: date });
       console.log("Date is validated! - Date", birth);
@@ -55,12 +60,29 @@ const ClientInputs = (props: any) => {
   const [inputNameColor, setInputNameColor] = useState("black");
   const [inputBirthColor, setInputBirthColor] = useState("black");
   const [inputGenderColor, setInputGenderColor] = useState("black");
+  const { setResultClientData } = useGlobalContext();
+
+  async function getClientData() {
+    let response: IClientIdNameImageList;
+    try {
+      response = await new SendImageClientService().getClientIdNameImage();
+    } catch (error) {
+      console.error("Error to get seller date", error);
+    }
+    setResultClientData(response);
+  };
+
+  function clone(obj: string) {
+
+    // Handle the 3 simple types, and null or undefined
+    if (null == obj || "object" != typeof obj) return obj;
+  }
 
   const eventCaptureOrEdit = async () => {
     var count = 0;
     if (
-        clientData.name != undefined &&
-        clientData.name.length > 3 &&
+      clientData.name != undefined &&
+      clientData.name.length > 3 &&
       !regexNumber.test(clientData.name)
     ) {
       console.log("Name is valid! +1");
@@ -94,12 +116,17 @@ const ClientInputs = (props: any) => {
         }
         props.navigation.navigate("Capture", { paramKey: "client" });
       } else {
-    /*    try {
+        console.log("clientData", clientData);
+
+        try {
           const response = await new ClientService().updateClient(clientData);
         } catch (error) {
           console.error("Error to edit!", error);
-        }*/
-        console.log("EDITOOU");
+        }
+        if (props.placeholderInputs.name != clientData.name) {
+          getClientData();
+        }
+        props.closeEditClientProfileAndBack();
       }
     }
   };
@@ -188,3 +215,7 @@ const ClientInputs = (props: any) => {
 };
 
 export default ClientInputs;
+
+function structuredClone(object: any) {
+  throw new Error("Function not implemented.");
+}

@@ -30,9 +30,17 @@ export interface IRegisterDataSellerProps {
 }
 
 export interface IRegisterDataSellerProps {
-  getSellers: () => Promise<ISellerData>;
+  getAllSellers: () => Promise<ISellerData>;
+}
+
+export interface IRegisterDataSellerProps {
+  getSeller: (id: number) => Promise<ISellerData>;
 }
 
 export interface IRegisterDataSellerProps {
   getManager: () => Promise<IGetSellerData>;
+}
+
+export interface IRegisterDataSellerProps {
+  removeSeller: (id: number) => Promise<AxiosResponse>;
 }

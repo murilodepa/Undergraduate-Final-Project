@@ -7,14 +7,22 @@ export interface IClientData {
   birth?: string;
 }
 
+export interface IGetClientData {
+  id?: number,
+  name?: string;
+  gender?: string;
+  birth?: string;
+  purchaseSuggestion?: string;
+}
+
 export interface IRegisterClientDataProps {
   insertClient: (response: IClientData) => Promise<AxiosResponse>;
 }
 
 export interface IRegisterClientDataProps {
-  updateClient: (response: IClientData) => Promise<AxiosResponse>;
+  getClient: (id: number) => Promise<IGetClientData>;
 }
 
 export interface IRegisterClientDataProps {
-  getClient: () => Promise<IClientData>;
+  updateClient: (response: any) => Promise<AxiosResponse>;
 }

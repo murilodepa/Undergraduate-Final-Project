@@ -44,7 +44,7 @@ export const Name = styled.Text`
 `;
 
 export const Description = styled.Text`
-  font-size: 28px;
+  font-size: 22px;
   text-align: center;
   line-height: 46px;
   color: white;
@@ -67,6 +67,9 @@ export const ProfileImage = styled.Image`
   width: 170px;
   align-items: center;
   justify-content: center;
+  border-radius: 100px;
+  border-width: 2px;
+  border-color: #000000;
 `;
 
 export const ContainerButtons = styled.View`

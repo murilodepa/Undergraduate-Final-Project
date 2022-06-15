@@ -10,8 +10,8 @@ export const Container = styled.View`
 export const ProfileImage = styled.Image`
   justify-content: center;
   border-radius: 10px;
-  height: 110px;
-  width: 110px;
+  height: 160px;
+  width: 160px;
   align-items: center;
   margin-left: 30px;
 `;
@@ -71,12 +71,10 @@ export const Description = styled.Text`
 
 export const ContainerHeader = styled.View`
   background-color: #b5b4b4;
-  height: 140px;
+  height: 200px;
   width: 100%;
   justify-content: center;
   align-items: flex-start;
-  margin-right: 20px;
-  margin-top: 20px;
 `;
 
 export const ContainerMiddle = styled.View`
