@@ -10,6 +10,7 @@ import {
   TextHeaderCapture,
   ContainerCamera,
   CameraEdge,
+  RevertButton
 } from "./styles";
 
 import ModalCapturedPicture from "../../Components/Modals/CapturedPicture/CapturedPicture";
@@ -22,6 +23,7 @@ import { IClientIdNameImageList } from "../../services/SendImageClientService/Se
 
 const Capture = ({ navigation, route }: any) => {
   const camRef = useRef(null);
+  const [type, setType] = useState(Camera.Constants.Type.back);
   const [hasPermission, setHasPermission] = useState(null);
   const [capturedPhotoURI, setCapturedPhotoURI] = useState(null);
   const [openPicture, setOpenPicture] = useState(false);
@@ -113,20 +115,20 @@ const Capture = ({ navigation, route }: any) => {
         }
     */
 
-      if (capturedPicturesNumber == 2) {
-        setCapturedPitureExpression("Sério");
-        if (route.params.paramKey == "seller") {
-          getSellerData();
-        } else {
-          getClientData();
-        }
-      } else if (capturedPicturesNumber == 3) { 
-        setCapturedPitureExpression("Lateral do rosto");
-      } else if (capturedPicturesNumber == 5) { 
-        navigation.navigate("Menu");
-        console.log("user registered successfully - going to Menu");
-      };
-    }
+    if (capturedPicturesNumber == 2) {
+      setCapturedPitureExpression("Sério");
+      if (route.params.paramKey == "seller") {
+        getSellerData();
+      } else {
+        getClientData();
+      }
+    } else if (capturedPicturesNumber == 3) {
+      setCapturedPitureExpression("Lateral do rosto");
+    } else if (capturedPicturesNumber == 5) {
+      navigation.navigate("Menu");
+      console.log("user registered successfully - going to Menu");
+    };
+  }
 
 
   useEffect(() => {
@@ -181,13 +183,17 @@ const Capture = ({ navigation, route }: any) => {
               borderRadius: 20,
               borderColor: "#FFFFFF"
             }}
-            type={Camera.Constants.Type.back}
+            type={type}
             ref={camRef}
           />
         </CameraEdge>
       </ContainerCamera>
 
       <Containerfooter>
+        <TouchableOpacity onPress={() => { setType(type === Camera.Constants.Type.back ? Camera.Constants.Type.front : Camera.Constants.Type.back) }}>
+          <RevertButton source={require("../../assets/revert-camera.png")} />
+        </TouchableOpacity>
+
         <TouchableOpacity onPress={takePicture}>
           <CameraButton source={require("../../assets/camera.png")} />
         </TouchableOpacity>

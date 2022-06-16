@@ -35,14 +35,12 @@ export const ContainerCapturedImage = styled.View`
 
 export const CapturedImage = styled.Image`
   flex: 1;
-  justify-content: center;
-  align-items: center;
-  margin: 16px;
-  max-height: 585px;
-  max-width: 585px;
-  height: 585px;
-  width: 585px;
-  border-width: 5px;
+  align-content: center;
+  max-height: 760px;
+  max-width: 760px;
+  height: 570px;
+  width: 570px;
+  border-width: 4px;
   border-color: #000000;
 `;
 
