@@ -6,6 +6,9 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * @author Murilo de Paula Araujo
+ */
 public class Server {
 
     private Socket socket;

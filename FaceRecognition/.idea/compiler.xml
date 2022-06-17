@@ -7,10 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="FaceRecognition" />
+        <module name="untitled104" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="FaceRecognition" target="17" />
+      <module name="untitled104" target="17" />
     </bytecodeTargetLevel>
   </component>
 </project>

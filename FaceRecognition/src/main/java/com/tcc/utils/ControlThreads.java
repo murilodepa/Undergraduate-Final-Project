@@ -1,18 +1,19 @@
 package com.tcc.utils;
 
 import com.tcc.recognition.FaceRecognitionLBPH;
-import org.bytedeco.javacpp.opencv_face;
+import org.bytedeco.opencv.opencv_face.FaceRecognizer;
+import org.bytedeco.opencv.opencv_face.LBPHFaceRecognizer;
 
 import java.io.*;
 import java.util.concurrent.Semaphore;
 
-import static org.bytedeco.javacpp.opencv_face.createLBPHFaceRecognizer;
-
+/**
+ * @author Murilo de Paula Araujo
+ */
 public class ControlThreads {
 
     public static final Semaphore SEMAPHORE = new Semaphore(1);
-    private static final opencv_face.FaceRecognizer faceRecognizer = createLBPHFaceRecognizer();
-    private final FaceRecognitionLBPH faceRecognitionLBPH = new FaceRecognitionLBPH();
+    private static FaceRecognizer faceRecognizer = LBPHFaceRecognizer.create();
 
     public ControlThreads() throws InterruptedException {
         System.out.println("ENTROU NO CONSTRUTOR");
@@ -36,7 +37,7 @@ public class ControlThreads {
                 deleteClassifier.delete();
             }
             newClassifier.renameTo(new File(classifierPath));
-            faceRecognizer.load(classifierPath);
+            faceRecognizer.read(classifierPath);
             FaceRecognitionLBPH.faceRecognizer = faceRecognizer;
             System.out.println("THREAD " + Thread.currentThread() + " - Update successfully the classifier file!");
         }

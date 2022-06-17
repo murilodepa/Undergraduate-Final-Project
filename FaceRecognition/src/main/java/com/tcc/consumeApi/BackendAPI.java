@@ -17,6 +17,9 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * @author Murilo de Paula Araujo
+ */
 public class BackendAPI {
     private static final String URLBase = "http://localhost:8080";
 
