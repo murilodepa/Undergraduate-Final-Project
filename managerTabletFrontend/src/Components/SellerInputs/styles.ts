@@ -130,3 +130,11 @@ export const RegisterButton = styled.Text`
   border-color: #FFFFFF;
   border-width: 2px;
 `;
+
+export const AvailableButton = styled.Image`
+  position: absolute;
+  max-width: 40px;
+  max-height: 40px;
+  margin-left: 63.5%;
+  margin-top: 34%;
+`;

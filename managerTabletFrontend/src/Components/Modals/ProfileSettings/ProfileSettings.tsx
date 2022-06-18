@@ -13,6 +13,7 @@ import {
   ProfileDescription,
   Name,
   Description,
+  AvailableButton
 } from "./styles";
 
 export default function ModalProfileSettings({
@@ -48,16 +49,29 @@ export default function ModalProfileSettings({
 
           <ContainerProfileImage>
             <ProfileImage
-                source={{uri: profileImage}}
+              source={{ uri: profileImage }}
             />
           </ContainerProfileImage>
 
+          {
+            (managerData &&
+              managerData.available) ? (
+              <AvailableButton
+                source={require("../../../assets/available-true.png")}
+              />
+            ) : (
+              <AvailableButton
+                source={require("../../../assets/available-false.png")}
+              />
+            )
+          }
+
           <ContainerDescription>
             <ProfileDescription>
-              <Name>  
-              {managerData && 
-                `${managerData.name}`}           
-                     </Name>
+              <Name>
+                {managerData &&
+                  `${managerData.name}`}
+              </Name>
               <Line />
               <Description>
                 {managerData && `${managerData.email} \n ${age} anos \n ${managerData.gender} \n ${managerData.sector} \n ${managerData.attendances} Atendimentos `}

@@ -95,3 +95,11 @@ export const Line = styled.View`
   margin-top: 7px;
 `
 
+export const AvailableButton = styled.Image`
+  position: absolute;
+  max-width: 35px;
+  max-height: 35px;
+  margin-left: 62%;
+  margin-top: 49.5%;
+`;
+

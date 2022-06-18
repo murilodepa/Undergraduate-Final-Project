@@ -55,7 +55,7 @@ const Splash = ({ navigation }) => {
 
     let response: ISellerImageAndName;
     try {
-      response = await new SendImageSellerService().getSellerImageAndName(25);
+      response = await new SendImageSellerService().getSellerImageAndName(11);
     } catch (error) {
       console.error("Error to get manager date", error);
     }
@@ -65,6 +65,7 @@ const Splash = ({ navigation }) => {
       getSellerData();
       getClientData();
       navigation.navigate("Menu");
+      //navigation.navigate("SellerRegistration");
       console.log("Updating name and photo of the manager");
     } else {
       navigation.navigate("Initial");
