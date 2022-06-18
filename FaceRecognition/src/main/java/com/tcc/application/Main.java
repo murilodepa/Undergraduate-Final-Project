@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022 created by student Murilo de Paula Araujo from the Computer Engineering
+ * course at Pontifical Catholic University of Campinas (PUC-Campinas).
+ * All rights reserved.
+ */
 package com.tcc.application;
 
 import com.tcc.consumeApi.BackendAPI;
@@ -14,8 +19,7 @@ public class Main {
         /*BackendAPI backendAPI = BackendAPI.getInstance();
         backendAPI.recognizedClient(40);*/
 
-      //  new ControlThreads().lockResourceOpenSave();
-        //new Thread(serverThread).start();
+        new Thread(serverThread).start();
         System.out.println("The system is trying to capture an image from a camera...");
         new Thread(faceRecognitionThread).start();
     }
