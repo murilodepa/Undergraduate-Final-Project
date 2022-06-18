@@ -65,7 +65,6 @@ const Splash = ({ navigation }) => {
       getSellerData();
       getClientData();
       navigation.navigate("Menu");
-      //navigation.navigate("SellerRegistration");
       console.log("Updating name and photo of the manager");
     } else {
       navigation.navigate("Initial");
