@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022 created by student Murilo de Paula Araujo from the Computer Engineering
+ * course at Pontifical Catholic University of Campinas (PUC-Campinas).
+ * All rights reserved.
+ */
 package com.api.tcc.controllers;
 
 import com.api.tcc.database.Models.SellerImageModel;
@@ -14,12 +19,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * @author Murilo de Paula Araujo
+ */
 @RestController
 @RequestMapping("/seller")
 public class SellerImageController {

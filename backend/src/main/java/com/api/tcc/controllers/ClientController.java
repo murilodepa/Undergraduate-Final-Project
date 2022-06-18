@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022 created by student Murilo de Paula Araujo from the Computer Engineering
+ * course at Pontifical Catholic University of Campinas (PUC-Campinas).
+ * All rights reserved.
+ */
 package com.api.tcc.controllers;
 
 import com.api.tcc.services.ClientImageService;
@@ -16,6 +21,9 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author Murilo de Paula Araujo
+ */
 @RestController
 @RequestMapping("/client")
 public class ClientController {

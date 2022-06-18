@@ -1,8 +1,16 @@
+/*
+ * Copyright (c) 2022 created by student Murilo de Paula Araujo from the Computer Engineering
+ * course at Pontifical Catholic University of Campinas (PUC-Campinas).
+ * All rights reserved.
+ */
 package com.api.tcc.websocket;
 
 import java.io.*;
 import java.net.Socket;
 
+/**
+ * @author Murilo de Paula Araujo
+ */
 public class SocketClient {
 
     private static final int LOCAL_PORT = 5555;

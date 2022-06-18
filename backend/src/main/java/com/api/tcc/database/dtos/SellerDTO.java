@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022 created by student Murilo de Paula Araujo from the Computer Engineering
+ * course at Pontifical Catholic University of Campinas (PUC-Campinas).
+ * All rights reserved.
+ */
 package com.api.tcc.database.dtos;
 
 import lombok.Data;
@@ -5,6 +10,9 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Size;
 
+/**
+ * @author Murilo de Paula Araujo
+ */
 @Data
 public class SellerDTO {
     @Size(min = 3, max = 100)

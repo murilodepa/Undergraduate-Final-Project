@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022 created by student Murilo de Paula Araujo from the Computer Engineering
+ * course at Pontifical Catholic University of Campinas (PUC-Campinas).
+ * All rights reserved.
+ */
 package com.api.tcc.services;
 
 import com.api.tcc.database.Models.ClientModel;
@@ -11,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author Murilo de Paula Araujo
+ */
 @Service
 public class ClientService {
 

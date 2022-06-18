@@ -1,25 +1,27 @@
+/*
+ * Copyright (c) 2022 created by student Murilo de Paula Araujo from the Computer Engineering
+ * course at Pontifical Catholic University of Campinas (PUC-Campinas).
+ * All rights reserved.
+ */
 package com.api.tcc.services;
 
 import com.api.tcc.database.Models.SellerImageModel;
 import com.api.tcc.database.Models.SellerModel;
 import com.api.tcc.database.dtos.IdImageNameDTO;
-import com.api.tcc.database.dtos.ImageAndNamesDTO;
 import com.api.tcc.repositories.SellerImageRepository;
 import com.api.tcc.repositories.SellerRepository;
 import com.api.tcc.utils.ManipulatingImage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
+/**
+ * @author Murilo de Paula Araujo
+ */
 @Service
 public class SellerImageService {
     @Autowired

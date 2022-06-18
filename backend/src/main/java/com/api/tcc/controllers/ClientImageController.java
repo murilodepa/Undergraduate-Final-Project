@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022 created by student Murilo de Paula Araujo from the Computer Engineering
+ * course at Pontifical Catholic University of Campinas (PUC-Campinas).
+ * All rights reserved.
+ */
 package com.api.tcc.controllers;
 
 import com.api.tcc.database.Models.ClientImageModel;
@@ -18,6 +23,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
 
+/**
+ * @author Murilo de Paula Araujo
+ */
 @RestController
 @RequestMapping("/client")
 public class ClientImageController {

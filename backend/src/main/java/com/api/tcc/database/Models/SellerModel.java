@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2022 created by student Murilo de Paula Araujo from the Computer Engineering
+ * course at Pontifical Catholic University of Campinas (PUC-Campinas).
+ * All rights reserved.
+ */
 package com.api.tcc.database.Models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -9,6 +14,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 
+/**
+ * @author Murilo de Paula Araujo
+ */
 @Entity
 @Setter
 @Getter

@@ -1,6 +1,13 @@
+/*
+ * Copyright (c) 2022 created by student Murilo de Paula Araujo from the Computer Engineering
+ * course at Pontifical Catholic University of Campinas (PUC-Campinas).
+ * All rights reserved.
+ */
 package com.api.tcc.services;
 
 import com.api.tcc.database.Models.SellerModel;
+import com.api.tcc.email.EmailMessages;
+import com.api.tcc.email.SendEmail;
 import com.api.tcc.repositories.SellerRepository;
 import com.api.tcc.utils.IndexAndName;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,14 +18,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author Murilo de Paula Araujo
+ */
 @Service
 public class SellerService {
 
     @Autowired
     private SellerRepository sellerRepository;
 
+    @Autowired
+    private SendEmail sendEmail;
+
     @Transactional
     public SellerModel save(SellerModel sellerModel) {
+        this.sendEmail.send(sellerModel.getEmail(),
+                EmailMessages.createTitle(sellerModel), EmailMessages.messageToNewSeller(sellerModel));
         return sellerRepository.save(sellerModel);
     }
 
@@ -36,6 +51,8 @@ public class SellerService {
 
     @Transactional
     public void delete(SellerModel sellerModel) {
+        this.sendEmail.send(sellerModel.getEmail(),
+                EmailMessages.createTitleToRemove(sellerModel), EmailMessages.messageToRemoveSeller(sellerModel));
         sellerRepository.delete((sellerModel));
     }
 
@@ -47,7 +64,7 @@ public class SellerService {
         List<IndexAndName> sellerDate = new ArrayList<>();
         List<SellerModel> sellerModelList = sellerRepository.findAll();
 
-        for(SellerModel sellerModel: sellerModelList) {
+        for (SellerModel sellerModel : sellerModelList) {
             sellerDate.add(new IndexAndName(sellerModel.getId(), sellerModel.getName()));
         }
         return sellerDate;

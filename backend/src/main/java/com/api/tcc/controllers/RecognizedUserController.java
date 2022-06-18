@@ -1,7 +1,13 @@
+/*
+ * Copyright (c) 2022 created by student Murilo de Paula Araujo from the Computer Engineering
+ * course at Pontifical Catholic University of Campinas (PUC-Campinas).
+ * All rights reserved.
+ */
 package com.api.tcc.controllers;
 
 import com.api.tcc.database.Models.ClientModel;
 import com.api.tcc.database.Models.ClientSellerModel;
+import com.api.tcc.database.Models.SellerModel;
 import com.api.tcc.services.ClientSellerService;
 import com.api.tcc.services.ClientService;
 import com.api.tcc.services.RecognizedUserService;
@@ -19,8 +25,12 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+/**
+ * @author Murilo de Paula Araujo
+ */
 @RestController
 public class RecognizedUserController {
 
@@ -32,6 +42,8 @@ public class RecognizedUserController {
 
     @Autowired
     ClientService clientService;
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 
     @PostMapping("/recognizedUser")
@@ -48,9 +60,13 @@ public class RecognizedUserController {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The client is being attended or he is leaving the store!");
                 } else {
                     ClientSellerModel clientSellerModel = new ClientSellerModel();
-                    clientSellerModel.setStartTime(LocalDateTime.now(ZoneId.of("UTC")));
+                    clientSellerModel.setStartTime(LocalDateTime.parse(formatter.format(LocalDateTime.now(ZoneId.of("America/Sao_Paulo"))), formatter));
                     clientSellerModel.setClientModel(clientModelOptional.get());
                     System.out.println("The user was registered in entity of attendance... Now, notify a seller available to server the client!");
+                    Optional<SellerModel> sellerModelOptional = clientSellerService.getBestSeller();
+                    if(!sellerModelOptional.isEmpty()) {
+                        clientSellerModel.setSellerModel(sellerModelOptional.get());
+                    }
                     return ResponseEntity.status(HttpStatus.CREATED).body(clientSellerService.save(clientSellerModel));
                 }
             }

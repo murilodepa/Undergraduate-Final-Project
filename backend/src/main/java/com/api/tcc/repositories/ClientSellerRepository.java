@@ -1,19 +1,28 @@
+/*
+ * Copyright (c) 2022 created by student Murilo de Paula Araujo from the Computer Engineering
+ * course at Pontifical Catholic University of Campinas (PUC-Campinas).
+ * All rights reserved.
+ */
 package com.api.tcc.repositories;
 
 import com.api.tcc.database.Models.ClientSellerModel;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * @author Murilo de Paula Araujo
+ */
 @Repository
 public interface ClientSellerRepository extends JpaRepository<ClientSellerModel, UUID> {
-    @Query("select q from ClientSellerModel q where q.clientModel.id =:id_client and q.endTime =:null")
-    ClientSellerModel findClientAttendances(@Param("id_client") long id_client);
 
-    @Query("select q from ClientSellerModel q where q.sellerModel.id =:id_seller and q.endTime =:null")
-    ClientSellerModel findSellerAttendances(@Param("id_seller") long id_seller);
+    Optional<ClientSellerModel> findClientSellerModelByClientModel_IdAndEndTime(long clientModel_id, LocalDateTime endTime);
+
+    Optional<List<ClientSellerModel>> findClientSellerModelByClientModel_Id(long id_client);
+
+    Optional<ClientSellerModel> findClientSellerModelBySellerModel_Id(long sellerModel_id);
 }

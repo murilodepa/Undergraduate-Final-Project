@@ -1,7 +1,10 @@
+/*
+ * Copyright (c) 2022 created by student Murilo de Paula Araujo from the Computer Engineering
+ * course at Pontifical Catholic University of Campinas (PUC-Campinas).
+ * All rights reserved.
+ */
 package com.api.tcc.utils;
 
-import com.api.tcc.faceRecognition.Training;
-import com.api.tcc.websocket.SocketClient;
 import org.apache.commons.io.FileUtils;
 
 import javax.imageio.ImageIO;
@@ -14,6 +17,9 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+/**
+ * @author Murilo de Paula Araujo
+ */
 public class ManipulatingImage {
 
     public static final int QUANTITY_OF_PHOTOS = 6;
