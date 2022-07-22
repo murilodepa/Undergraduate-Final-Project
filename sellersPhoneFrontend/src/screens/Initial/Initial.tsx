@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { TouchableOpacity, BackHandler } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import { TouchableOpacity, BackHandler, TextInput } from "react-native";
 import { ISellerEmailPassword } from "../../services/SellerService/SellerServiceInterface";
 import { Ionicons } from "@expo/vector-icons";
 import { useGlobalContext } from "../../context/SellerContext";
@@ -28,20 +28,34 @@ const Initial = ({ navigation }) => {
   const [sellerEmailPassword, setSellerEmailPassword] =
     useState<ISellerEmailPassword>();
   const [hideTextInvalidPassword, setHideTextInvalidPassword] = useState(false);
-  const [hidePassword, setHidePassword] = useState(false);
+  const [hidePassword, setHidePassword] = useState(true);
   const { setName, setProfileImage } = useGlobalContext();
+  const ContainerEmailInputRef = useRef(null);
+  const ContainerPasswordInputRef = useRef(null);
 
   const eventLogin = async () => {
-    console.log("E-mail: ", sellerEmailPassword.email);
-    console.log("Password: ", sellerEmailPassword.password);
-
-    setName("Murilo")
+    setName("Murilo Araujo");
     //setProfileImage()
 
-    if (parseInt(sellerEmailPassword.password) == 1234) {
+   /* if (parseInt(sellerEmailPassword.password) == 1234) {
       setHideTextInvalidPassword(true);
+    }*/
+
+    if (
+      sellerEmailPassword.email != "" &&
+      sellerEmailPassword.email != undefined &&
+      sellerEmailPassword.password != "" &&
+      sellerEmailPassword.password != undefined
+    ) {
+      console.log("E-mail: ", sellerEmailPassword.email);
+      console.log("Password: ", sellerEmailPassword.password);
+
+      ContainerEmailInputRef.current.clear();
+      ContainerPasswordInputRef.current.clear();
+      sellerEmailPassword.email = "";
+      sellerEmailPassword.password = "";
+      navigation.navigate("Menu");
     }
-    navigation.navigate("Menu");
   };
 
   return (
@@ -51,9 +65,11 @@ const Initial = ({ navigation }) => {
 
       <ContainerLogin>
         <ContainerInput
+          ref={ContainerEmailInputRef}
           maxLength={100}
           keyboardType="default"
           placeholder="E-mail"
+          clearButtonMode="always"
           style={PlaceHolder}
           onChangeText={(value) =>
             setSellerEmailPassword({
@@ -64,6 +80,7 @@ const Initial = ({ navigation }) => {
         />
         <ContainerPasswordInput>
           <InputPassword
+            ref={ContainerPasswordInputRef}
             maxLength={100}
             keyboardType="default"
             placeholder="Senha"
@@ -78,9 +95,9 @@ const Initial = ({ navigation }) => {
           />
           <TouchableOpacity onPress={() => setHidePassword(!hidePassword)}>
             {hidePassword ? (
-              <Ionicons name="eye" color="#000000" size={25} />
-            ) : (
               <Ionicons name="eye-off" color="#000000" size={25} />
+            ) : (
+              <Ionicons name="eye" color="#000000" size={25} />
             )}
           </TouchableOpacity>
         </ContainerPasswordInput>

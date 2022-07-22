@@ -22,7 +22,7 @@ export const ContainerLogin = styled.View`
   border-width: 3px;
   border-color: #000000;
   background-color: #6BB1F1;
-  margin-top: 13%;
+  margin-top: 11%;
 `;
 
 export const ContainerInput = styled.TextInput`
@@ -95,7 +95,7 @@ export const LoginButtonText = styled.Text`
 `;
 
 export const PlaceHolder = {
-  fontSize: 24, 
+  fontSize: 20, 
   width: 360,
   paddingLeft: 10,
   paddingRight: 10,

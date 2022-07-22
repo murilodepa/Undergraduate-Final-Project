@@ -10,6 +10,8 @@ import {
   ContainerProfileImage,
   EditCloseProfileButton,
   ContainerButtons,
+  ContainerButtonsLeave,
+  LeaveText,
   ProfileDescription,
   Name,
   Description,
@@ -19,6 +21,7 @@ export default function ModalSellerInformations({
   openSellerInformations,
   closeSellerInformations,
   sellerInformations,
+  closeAndLeave,
 }) {
   return (
     <Modal
@@ -37,24 +40,27 @@ export default function ModalSellerInformations({
           </ContainerButtons>
 
           <ContainerProfileImage>
-            <ProfileImage
-              source={require("../../assets/Profile.png")}
-            />
+            <ProfileImage source={require("../../assets/Profile.png")} />
           </ContainerProfileImage>
 
           <ContainerDescription>
             <ProfileDescription>
-              <Name>  
-              {/* {sellerInformations && 
+              <Name>
+                {/* {sellerInformations && 
                 `${sellerInformations.name}`}            */}
-                Murilo
-                     </Name>
+                Murilo Araujo
+              </Name>
               <Line />
               <Description>
                 {/* {sellerInformations && `${sellerInformations.email} \n ${sellerInformations.birth} \n ${sellerInformations.gender} \n ${sellerInformations.sector} \n ${sellerInformations.attendances} Atendimentos `} */}
                 {`murilodepa@gmail.com \n 30 anos \n Masculino \n Calça \n 123 Atendimentos `}
               </Description>
             </ProfileDescription>
+            <ContainerButtonsLeave>
+              <TouchableOpacity onPress={() => closeAndLeave()}>
+                <LeaveText>Sair</LeaveText>
+              </TouchableOpacity>
+            </ContainerButtonsLeave>
           </ContainerDescription>
         </ContainerModal>
       </Container>

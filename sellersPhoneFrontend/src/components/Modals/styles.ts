@@ -4,14 +4,14 @@ export const Container = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
-  margin-top: 130px;
+  margin-top: 33%;
 `;
 
 export const ContainerModal = styled.View`
   flex: 1;
   background-color: #6bb1f1;
-  max-height: 500px;
-  height: 500px;
+  max-height: 540px;
+  height: 540px;
   width: 91%;
   max-width: 91%;
   border-radius: 20px;
@@ -80,6 +80,27 @@ export const ContainerButtons = styled.View`
   align-items: flex-end;
   height: 40px;
   max-height: 40px;
+`;
+
+export const ContainerButtonsLeave = styled.View`
+  justify-content: center;
+  align-items: center;
+  max-height: 13%;
+  height: 13%;
+  max-width: 40%;
+  width: 40%;
+  background-color: red;
+  border-radius: 30px;
+  border-color: #FFFFFF;
+  border-width: 2px;
+  margin-top: 5%;
+`;
+
+export const LeaveText = styled.Text`
+  font-size: 20px;
+  text-align: center;
+  color: #FFFFFF;
+  font-weight: bold;
 `;
 
 export const EditCloseProfileButton = styled.Image`

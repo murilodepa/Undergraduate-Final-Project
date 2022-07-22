@@ -5,7 +5,7 @@ import { useGlobalContext } from "../../context/SellerContext";
 import ModalSellerInformations from "../Modals/SellerInformations";
 import { IGetSellerData } from "../../services/SellerService/SellerServiceInterface";
 
-const SellerInputs = () => {
+const SellerInputs = ({ navigation }) => {
   const { name, profileImage } = useGlobalContext();
   const [openSellerInformations, setOpenSellerInformations] = useState(false);
   const [sellerData, setSellerData] = useState<IGetSellerData>();
@@ -14,6 +14,10 @@ const SellerInputs = () => {
     setOpenSellerInformations(false);
   };
 
+  const closeAndLeave = async () => {
+    setOpenSellerInformations(false);
+    navigation.navigate("Initial");
+  };
   
   function reformatDate(dateStr: string) {
     const dArr = dateStr.split("-");
@@ -45,12 +49,13 @@ const SellerInputs = () => {
         openSellerInformations={openSellerInformations}
         closeSellerInformations={closeSellerInformations}
         sellerInformations={sellerData}
+        closeAndLeave={closeAndLeave}
         />
       }
       <TouchableOpacity onPress={() => eventProfileSetting()}>
       <ProfileImage source={require("../../assets/Profile.png")} />
       </TouchableOpacity>
-      <ProfileText>Murilo</ProfileText>
+      <ProfileText>Murilo Araujo</ProfileText>
     </ContainerHeader>
     
   );

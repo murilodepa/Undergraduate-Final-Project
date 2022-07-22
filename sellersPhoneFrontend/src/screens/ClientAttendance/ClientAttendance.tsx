@@ -25,7 +25,7 @@ const ClientAttendance = ({ navigation }) => {
 
   return (
     <Container>
-      <HeaderProfile />
+      <HeaderProfile navigation={navigation}/>
 
       <Line />
 

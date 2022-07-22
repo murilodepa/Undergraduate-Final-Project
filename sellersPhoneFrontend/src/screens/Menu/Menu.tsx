@@ -13,7 +13,7 @@ const Menu = ({ navigation }) => {
 
   return (
     <Container>
-      <HeaderProfile />
+      <HeaderProfile navigation={navigation}/>
 
       <Line />
       <TouchableOpacity onPress={() => eventEasterEgg()}>
