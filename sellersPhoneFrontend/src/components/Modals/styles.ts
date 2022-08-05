@@ -117,4 +117,3 @@ export const Line = styled.View`
   height: 2px;
   margin-top: 7px;
 `
-

@@ -1,5 +1,6 @@
 import React from "react";
 import { TouchableOpacity, Modal } from "react-native";
+import { useGlobalContext } from "../../context/SellerContext";
 
 import {
   Container,
@@ -23,6 +24,9 @@ export default function ModalSellerInformations({
   sellerInformations,
   closeAndLeave,
 }) {
+  
+  const { name, gender, birth, sector, available, attendances, email } = useGlobalContext();
+
   return (
     <Modal
       animationType="slide"
@@ -46,14 +50,11 @@ export default function ModalSellerInformations({
           <ContainerDescription>
             <ProfileDescription>
               <Name>
-                {/* {sellerInformations && 
-                `${sellerInformations.name}`}            */}
-                Murilo Araujo
+                {name}
               </Name>
               <Line />
               <Description>
-                {/* {sellerInformations && `${sellerInformations.email} \n ${sellerInformations.birth} \n ${sellerInformations.gender} \n ${sellerInformations.sector} \n ${sellerInformations.attendances} Atendimentos `} */}
-                {`murilodepa@gmail.com \n 30 anos \n Masculino \n Calça \n 123 Atendimentos `}
+                {`${email} \n ${birth} \n ${gender} \n ${sector} \n ${attendances} Atendimentos `}
               </Description>
             </ProfileDescription>
             <ContainerButtonsLeave>

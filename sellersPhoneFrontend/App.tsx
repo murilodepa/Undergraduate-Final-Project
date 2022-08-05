@@ -6,11 +6,16 @@ import { SellerContext } from "./src/context/SellerContext";
 export default function App() {
   const [name, setName] = React.useState<string>(null);
   const [profileImage, setProfileImage] = React.useState<any>(null);
-
+  const [gender, setGender] = React.useState<string>(null);
+  const [birth, setBirth] = React.useState<any>(null);
+  const [sector, setSector] = React.useState<string>(null);
+  const [available, setAvailable] = React.useState<any>(null);
+  const [attendances, setAttendances] = React.useState<number>(null);
+  const [email, setEmail] = React.useState<string>(null);
   LogBox.ignoreLogs(["Remote debugger"]);
   return (
     <SellerContext.Provider
-      value={{ name, setName, profileImage, setProfileImage }}
+      value={{ name, setName, gender, setGender, birth, setBirth, sector, setSector, available, setAvailable, attendances, setAttendances, email, setEmail, profileImage, setProfileImage }}
     >
       <RootNavigator />
     </SellerContext.Provider>
