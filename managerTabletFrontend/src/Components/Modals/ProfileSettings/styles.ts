@@ -29,8 +29,8 @@ export const ProfileDescription = styled.View`
   flex: 1;
   max-height: 320px;
   height: 320px;
-  width: 310px;
-  max-width: 310px;
+  width: 85%;
+  max-width: 85%;
   border-radius: 20px;
   border-color: #000000;
   border-width: 2px;
@@ -38,7 +38,7 @@ export const ProfileDescription = styled.View`
 `;
 
 export const Name = styled.Text`
-  font-size: 40px;
+  font-size: 32px;
   text-align: center;
   color: white;
 `;

@@ -82,7 +82,7 @@ const Capture = ({ navigation, route }: any) => {
       setProfileImage(response.profileImage);
       setName(response.name);
     }
-    console.log("Atualizando name and foto");
+    console.log("Updating name and photo...");
   };
 
   const closePictureAndCounter = async () => {
@@ -124,9 +124,12 @@ const Capture = ({ navigation, route }: any) => {
       }
     } else if (capturedPicturesNumber == 3) {
       setCapturedPitureExpression("Lateral do rosto");
-    } else if (capturedPicturesNumber == 5) {
+    } else if (capturedPicturesNumber >= 5) { // capture 6 photos of the user  
+      getProfileImage();
+      getSellerData();
+      getClientData();
+      console.log("User registered successfully - going to Menu");
       navigation.navigate("Menu");
-      console.log("user registered successfully - going to Menu");
     };
   }
 

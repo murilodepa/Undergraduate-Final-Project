@@ -325,9 +325,9 @@ const SellerInputs = (props: any) => {
           />
           <TouchableOpacity onPress={() => setHidePassword(!hidePassword)}>
             {hidePassword ? (
-              <Ionicons name="eye" color="#000000" size={30} />
-            ) : (
               <Ionicons name="eye-off" color="#000000" size={30} />
+            ) : (
+              <Ionicons name="eye" color="#000000" size={30} />
             )}
           </TouchableOpacity>
         </ContainerPasswordInput>

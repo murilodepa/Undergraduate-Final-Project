@@ -72,12 +72,6 @@ const ClientInputs = (props: any) => {
     setResultClientData(response);
   };
 
-  function clone(obj: string) {
-
-    // Handle the 3 simple types, and null or undefined
-    if (null == obj || "object" != typeof obj) return obj;
-  }
-
   const eventCaptureOrEdit = async () => {
     var count = 0;
     if (

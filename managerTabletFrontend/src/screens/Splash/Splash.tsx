@@ -55,7 +55,7 @@ const Splash = ({ navigation }) => {
 
     let response: ISellerImageAndName;
     try {
-      response = await new SendImageSellerService().getSellerImageAndName(11);
+      response = await new SendImageSellerService().getSellerImageAndName(1);
     } catch (error) {
       console.error("Error to get manager date", error);
     }

@@ -47,7 +47,6 @@ export const CharacteristicText = styled.Text`
 
 export const CharacteristicInput = styled.TextInput`
   font-size: 28px;
-  font-weight: bold;
   border-color: #000000;
   border-radius: 20px;
   width: 250px;

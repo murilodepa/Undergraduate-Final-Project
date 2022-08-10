@@ -39,15 +39,14 @@ export const ContainerHeader = styled.View`
 
 export const CharacteristicText = styled.Text`
   font-size: 30px;
-  font-weight: bold;
   justify-content: center;
   align-items: center;
   margin-left: 30px;
+  font-weight: bold;
 `;
 
 export const CharacteristicInput = styled.TextInput`
   font-size: 28px;
-  font-weight: bold;
   border-color: #000000;
   border-radius: 20px;
   width: 250px;
@@ -56,7 +55,6 @@ export const CharacteristicInput = styled.TextInput`
 
 export const PasswordInput = styled.TextInput`
   font-size: 28px;
-  font-weight: bold;
   border-radius: 20px;
   margin-left: 5px;
 `;
