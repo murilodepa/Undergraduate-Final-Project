@@ -3,6 +3,7 @@ import { TouchableOpacity, BackHandler, TextInput } from "react-native";
 import { ISellerData, ISellerEmailPassword } from "../../services/SellerService/SellerServiceInterface";
 import { Ionicons } from "@expo/vector-icons";
 import { useGlobalContext } from "../../context/SellerContext";
+import Loading from "../../components/Loading/Loading";
 
 import {
   Container,
@@ -26,7 +27,7 @@ const Initial = ({ navigation }) => {
     });
   }, []);
 
-  
+
   const regexEmail =
     /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
 
@@ -34,21 +35,20 @@ const Initial = ({ navigation }) => {
     useState<ISellerEmailPassword>();
   const [hideTextInvalidPassword, setHideTextInvalidPassword] = useState(false);
   const [hidePassword, setHidePassword] = useState(true);
-  const { setName, setProfileImage, setGender, setBirth, setSector, setAvailable, setAttendances, setEmail } = useGlobalContext();
+  const { setId, setName, setProfileImage, setGender, setBirth, setSector, setAvailable, setAttendances, setEmail } = useGlobalContext();
   const ContainerEmailInputRef = useRef(null);
   const ContainerPasswordInputRef = useRef(null);
   const [inputEmailColor, setInputEmailColor] = useState("black");
   const [inputPasswordColor, setInputPasswordColor] = useState("black");
-
+  const [visibleLoading, setVisibleLoading] = useState(false);
 
   const eventLogin = async () => {
-    setName("Murilo Araujo");
     var count = 0;
     //setProfileImage()
 
-   /* if (parseInt(sellerEmailPassword.password) == 1234) {
-      setHideTextInvalidPassword(true);
-    }*/
+    /* if (parseInt(sellerEmailPassword.password) == 1234) {
+       setHideTextInvalidPassword(true);
+     }*/
 
     if (
       sellerEmailPassword.email != "" &&
@@ -78,10 +78,9 @@ const Initial = ({ navigation }) => {
       count--;
     }
 
-    console.log("count", count)
-
     if (count == 2) {
-      console.log("enytroouuuuuuuuuuuu")
+      console.log("Sign-in!");
+      setVisibleLoading(true);
       setInputEmailColor("black");
       setInputPasswordColor("black");
 
@@ -94,8 +93,8 @@ const Initial = ({ navigation }) => {
         userRegistered = false;
       }
 
-      if(userRegistered) {
-        console.log("Response: ", response);
+      if (userRegistered) {
+        setId(response.id)
         setName(response.name);
         setProfileImage(response.profileImage);
         setGender(response.gender);
@@ -109,12 +108,14 @@ const Initial = ({ navigation }) => {
         setHideTextInvalidPassword(false);
         sellerEmailPassword.email = "";
         sellerEmailPassword.password = "";
+        setVisibleLoading(false);
         navigation.navigate("Menu");
       } else {
         console.log("User not registered!");
         setInputEmailColor("red");
         setInputPasswordColor("red");
         setHideTextInvalidPassword(true);
+        setVisibleLoading(false);
       }
 
     }
@@ -122,6 +123,7 @@ const Initial = ({ navigation }) => {
 
   return (
     <Container>
+      <Loading visible={visibleLoading} />
       <Logo source={require("../../assets/venda-mais-logo.png")} />
       <LoginText>Faça seu Login</LoginText>
 

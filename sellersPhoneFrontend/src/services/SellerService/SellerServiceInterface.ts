@@ -1,26 +1,14 @@
-import { AxiosResponse } from "axios";
-
 export interface ISellerEmailPassword {
   email?: string;
   password: string;
 }
 
 export interface ISellerData {
+  id: number;
   name: string;
   profileImage: any;
   gender?: string;
-  birth?: string;
-  sector?: string;
-  available?: boolean;
-  attendances?: number;
-  email?: string;
-}
-
-export interface IGetSellerData {
-  id?: number;
-  name?: string;
-  gender?: string;
-  birth?: string;
+  birth?: number;
   sector?: string;
   available?: boolean;
   attendances?: number;

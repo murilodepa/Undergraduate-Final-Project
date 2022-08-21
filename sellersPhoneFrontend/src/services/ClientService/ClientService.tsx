@@ -1,11 +1,11 @@
 import backendApi from "../backendApi";
 
-import { IClientsList, IClientsProps } from "./ClientServiceInterface";
+import { IClientData, IClientDataProps } from "./ClientServiceInterface";
 
-export class ClientService implements IClientsProps {
+export class ClientService implements IClientDataProps {
 
-    getClientsList = async (): Promise<IClientsList> => {
-        const { data } = await backendApi.get('/clientSeller/clientsWaitingAttendance')
+    getClientData = async (sellerId: number): Promise<IClientData> => {
+        const { data } = await backendApi.get('/clientSeller/clientWaitingAttendance/'+sellerId)
         return data
     }
 }

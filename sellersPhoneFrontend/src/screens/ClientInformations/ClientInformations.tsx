@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import date from "./date";
 import { ScrollView, Text } from "react-native";
 
@@ -17,24 +17,42 @@ import {
   DescriptionItens,
   LineItens,
 } from "./styles";
+import { IClientInformationsData } from "../../services/ClientService/ClientServiceInterface";
+import { ClientSellerAttendance } from "../../services/ClientSellerAttendance/ClientSellerAttendance";
+import { useGlobalContext } from "../../context/SellerContext";
 
-const ClientInformations = ({ navigation }) => {
+const ClientInformations = ({ navigation, route }: any) => {
+  const { id } = useGlobalContext();
 
-    const eventClientAttendance = async () => {
-    console.log("Button - Cliente Atendido");
+  const [clientInformationsData, setClientInformationsData] = useState<IClientInformationsData>({
+    id: route.params.paramKey.id,
+    name: route.params.paramKey.name,
+    gender: route.params.paramKey.gender,
+    birth: route.params.paramKey.birth
+  });
+
+  const eventClientAttendance = async () => {
+    console.log("Event - Client attendance");
+    let response: any;
+    try {
+      response = await new ClientSellerAttendance().updateStatusAndEndTime(clientInformationsData.id, id);
+    } catch (error) {
+      console.error("Error to update status", error);
+    }
+
     navigation.navigate("Menu");
   };
 
   return (
     <Container>
-      <HeaderProfile navigation={navigation}/>
+      <HeaderProfile navigation={navigation} />
 
       <Line />
       <ContainerClientName>
-        <ClientName>Murilo Araujo</ClientName>
+        <ClientName>{clientInformationsData.name}</ClientName>
         <LineDescription />
         <ClientDescription>
-          {`Masculino \n 23 anos \n Sugestão: Camiseta`}
+          {`${clientInformationsData.gender} \n ${clientInformationsData.birth} anos \n Sugestão: Camiseta`}
         </ClientDescription>
       </ContainerClientName>
 

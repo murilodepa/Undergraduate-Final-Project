@@ -1,12 +1,18 @@
-export interface IClientsList {
-    filter(arg0: (item: any) => boolean): import("react").SetStateAction<IClientsList>;
-    id: number;
-    name: string;
-    profileImage: any;
-    gender?: string;
-    birth?: string;
-  }
+export interface IClientData {
+  id: number;
+  name: string;
+  profileImage: any;
+  gender?: string;
+  birth?: number;
+}
 
-export interface IClientsProps {
-    getClientsList: () => Promise<any>;
-  }
+export interface IClientInformationsData {
+  id: number;
+  name: string;
+  gender?: string;
+  birth?: number;
+}
+
+export interface IClientDataProps {
+  getClientData: (sellerId: number) => Promise<IClientData>;
+}

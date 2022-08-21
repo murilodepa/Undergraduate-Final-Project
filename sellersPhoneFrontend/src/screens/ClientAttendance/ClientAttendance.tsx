@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 
 import HeaderProfile from "../../components/HeaderProfile/HeaderProfile";
+import { ClientSellerAttendance } from "../../services/ClientSellerAttendance/ClientSellerAttendance"
+import { useGlobalContext } from "../../context/SellerContext";
 
 import {
   Container,
@@ -11,15 +13,39 @@ import {
   Button,
   DescriptionButton,
 } from "./styles";
+import { IClientInformationsData } from "../../services/ClientService/ClientServiceInterface";
 
-const ClientAttendance = ({ navigation }) => {
+const ClientAttendance = ({ navigation, route }: any) => {
+  const { id } = useGlobalContext();
+  const [clientInformationsData, setClientInformationsData] = useState<IClientInformationsData>({
+    id: route.params.paramKey.clientId,
+    name: route.params.paramKey.name,
+    gender: route.params.paramKey.gender,
+    birth: route.params.paramKey.birth
+  });
+
   const eventClientFound = async () => {
-    console.log("Button - Cliente encontrado");
-    navigation.navigate("ClientInformations");
+    console.log("Event - Client found");
+    let response: any;
+    try {
+        response = await new ClientSellerAttendance().updateStatus(clientInformationsData.id, id);
+    } catch (error) {
+      console.error("Error to update status", error);
+    }
+
+    navigation.navigate("ClientInformations", {paramKey: clientInformationsData});
   };
 
   const eventClientNotFound = async () => {
-    console.log("Button - Cliente não encontrado");
+    console.log("Event - Client not found");
+
+    let response: any;
+    try {
+        response = await new ClientSellerAttendance().deleteAttendance(clientInformationsData.id, id);
+    } catch (error) {
+      console.error("Error to update status", error);
+    }
+
     navigation.navigate("Menu");
   };
 
@@ -29,10 +55,10 @@ const ClientAttendance = ({ navigation }) => {
 
       <Line />
 
-      <ClientImage source={require("../../assets/client-profile.jpg")} />
+      <ClientImage source={{uri: route.params.paramKey.profileImage}} />
 
       <ContainerClientName>
-        <ClientName>Murilo Araujo</ClientName>
+        <ClientName>{clientInformationsData.name}</ClientName>
       </ContainerClientName>
 
       <Button onPress={() => eventClientFound()}>

@@ -1,47 +1,47 @@
-import React, { useEffect } from "react";
-import { TouchableOpacity, BackHandler } from "react-native";
+import React, { useEffect, useState } from "react";
 import HeaderProfile from "../../components/HeaderProfile/HeaderProfile";
 import { ClientService } from "../../services/ClientService/ClientService";
-import { IClientsList } from "../../services/ClientService/ClientServiceInterface";
-
-import { Container, Line, Description, ContainerDescription, Logo} from "./styles";
+import { IClientData } from "../../services/ClientService/ClientServiceInterface";
+import { Container, Line, Description, ContainerDescription, Logo } from "./styles";
+import { useGlobalContext } from "../../context/SellerContext";
 
 const Menu = ({ navigation }) => {
+  const { id } = useGlobalContext();
 
   const eventEasterEgg = async () => {
-    console.log("Button - event Easter Egg");
+    console.log("Event - Easter Egg Aux");
     navigation.navigate("ClientAttendance");
   };
 
   useEffect(() => {
     const intervalId = setInterval(async () => {
-      console.log("Hello, World!")
-
-      let userRegistered: boolean = true;
-      let response: IClientsList;
+      let isCustomerWaitingAttendance: boolean = true;
+      let response: IClientData;
       try {
-        response = await new ClientService().getClientsList();
+        response = await new ClientService().getClientData(id);
       } catch (error) {
         console.error("Error to get clients list", error);
+        isCustomerWaitingAttendance = false;
       }
 
-      console.log("response, response: ", response)
-      console.log("Hello, World!")
+      console.log("Pulling...")
+
+      if (isCustomerWaitingAttendance && response.name != "" && response.name != " " && response.name != null) {
+        navigation.navigate("ClientAttendance", { paramKey: response });
+      }
 
     }, 30000)
     return () => clearInterval(intervalId)
   }, [])
 
-
-
   return (
     <Container>
-      <HeaderProfile navigation={navigation}/>
+      <HeaderProfile navigation={navigation} />
 
       <Line />
-      <TouchableOpacity onPress={() => eventEasterEgg()}>
+      {/*<TouchableOpacity onPress={() => eventEasterEgg()}>*/}
       <Logo source={require("../../assets/venda-mais-logo.png")} />
-      </TouchableOpacity>
+      {/*</TouchableOpacity>*/}
       <Line />
 
       <ContainerDescription>

@@ -1,12 +1,14 @@
 import React, {createContext, useContext, useState } from 'react';
 
 export type GlobalContent= {
+    id: number
+    setId: (id: number) => void
     name: string
     setName: (name: string) => void
     gender: string
     setGender: (gender: string) => void
-    birth: string
-    setBirth: (birth: string) => void
+    birth: number
+    setBirth: (birth: number) => void
     sector: string
     setSector: (sector: string) => void
     available: boolean
@@ -20,11 +22,13 @@ export type GlobalContent= {
 }
 
 export const SellerContext = createContext<GlobalContent>({
+    id: 0,
+    setId: () => {},
     name: "",
     setName: () => {},
     gender: "",
     setGender: () => {},
-    birth: "",
+    birth: 0,
     setBirth: () => {},
     sector: "",
     setSector: () => {},
@@ -35,7 +39,7 @@ export const SellerContext = createContext<GlobalContent>({
     email: "",
     setEmail: () => {},
     profileImage: "",
-    setProfileImage: () => {},
+    setProfileImage: () => {}
 })
 
 export const useGlobalContext = () => useContext(SellerContext);

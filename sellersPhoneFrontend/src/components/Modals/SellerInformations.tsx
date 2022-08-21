@@ -21,11 +21,10 @@ import {
 export default function ModalSellerInformations({
   openSellerInformations,
   closeSellerInformations,
-  sellerInformations,
   closeAndLeave,
 }) {
   
-  const { name, gender, birth, sector, available, attendances, email } = useGlobalContext();
+  const { name, birth, gender, sector, attendances, email, profileImage } = useGlobalContext();
 
   return (
     <Modal
@@ -44,7 +43,7 @@ export default function ModalSellerInformations({
           </ContainerButtons>
 
           <ContainerProfileImage>
-            <ProfileImage source={require("../../assets/Profile.png")} />
+            <ProfileImage source={{uri: profileImage}} />
           </ContainerProfileImage>
 
           <ContainerDescription>
@@ -54,7 +53,7 @@ export default function ModalSellerInformations({
               </Name>
               <Line />
               <Description>
-                {`${email} \n ${birth} \n ${gender} \n ${sector} \n ${attendances} Atendimentos `}
+                {`${email} \n ${birth} anos \n ${gender} \n ${sector} \n ${attendances} Atendimentos `}
               </Description>
             </ProfileDescription>
             <ContainerButtonsLeave>
