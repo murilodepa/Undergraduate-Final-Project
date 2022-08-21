@@ -7,7 +7,6 @@ package com.api.tcc.database.Models;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.br.CPF;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
@@ -36,4 +35,6 @@ public class ClientModel {
     @Column(name = "purchase_suggestion")
     @Size(min = 3, max = 20)
     private String purchaseSuggestion;
+    @Column(name = "available")
+    private Boolean available;
 }

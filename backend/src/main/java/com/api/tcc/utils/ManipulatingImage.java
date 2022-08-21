@@ -23,8 +23,11 @@ import java.nio.file.Paths;
 public class ManipulatingImage {
 
     public static final int QUANTITY_OF_PHOTOS = 6;
-    String clientPhotosPath = "src\\main\\resources\\photos\\clients";
-    String sellerPhotosPath = "src\\main\\resources\\photos\\sellers";
+
+    public static int photosIndex = 0;
+
+    private static final String clientPhotosPath = "src\\main\\resources\\photos\\clients";
+    private static final String sellerPhotosPath = "src\\main\\resources\\photos\\sellers";
 
     public double getQuantityOfFiles(final boolean isClient) {
         int count = 0;
@@ -55,26 +58,20 @@ public class ManipulatingImage {
         }
     }
 
-    public String fileName(final boolean isClient, int userId) throws IOException {
-        int index;
-        String fileName = null;
+    public String fileName(final boolean isClient, int userId) {
+        String fileName;
         double quantityOfFiles = getQuantityOfFiles(isClient) + 1;
 
-        index = (int) (quantityOfFiles % QUANTITY_OF_PHOTOS);
-        if (index == 0) {
-            index = QUANTITY_OF_PHOTOS;
+        photosIndex = (int) (quantityOfFiles % QUANTITY_OF_PHOTOS);
+        if (photosIndex == 0) {
+            photosIndex = QUANTITY_OF_PHOTOS;
         }
-        if (userId < 10) {
-            fileName = ("person.0" + userId + "." + index + ".jpg");
-        } else {
-            fileName = ("person." + userId + "." + index + ".jpg");
-        }
-
+            fileName = ("person." + userId + "." + photosIndex + ".jpg");
         return fileName;
     }
 
     public byte[] encodeImage(final boolean isClient, final String fileName) throws IOException {
-        byte[] fileContent = null;
+        byte[] fileContent;
         if (isClient) {
             fileContent = FileUtils.readFileToByteArray(new File(clientPhotosPath + "\\" + fileName));
         } else {

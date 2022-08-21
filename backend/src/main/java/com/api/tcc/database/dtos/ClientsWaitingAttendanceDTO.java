@@ -6,21 +6,20 @@
 package com.api.tcc.database.dtos;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.br.CPF;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.util.Date;
 
 /**
  * @author Murilo de Paula Araujo
  */
+
 @Data
-public class ClientDTO {
+public class ClientsWaitingAttendanceDTO {
+    private long clientId;
     @Size(min = 3, max = 100)
     private String name;
     @Size(min = 1, max = 10)
     private String gender;
-    private String birth;
-    private Boolean available;
+    private int birth;
+    private String profileImage;
 }

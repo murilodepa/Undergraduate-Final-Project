@@ -8,12 +8,11 @@ package com.api.tcc.controllers;
 import com.api.tcc.database.Models.ClientModel;
 import com.api.tcc.database.Models.ClientSellerModel;
 import com.api.tcc.database.Models.SellerModel;
-import com.api.tcc.database.dtos.ClientDTO;
 import com.api.tcc.database.dtos.ClientSellerDTO;
+import com.api.tcc.database.dtos.ClientsWaitingAttendanceDTO;
 import com.api.tcc.services.ClientSellerService;
 import com.api.tcc.services.ClientService;
 import com.api.tcc.services.SellerService;
-import com.api.tcc.utils.FormattingDates;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -39,10 +39,16 @@ public class ClientSellerController {
     @Autowired
     private ClientSellerService clientSellerService;
 
+    @Autowired
+    private ClientService clientService;
+
+    @Autowired
+    private SellerService sellerService;
+
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     @PostMapping("/insertAttendance")
-    public ResponseEntity<Object> saveAttendance(@RequestBody @Valid ClientSellerDTO clientSellerDTO) throws ParseException {
+    public ResponseEntity<Object> saveAttendance(@RequestBody @Valid ClientSellerDTO clientSellerDTO) {
         ClientSellerModel clientSellerModel = new ClientSellerModel();
         BeanUtils.copyProperties(clientSellerDTO, clientSellerModel);
         return ResponseEntity.status(HttpStatus.CREATED).body(clientSellerService.save(clientSellerModel));
@@ -85,6 +91,43 @@ public class ClientSellerController {
         return ResponseEntity.status(HttpStatus.OK).body(clientSellerService.save(clientSellerModel));
     }
 
+    @PutMapping("/updateStatus/{clientId}/{sellerId}")
+    public ResponseEntity<Object> updateStatus(@PathVariable(value = "clientId") long clientId, @PathVariable(value = "sellerId") long sellerId) {
+        Optional<ClientModel> clientModelOptional = clientService.findById(clientId);
+        Optional<SellerModel> sellerModelOptional = sellerService.findById(sellerId);
+
+        if (!clientModelOptional.isPresent() || !sellerModelOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client or Seller not found!");
+        }
+        clientModelOptional.get().setAvailable(false);
+        sellerModelOptional.get().setAvailable(false);
+        return ResponseEntity.status(HttpStatus.OK).body("Client and seller status changed successfully");
+    }
+
+    @PutMapping("/updateStatusAndEndTime/{clientId}/{sellerId}") //TO DO percorrer lista se tem cliente esperando atendimento e indicar o vendedor livre para aquela pessoa
+    public ResponseEntity<Object> updateStatusAndEndTime(@PathVariable(value = "clientId") long clientId, @PathVariable(value = "sellerId") long sellerId) {
+        Optional<ClientModel> clientModelOptional = clientService.findById(clientId);
+        Optional<SellerModel> sellerModelOptional = sellerService.findById(sellerId);
+
+        if (!clientModelOptional.isPresent() || !sellerModelOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client or Seller not found!");
+        }
+        clientSellerService.endAttendance(clientId, sellerId);
+        return ResponseEntity.status(HttpStatus.OK).body("Client and seller status changed successfully");
+    }
+
+    @DeleteMapping("/deleteAttendance/{clientId}/{sellerId}")
+    public ResponseEntity<Object> deleteAttendance(@PathVariable(value = "clientId") long clientId, @PathVariable(value = "sellerId") long sellerId) {
+        Optional<ClientModel> clientModelOptional = clientService.findById(clientId);
+        Optional<SellerModel> sellerModelOptional = sellerService.findById(sellerId);
+
+        if (!clientModelOptional.isPresent() || !sellerModelOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client or Seller not found!");
+        }
+        clientSellerService.deleteAttendance(clientId, sellerId);
+        return ResponseEntity.status(HttpStatus.OK).body("Attendance between client and seller was deleted successfully");
+    }
+
     @PutMapping("/finishingAttendance/{id}")
     public ResponseEntity<Object> finishingAttendance(@PathVariable(value = "id") long id) {
         List<ClientSellerModel> clientSellerModelList = clientSellerService.findAll();
@@ -101,5 +144,10 @@ public class ClientSellerController {
     @GetMapping("/clientIsServed/{id}")
     public ResponseEntity<Object> verifyClientService(@PathVariable(value = "id") long id) {
         return ResponseEntity.status(HttpStatus.OK).body(clientSellerService.isBeingAttended(id));
+    }
+
+    @GetMapping("/clientWaitingAttendance/{sellerId}")
+    public ResponseEntity<ClientsWaitingAttendanceDTO> clientWaitingAttendance(@PathVariable(value = "sellerId") long sellerId) throws ParseException, IOException {
+        return ResponseEntity.status(HttpStatus.OK).body(clientSellerService.clientWaitingAttendance(sellerId));
     }
 }

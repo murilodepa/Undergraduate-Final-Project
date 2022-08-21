@@ -53,17 +53,19 @@ public class SellerImageService {
         return sellerImageRepository.findSellerImages(id);
     }
     public List<IdImageNameDTO> findSellerIdImagesNamesList(List<SellerModel> sellerModelList) throws IOException {
-        List<IdImageNameDTO> IdImageNameDTOList = new ArrayList<IdImageNameDTO>();
+        List<IdImageNameDTO> IdImageNameDTOList = new ArrayList<>();
 
         ManipulatingImage manipulatingImage = new ManipulatingImage();
         for(SellerModel sellerModelAux: sellerModelList) {
             List<SellerImageModel> sellerImageModelList = sellerImageRepository.findSellerImages(sellerModelAux.getId());
             if(!sellerImageModelList.isEmpty()) {
-                IdImageNameDTO idImageNameDTO = new IdImageNameDTO();
-                idImageNameDTO.setUserId(sellerModelAux.getId());
-                idImageNameDTO.setName(sellerModelAux.getName());
-                idImageNameDTO.setProfileImage(manipulatingImage.decodeImage(sellerImageModelList.get(0).getImage()));
-                IdImageNameDTOList.add(idImageNameDTO);
+                if(sellerModelAux.getId() != 1) {
+                    IdImageNameDTO idImageNameDTO = new IdImageNameDTO();
+                    idImageNameDTO.setUserId(sellerModelAux.getId());
+                    idImageNameDTO.setName(sellerModelAux.getName());
+                    idImageNameDTO.setProfileImage(manipulatingImage.decodeImage(sellerImageModelList.get(0).getImage()));
+                    IdImageNameDTOList.add(idImageNameDTO);
+                }
             } else {
                 return null;
             }
@@ -78,14 +80,4 @@ public class SellerImageService {
             sellerImageRepository.deleteAll(sellerImageModelList);
         }
     }
-/*
-    @DeleteMapping("/removeSeller/{id}")
-    public ResponseEntity<Object> deleteSeller(@PathVariable(value = "id") long id) {
-        Optional<SellerModel> sellerModelOptional = sellerService.findById(id);
-        if (!sellerModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
-        }
-        sellerService.delete(sellerModelOptional.get());
-        return ResponseEntity.status(HttpStatus.OK).body("Client delected successfully!");
-    }*/
 }

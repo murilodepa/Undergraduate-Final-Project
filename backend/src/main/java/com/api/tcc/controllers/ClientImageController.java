@@ -38,7 +38,7 @@ public class ClientImageController {
 
     @PostMapping("/sendImage")
     public ResponseEntity<?> sendImage(@RequestPart(value = "image", required = false) MultipartFile image) throws Exception {
-        System.out.println("Images Receives: " + image.getInputStream());
+        System.out.println("Images Receives of a client: " + image.getInputStream());
         final byte[] encodeImage;
         long clientId = (clientImageService.getClientId());
         if (clientId > 0) {
@@ -48,7 +48,7 @@ public class ClientImageController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(Integer.parseInt(fileName.split("\\.")[1]) == ManipulatingImage.QUANTITY_OF_PHOTOS) {
+            if(ManipulatingImage.photosIndex == ManipulatingImage.QUANTITY_OF_PHOTOS) {
                 System.out.println("Generating an updated classifier file!");
                 new Training();
             }

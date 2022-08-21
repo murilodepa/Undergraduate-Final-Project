@@ -16,6 +16,10 @@ public class EmailMessages {
         return sellerModel.getName() + ", o seu cadastro como vendedor(a) foi realizado com sucesso!";
     }
 
+    public static String createTitleUpdate(SellerModel sellerModel) {
+        return sellerModel.getName() + ", as suas informações pessoais foram atualizados com sucesso!";
+    }
+
     public static String createTitleToRemove(SellerModel sellerModel) {
         return sellerModel.getName() + ", você está sendo removido como vendedor(a) de nossa loja!";
     }
@@ -31,6 +35,22 @@ public class EmailMessages {
                 + "Senha: " + sellerModel.getPassword() + "\n"
                 + "--------------------------------------------------------------- \n\n"
                 + "Para qualquer alteração dos seus dados, procurar o(a) gerente da loja! \n"
+                ;
+    }
+
+    public static String messageToUpdateSeller(SellerModel sellerModel) {
+        return "Olá " + sellerModel.getName()
+                + ",\n\nOs seus dados foram atualizados, você pode observar com mais detalhes logo abaixo. Por favor, confira se está tudo certo. \n\n"
+                + "--------------------------------------------------------------- \n"
+                + "Nome: " + sellerModel.getName() + "\n"
+                + "Gênero: " + sellerModel.getGender() + "\n"
+                + "Data de Nascimento: " + sellerModel.getBirth() + "\n"
+                + "Sector: " + sellerModel.getSector() + "\n"
+                + "Número de atendimentos: " + sellerModel.getAttendances() + "\n"
+                + "E-mail: " + sellerModel.getEmail() + "\n"
+                + "Senha: " + sellerModel.getPassword() + "\n"
+                + "--------------------------------------------------------------- \n\n"
+                + "Para qualquer outra alteração dos seus dados, procurar o(a) gerente da loja! \n"
                 ;
     }
 

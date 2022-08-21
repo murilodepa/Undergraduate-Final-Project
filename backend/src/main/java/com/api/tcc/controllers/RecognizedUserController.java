@@ -46,8 +46,8 @@ public class RecognizedUserController {
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 
-    @PostMapping("/recognizedUser")
-    public ResponseEntity<Object> recognizedUser(@RequestParam @Valid long userId) throws ParseException {
+    @PostMapping("/recognizedUser") //TO DO analisar vendedor disponivel, melhor vendendor, indicar um vendedor PROBLEMA SE não tiver vendedor disponivel
+    public ResponseEntity<Object> recognizedUser(@RequestParam @Valid long userId) {
 
         IndexAndName indexAndName = recognizedUserService.verifyRecognizedClient(userId);
 
@@ -73,11 +73,10 @@ public class RecognizedUserController {
         } else {
             indexAndName = recognizedUserService.verifyRecognizedSeller(userId);
             if (indexAndName != null) {
-                System.out.println("The user is a seller! - Id: " + indexAndName.getId() + ", Name: " + indexAndName.getName());
-                System.out.println("Disregard recognition!");
+                return ResponseEntity.status(HttpStatus.OK).body("Disregard facial recognition! The user is a seller! - Id: " + indexAndName.getId() + ", Name: " + indexAndName.getName() + "."); //TO DO testar se no front end vai entender o comportamento, se não alterar para not found
             }
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Unregistered user or the user is a store seller!");
+        return ResponseEntity.status(HttpStatus.OK).body("Unregistered user in system!");
     }
 
     @PostMapping("/unknownUserPhoto")

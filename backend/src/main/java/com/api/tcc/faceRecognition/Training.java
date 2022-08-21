@@ -57,7 +57,7 @@ public class Training {
             for (count = 0; count < clientFilesLength; count++) {
                 Mat photo = imread(clientFiles[count].getAbsolutePath(), IMREAD_GRAYSCALE);
                 int labelClass = Integer.parseInt(clientFiles[count].getName().split("\\.")[1]);
-                System.out.println("Training classifier with photo of UserId: " + labelClass);
+                System.out.println("Training classifier with photo of a client with ID: " + labelClass);
                 resize(photo, photo, new Size(160, 160));
                 photos.put(count, photo);
                 bufferLabels.put(count, labelClass);
@@ -66,7 +66,7 @@ public class Training {
             for (File file: sellerFiles) {
                 Mat photo = imread(file.getAbsolutePath(), IMREAD_GRAYSCALE);
                 int labelClass = Integer.parseInt(file.getName().split("\\.")[1]);
-                System.out.println(file.getName().split("\\.")[1] + " " + file.getAbsolutePath() + "userId: " + labelClass);
+                System.out.println("Training classifier with photo of seller with ID: " + labelClass);
                 resize(photo, photo, new Size(160, 160));
                 photos.put(count, photo);
                 bufferLabels.put(count, labelClass);
