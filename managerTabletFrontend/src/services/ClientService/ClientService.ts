@@ -16,5 +16,5 @@ export class ClientService implements IRegisterClientDataProps {
 
     async updateClient(response: any): Promise<AxiosResponse> {
         return await backendApi.put("/client/updateClient/"+response.id, response);
-      }
+    }
 } 

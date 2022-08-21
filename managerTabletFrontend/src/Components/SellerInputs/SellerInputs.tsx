@@ -66,8 +66,6 @@ const SellerInputs = (props: any) => {
     "Camiseta",
     "Calça",
     "Vestido",
-    "Blusa",
-    "Saia",
     "Short",
   ];
   const [sellerData, setSellerData] = useState<ISellerData>(props.sellerData);
@@ -78,7 +76,7 @@ const SellerInputs = (props: any) => {
   const [inputGenderColor, setInputGenderColor] = useState("black");
   const [inputSectorColor, setInputSectorColor] = useState("black");
   const [hidePassword, setHidePassword] = useState(true);
-  const { setName, setResultSellerData } = useGlobalContext();
+  const { setResultSellerData } = useGlobalContext();
 
   async function getSellerData() {
     let response: ISellerIdNameImageList;

@@ -2,7 +2,6 @@ import * as React from 'react';
 import { RootNavigator } from './src/routes/RootNavigator';
 import { LogBox } from 'react-native';
 import { ManagerContext } from './src/context/managerContext';
-import { ISellerIdNameImageList } from './src/services/SendImageSellerService/SendImageSellerServiceInterface';
 
 export default function App() {
   const [name, setName] = React.useState<string>(null)
