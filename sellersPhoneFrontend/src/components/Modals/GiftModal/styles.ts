@@ -60,18 +60,11 @@ export const ContainerProfileImage = styled.View`
   max-height: 100px;
 `;
 
-export const ProfileImage = styled.Image`
-  justify-content: center;
-  max-width: 150px;
-  max-height: 150px;
-  height: 150px;
-  width: 150px;
-  align-items: center;
-  justify-content: center;
-  margin-top: 10px;
-  border-radius: 20px;
-  border-color: #000000;
-  border-width: 2px;
+export const ButtonImage = styled.Image`
+  max-width: 80px;
+  max-height: 80px;
+  height: 80px;
+  width: 80px;
 `;
 
 export const ContainerButtons = styled.View`

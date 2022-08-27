@@ -1,6 +1,6 @@
 import React from "react";
 import { TouchableOpacity, Modal } from "react-native";
-import { useGlobalContext } from "../../context/SellerContext";
+import { useGlobalContext } from "../../../context/SellerContext";
 
 import {
   Container,
@@ -23,7 +23,7 @@ export default function ModalSellerInformations({
   closeSellerInformations,
   closeAndLeave,
 }) {
-  
+
   const { name, birth, gender, sector, attendances, email, profileImage } = useGlobalContext();
 
   return (
@@ -37,13 +37,13 @@ export default function ModalSellerInformations({
           <ContainerButtons>
             <TouchableOpacity onPress={() => closeSellerInformations()}>
               <EditCloseProfileButton
-                source={require("../../assets/window-close.png")}
+                source={require("../../../assets/window-close.png")}
               />
             </TouchableOpacity>
           </ContainerButtons>
 
           <ContainerProfileImage>
-            <ProfileImage source={{uri: profileImage}} />
+            <ProfileImage source={{ uri: profileImage }} />
           </ContainerProfileImage>
 
           <ContainerDescription>

@@ -4,9 +4,11 @@ import { ClientService } from "../../services/ClientService/ClientService";
 import { IClientData } from "../../services/ClientService/ClientServiceInterface";
 import { Container, Line, Description, ContainerDescription, Logo } from "./styles";
 import { useGlobalContext } from "../../context/SellerContext";
+import { useIsFocused } from '@react-navigation/native';
 
 const Menu = ({ navigation }) => {
   const { id } = useGlobalContext();
+  const isFocused = useIsFocused();
 
   const eventEasterEgg = async () => {
     console.log("Event - Easter Egg Aux");
@@ -14,25 +16,26 @@ const Menu = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const intervalId = setInterval(async () => {
-      let isCustomerWaitingAttendance: boolean = true;
-      let response: IClientData;
-      try {
-        response = await new ClientService().getClientData(id);
-      } catch (error) {
-        console.error("Error to get clients list", error);
-        isCustomerWaitingAttendance = false;
-      }
+    if (isFocused) {
+      const intervalId = setInterval(async () => {
+        let isCustomerWaitingAttendance: boolean = true;
+        let response: IClientData;
+        try {
+          response = await new ClientService().getClientData(id);
+        } catch (error) {
+          console.error("Error to get clients list", error);
+          isCustomerWaitingAttendance = false;
+        }
 
-      console.log("Pulling...")
+        console.log("Pulling...")
 
-      if (isCustomerWaitingAttendance && response.name != "" && response.name != " " && response.name != null) {
-        navigation.navigate("ClientAttendance", { paramKey: response });
-      }
-
-    }, 30000)
-    return () => clearInterval(intervalId)
-  }, [])
+        if (isCustomerWaitingAttendance && response.name != "" && response.name != " " && response.name != null) {
+          navigation.navigate("ClientAttendance", { paramKey: response });
+        }
+      }, 30000)
+      return () => clearInterval(intervalId)
+    }
+  }, [isFocused])
 
   return (
     <Container>

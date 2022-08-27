@@ -84,12 +84,31 @@ export const DescriptionItens = styled.Text`
 
 export const Button = styled.TouchableOpacity`
   background-color: #0085FF;
+  height: 62px;
+  width: 40%;
+  border-radius: 20px;
+  border-color: #FFFFFF;
+  border-width: 2px;
+  margin-left: 12%;
   align-items: center;
   justify-content: center;
-  height: 9%;
-  width: 55%;
-  border-radius: 20px;
-  border-color: #000000;
-  border-width: 2px;
-  margin-top: 10%;
+`;
+
+export const ContainerGifAndButton = styled.View`
+  flexDirection: row;
+  height: 100px;
+  max-height: 100px;
+  margin-top: 5%;
+  margin-right: 3%;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const GiftGif = styled.Image`
+  max-width: 110px;
+  max-height: 110px;
+  height: 110px;
+  width: 110px;
+  margin-bottom: 15px;
+  margin-right: 2%;
 `;
