@@ -1,23 +1,21 @@
 """
 TCC
 """
-
 import re
 from flask import Flask, request, jsonify
 from decision_tree import decision_tree
 
+from decision_tree import get_suggestion_purchase
+
 app = Flask(__name__)
 
-# Communication endpoint to send a json file and to receive a json file with foods informations of input file
+# Communication endpoint to receive client purchase seggestion
 @app.route("/postPurchaseSuggestion", methods=["POST"])
 def post_decision_tree():
     try:
         request_decision_tree = request.json
-        verify_suggestion = request_decision_tree["content"]
-        print("CHEGOUU: ", verify_suggestion)
-        
-        # Return json file with purchase suggestion
-        return "result"
+        # Return purchase suggestion
+        return get_suggestion_purchase(request_decision_tree["content"])
     except:
         print("Error in request json!")
         return None
