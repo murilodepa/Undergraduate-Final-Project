@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -62,22 +61,25 @@ public class ClientSellerService {
 
     public boolean isBeingAttended(long clientId) {
         Optional<ClientSellerModel> clientSellerModelOptional = clientSellerRepository.findClientSellerModelByClientModel_IdAndEndTime(clientId, null);
-        //ClientSellerModel clientSellerModel;
 
         if (!clientSellerModelOptional.isEmpty()) {
             return true;
         } else {
             Optional<List<ClientSellerModel>> clientSellerModelOptionalList = clientSellerRepository.findClientSellerModelByClientModel_Id(clientId);
-            if(clientSellerModelOptionalList.get().isEmpty()) {
+            if(!clientSellerModelOptionalList.isPresent()) {
                 return false;
             } else {
-                ClientSellerModel clientSellerModel = clientSellerModelOptionalList.get().get(clientSellerModelOptionalList.get().size()-1);
-                LocalDateTime lastAttendance = clientSellerModel.getEndTime(), localDateTimeNow = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
-                System.out.println("End: " + lastAttendance.getHour() + ":" + lastAttendance.getMinute());
-                System.out.println("Now: " + localDateTimeNow.getHour() + ":" + localDateTimeNow.getMinute());
-                int startTimeStamp = lastAttendance.getHour() * 60 + lastAttendance.getMinute();
-                int endTimeStamp = localDateTimeNow.getHour() * 60 + localDateTimeNow.getMinute();
-                return endTimeStamp - startTimeStamp < MINIMUM_MINUTES_TO_ATTEND_AGAIN;
+                if(!clientSellerModelOptionalList.get().isEmpty()) {
+                    ClientSellerModel clientSellerModel = clientSellerModelOptionalList.get().get(clientSellerModelOptionalList.get().size() - 1);
+                    LocalDateTime lastAttendance = clientSellerModel.getEndTime(), localDateTimeNow = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+                    System.out.println("End: " + lastAttendance.getHour() + ":" + lastAttendance.getMinute());
+                    System.out.println("Now: " + localDateTimeNow.getHour() + ":" + localDateTimeNow.getMinute());
+                    int startTimeStamp = lastAttendance.getHour() * 60 + lastAttendance.getMinute();
+                    int endTimeStamp = localDateTimeNow.getHour() * 60 + localDateTimeNow.getMinute();
+                    return endTimeStamp - startTimeStamp < MINIMUM_MINUTES_TO_ATTEND_AGAIN;
+                } else {
+                    return false;
+                }
             }
         }
     }
@@ -106,7 +108,10 @@ public class ClientSellerService {
                 clientsWaitingAttendanceDTO.setBirth(formattingDates.convertDateToAge(clientSellerModel.getClientModel().getBirth()));
                 clientsWaitingAttendanceDTO.setGender(clientSellerModel.getClientModel().getGender());
                 List<ClientImageModel> clientImageModelList = clientImageRepository.findClientImages(clientSellerModel.getClientModel().getId());
-                clientsWaitingAttendanceDTO.setProfileImage(manipulatingImage.decodeImage(clientImageModelList.get(0).getImage()));
+                if(!clientImageModelList.isEmpty()) {
+                    clientsWaitingAttendanceDTO.setProfileImage(manipulatingImage.decodeImage(clientImageModelList.get(0).getImage()));
+                }
+
                 return clientsWaitingAttendanceDTO;
             }
         }

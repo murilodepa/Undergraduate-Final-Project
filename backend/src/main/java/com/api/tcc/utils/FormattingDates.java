@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -22,11 +23,9 @@ public class FormattingDates {
         return LocalDate.parse(outSDF);
     }
 
-    /*
-    public String convertDatabaseToDate(final @NotNull LocalDate database) throws ParseException {
-        return database.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    public String convertDatabaseToDate(final LocalDate database) {
+        return database.format(DateTimeFormatter.ofPattern("MM/yy"));
     }
-    */
 
     public int convertDateToAge(final LocalDate date) {
         LocalDate today = LocalDate.now(ZoneId.of("America/Sao_Paulo"));

@@ -33,11 +33,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Murilo de Paula Araujo
@@ -83,10 +79,10 @@ public class SellerService {
     private void deletePhotos(long sellerId) {
         String sellerPhotosPath;
         int count;
-        for(count=1; count<=ManipulatingImage.QUANTITY_OF_PHOTOS; count++) {
+        for (count = 1; count <= ManipulatingImage.QUANTITY_OF_PHOTOS; count++) {
             sellerPhotosPath = "src\\main\\resources\\photos\\sellers\\person." + sellerId + "." + count + ".jpg";
             File image = new File(sellerPhotosPath);
-            if(image.exists()) {
+            if (image.exists()) {
                 image.delete();
             }
         }
@@ -119,12 +115,13 @@ public class SellerService {
         RegistrationSellerDTO registrationSellerDTO = new RegistrationSellerDTO();
         ManipulatingImage manipulatingImage = new ManipulatingImage();
 
-
         for (SellerModel sellerModel : sellerModelList) {
             if (Objects.equals(email, sellerModel.getEmail()) && Objects.equals(password, sellerModel.getPassword())) {
                 List<SellerImageModel> sellerImageModelList = sellerImageRepository.findSellerImages(sellerModel.getId());
                 BeanUtils.copyProperties(sellerModel, registrationSellerDTO);
-                registrationSellerDTO.setProfileImage(manipulatingImage.decodeImage(sellerImageModelList.get(0).getImage()));
+                if(!sellerImageModelList.isEmpty()) {
+                    registrationSellerDTO.setProfileImage(manipulatingImage.decodeImage(sellerImageModelList.get(0).getImage()));
+                }
                 FormattingDates formattingDates = new FormattingDates();
                 registrationSellerDTO.setBirth(formattingDates.convertDateToAge(sellerModel.getBirth()));
                 return registrationSellerDTO;
@@ -135,12 +132,12 @@ public class SellerService {
 
     //TO DO Melhorar esse método e aplicar no end point criado em python
     public String matchMakingGetBestSeller(List<SellerModel> sellerModelList, ClientModel clientModel) {
-        try(CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
+        try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
             JSONObject jsonObject = new JSONObject();
-            int i=0;
+            int i = 0;
             List<NameValuePair> sellerModelParameters = new ArrayList<>();
-            for(SellerModel sellerModel: sellerModelList) {
-                sellerModelParameters.add(new BasicNameValuePair("seller-"+i, sellerModel.getName()));
+            for (SellerModel sellerModel : sellerModelList) {
+                sellerModelParameters.add(new BasicNameValuePair("seller-" + i, sellerModel.getName()));
             }
             jsonObject.put("content", sellerModelParameters);
             StringEntity params = new StringEntity(jsonObject.toString());
@@ -159,5 +156,27 @@ public class SellerService {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public SellerModel getSellerCategory(String category) {
+        List<SellerModel> sellerModelList = sellerRepository.findAll();
+        if (!sellerModelList.isEmpty()) {
+            for (SellerModel sellerModel : sellerModelList) {
+                if (sellerModel.getAvailable() && Objects.equals(sellerModel.getSector(), category)) {
+                    return sellerModel;
+                }
+            }
+        }
+        return null;
+    }
+
+    public SellerModel getSellerWithLessAttendance() {
+        List<SellerModel> sellerModelList = sellerRepository.findAll();
+        int min = 0;
+        if (!sellerModelList.isEmpty()) {
+            sellerModelList.sort(Comparator.comparing(SellerModel::getAttendances));
+            return sellerModelList.get(0);
+        }
+        return null;
     }
 }

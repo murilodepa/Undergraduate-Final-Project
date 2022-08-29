@@ -6,7 +6,6 @@
 package com.api.tcc.database.dtos;
 
 import lombok.Data;
-
 import javax.validation.constraints.Size;
 
 /**
@@ -23,4 +22,5 @@ public class ProductDTO {
     @Size(min = 3, max = 15)
     private String brand;
     private Double price;
+    private int quantity;
 }

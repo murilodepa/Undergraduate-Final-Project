@@ -6,6 +6,7 @@
 package com.api.tcc.database.dtos;
 
 import lombok.Data;
+import java.util.UUID;
 
 /**
  * @author Murilo de Paula Araujo
@@ -13,5 +14,11 @@ import lombok.Data;
 @Data
 public class PurchaseDTO {
     private long id_client;
+    private UUID id_product;
+    private int quantity;
     private String category;
+    private String size;
+    private String kinship;
+    private String personsName;
+    private String date;
 }
