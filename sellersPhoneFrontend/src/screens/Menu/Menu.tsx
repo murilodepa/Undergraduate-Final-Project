@@ -32,7 +32,7 @@ const Menu = ({ navigation }) => {
         if (isCustomerWaitingAttendance && response.name != "" && response.name != " " && response.name != null) {
           navigation.navigate("ClientAttendance", { paramKey: response });
         }
-      }, 30000)
+      }, 3000)
       return () => clearInterval(intervalId)
     }
   }, [isFocused])

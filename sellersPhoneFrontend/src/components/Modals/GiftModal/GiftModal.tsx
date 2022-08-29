@@ -1,5 +1,6 @@
-import React from "react"; GiftModal
+import React, { useState } from "react";
 import { TouchableOpacity, Modal } from "react-native";
+import { PurchaseService } from "../../../services/PurchaseService/PurchaseService";
 
 import {
     Container,
@@ -13,21 +14,40 @@ import {
     ContainerButtonsLeave,
     LeaveText,
     ProfileDescription,
-    Name,
+    Question,
     Description,
+    ButtonNoImage,
+    ContainerButtonsOptions,
+    InvalidText
 } from "./styles";
 
 export default function GiftModal({
     openGiftModal,
-    closeGiftModal
+    closeGiftModal,
+    closeGiftModalAndNo,
+    closeGiftModalAndYes,
+    id
 }) {
 
-    const eventYes = async () => {
-        console.log("Event - Yes");
-    };
+    const [hideTextInvalidSuggestion, setHideTextInvalidSuggestion] = useState(false);
 
-    const eventNo = async () => {
-        console.log("Event - No");
+    const eventYes = async () => {
+        console.log("Event - Yes - GiftModal");
+
+        let response: any;
+        try {
+            response = await new PurchaseService().getPeopleGift(id);
+        } catch (error) {
+            console.error("Error to update status", error);
+        }
+        console.log("response: ", response)
+
+        if (response != null && response != '') {
+            closeGiftModalAndYes(response)
+        } else {
+            setHideTextInvalidSuggestion(true)
+        }
+
     };
 
     return (
@@ -45,25 +65,27 @@ export default function GiftModal({
                             />
                         </TouchableOpacity>
                     </ContainerButtons>
-
                     <ContainerDescription>
                         <ProfileDescription>
-
-
-
+                            <Question>
+                                Já foi realizada compra de presente para essa pessoa na loja?
+                            </Question>
                         </ProfileDescription>
 
-                        <ContainerButtons>
+                        <InvalidText>
+                            {" "}
+                            {hideTextInvalidSuggestion ? "Nenhuma compra de presente encontrada no sistema..." : null}{" "}
+                        </InvalidText>
+
+                        <ContainerButtonsOptions>
+                            <TouchableOpacity onPress={() => closeGiftModalAndNo()}>
+                                <ButtonNoImage source={require("../../../assets/no.png")} />
+                            </TouchableOpacity>
+
                             <TouchableOpacity onPress={() => eventYes()}>
                                 <ButtonImage source={require("../../../assets/yes.png")} />
                             </TouchableOpacity>
-
-                            <TouchableOpacity onPress={() => eventNo()}>
-                                <ButtonImage source={require("../../../assets/no.png")} />
-                            </TouchableOpacity>
-                        </ContainerButtons>
-
-
+                        </ContainerButtonsOptions>
                     </ContainerDescription>
                 </ContainerModal>
             </Container>

@@ -24,14 +24,48 @@ import { ClientSellerAttendance } from "../../services/ClientSellerAttendance/Cl
 import { useGlobalContext } from "../../context/SellerContext";
 import { ClientService } from "../../services/ClientService/ClientService";
 import GiftModal from "../../components/Modals/GiftModal/GiftModal";
+import NewClientGiftModal from "../../components/Modals/NewClientGiftModal/NewClientGiftModal";
+import AlreadyBoughtGiftModal from "../../components/Modals/AlreadyBoughtGiftModal/AlreadyBoughtGiftModal";
+import { PurchaseService } from "../../services/PurchaseService/PurchaseService";
+import { IPurchasePeopleGiftList } from "../../services/PurchaseService/PurchaseServiceInterface";
 
 const ClientInformations = ({ navigation, route }: any) => {
   const { id } = useGlobalContext();
 
   const [openGiftModal, setOpenGiftModal] = useState(false);
+  const [openNewClientGiftModal, setOpenNewClientGiftModal] = useState(false);
+  const [openAlreadyBoughtGiftModal, setOpenAlreadyBoughtGiftModal] = useState(false);
+  const [list, setlist] = useState<IPurchasePeopleGiftList>();
 
   const closeGiftModal = async () => {
     setOpenGiftModal(false);
+  };
+
+  const closeNewClientGiftModal = async () => {
+    setOpenNewClientGiftModal(false);
+  };
+
+  const closeAlreadyBoughtGiftModal = async () => {
+    setOpenAlreadyBoughtGiftModal(false);
+  };
+
+  const closeGiftModalAndNo = async () => {
+    console.log("Event - No");
+    setOpenGiftModal(false);
+    setOpenAlreadyBoughtGiftModal(true);
+  };
+
+  const closeGiftModalAndYes = async (list: IPurchasePeopleGiftList) => {
+    console.log("Event - Yes - ClientInformations");
+
+    setOpenGiftModal(false);
+
+    // Show other screen with suggetions of purchase gift
+
+    console.log("list", list)
+    setlist(list)
+    setOpenNewClientGiftModal(true);
+
   };
 
   const eventOpenGiftModal = async () => {
@@ -47,6 +81,7 @@ const ClientInformations = ({ navigation, route }: any) => {
   });
 
   const [responsePurchaseList, setResponsePurchaseList] = useState<IPurchaseList>();
+  const [suggestion, setSuggestion] = useState<string>("");
 
   const eventClientAttendance = async () => {
     console.log("Event - Client attendance");
@@ -61,25 +96,64 @@ const ClientInformations = ({ navigation, route }: any) => {
   };
 
   useEffect(() => {
+    let clientId = clientInformationsData.id;
     async function getList() {
-
+      let response: IPurchaseList;
       try {
-        setResponsePurchaseList(await new ClientService().getPurchaseList(clientInformationsData.id));
+        response = await new ClientService().getPurchaseList(clientId);
       } catch (error) {
         console.error("Error to get client date", error);
       }
+      console.log("response: ", response)
+
+      if (response != null) {
+        setResponsePurchaseList(response);
+      }
     }
     getList();
+
+    async function getSuggestion() {
+      let suggestion: string;
+      try {
+        suggestion = await new PurchaseService().getSuggestion(clientId);
+      } catch (error) {
+        console.error("Error to get suggestion of gift", error);
+      }
+      console.log("suggestion: ", suggestion)
+
+      if (suggestion != null && suggestion != undefined && suggestion != '') {
+        setSuggestion(suggestion);
+      }
+    }
+    getSuggestion();
   }, [])
 
   return (
     <Container>
       <HeaderProfile navigation={navigation} />
-
       {
         <GiftModal
           openGiftModal={openGiftModal}
           closeGiftModal={closeGiftModal}
+          closeGiftModalAndNo={closeGiftModalAndNo}
+          closeGiftModalAndYes={closeGiftModalAndYes}
+          id={clientInformationsData.id}
+        />
+      }
+
+      {
+        <NewClientGiftModal
+          openNewClientGiftModal={openNewClientGiftModal}
+          closeNewClientGiftModal={closeNewClientGiftModal}
+          id={clientInformationsData.id}
+          list={list}
+        />
+      }
+
+      {
+        <AlreadyBoughtGiftModal
+          openAlreadyBoughtGiftModal={openAlreadyBoughtGiftModal}
+          closeNewClientGiftModal={closeAlreadyBoughtGiftModal}
         />
       }
 
@@ -88,7 +162,7 @@ const ClientInformations = ({ navigation, route }: any) => {
         <ClientName>{clientInformationsData.name}</ClientName>
         <LineDescription />
         <ClientDescription>
-          {`${clientInformationsData.gender} \n ${clientInformationsData.birth} anos \n Sugestão: Camiseta`}
+          {`${clientInformationsData.gender} \n ${clientInformationsData.birth} anos \n Sugestão: ${suggestion && suggestion}`}
         </ClientDescription>
       </ContainerClientName>
 
@@ -111,7 +185,7 @@ const ClientInformations = ({ navigation, route }: any) => {
         </TouchableOpacity>
 
         <Button onPress={() => eventClientAttendance()}>
-          <DescriptionButton> Cliente Atendido </DescriptionButton>
+          <DescriptionButton>{` Cliente \n Atendido`}</DescriptionButton>
         </Button>
       </ContainerGifAndButton>
     </Container>

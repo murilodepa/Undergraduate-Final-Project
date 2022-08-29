@@ -89,7 +89,7 @@ export const ContainerButtonsOptions = styled.View`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  margin-top: 50px;
+  margin-top: 100px;
   
 `;
 
@@ -128,11 +128,3 @@ export const Line = styled.View`
   height: 2px;
   margin-top: 7px;
 `
-export const InvalidText = styled.Text`
-  font-size: 18px;
-  text-align: center;
-  color: red;
-  font-weight: bold;
-  margin-top: 10%;
-`;
-
