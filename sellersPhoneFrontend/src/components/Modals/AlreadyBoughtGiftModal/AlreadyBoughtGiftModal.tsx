@@ -1,38 +1,25 @@
 import React, { useState } from "react";
-import { View, TouchableOpacity, Modal } from "react-native";
+import { TouchableOpacity, Modal } from "react-native";
 import { CheckBox } from "react-native-elements";
-import { IGiftPersonData, INewPurchaseGiftData } from "../../../services/PurchaseService/PurchaseServiceInterface";
+import { IGiftPersonData } from "../../../services/PurchaseService/PurchaseServiceInterface";
 import { Picker } from '@react-native-picker/picker';
 
 import {
     Container,
-    ButtonImage,
     ContainerModal,
     ContainerDescription,
     ContainerCheckBox,
-    Line,
-    ContainerProfileImage,
     EditCloseProfileButton,
     ContainerButtons,
-    ContainerButtonsLeave,
-    LeaveText,
     ProfileDescription,
     Question,
-    Description,
-    ButtonNoImage,
-    ContainerButtonsOptions,
     ContainerPicker,
     DescriptionButton,
     Button,
-    CharacteristicInput,
-    PlaceHolder,
     ContainerSuggestion,
     SuggestionText,
     ViewTextInput,
-    RowSuggestion,
-    LastItem1CheckBox,
-    LastItem2CheckBox,
-    LastItem3CheckBox
+    RowSuggestion
 } from "./styles";
 
 export default function NewClientGiftModal({
@@ -41,15 +28,15 @@ export default function NewClientGiftModal({
 }) {
 
     const [personData, setPersonData] = useState<IGiftPersonData>({
-        gender: '', 
-        age: '', 
-        size: '', 
-        selectedSummer: false, 
-        selectedWinter: false, 
-        selectedSocial: false, 
-        selectedCasual: false, 
-        selectedPajama: false, 
-        selectedFitness: false
+        gender: '',
+        age: '',
+        size: '',
+        selectedSummer: false,
+        selectedWinter: false,
+        selectedSocial: false,
+        selectedCasual: false,
+        selectedPatterned: false,
+        selectedStripe: false
     });
 
     /* List to Picker */
@@ -66,15 +53,15 @@ export default function NewClientGiftModal({
 
     const closeAndClearModal = async () => {
         setPersonData({
-            gender: '', 
-            age: '', 
-            size: '', 
-            selectedSummer: false, 
-            selectedWinter: false, 
-            selectedSocial: false, 
-            selectedCasual: false, 
-            selectedPajama: false, 
-            selectedFitness: false
+            gender: '',
+            age: '',
+            size: '',
+            selectedSummer: false,
+            selectedWinter: false,
+            selectedSocial: false,
+            selectedCasual: false,
+            selectedPatterned: false,
+            selectedStripe: false
         });
         setSuggestion("");
         closeNewClientGiftModal();
@@ -168,62 +155,92 @@ export default function NewClientGiftModal({
                         <ContainerCheckBox>
                             <RowSuggestion>
                                 <CheckBox
+                                    containerStyle={{ backgroundColor: "#0085FF", borderWidth: 2, borderRadius: 12 }}
+                                    textStyle={{
+                                        fontSize: 14,
+                                        fontWeight: "bold",
+                                        color: "white"
+                                    }}
                                     title="Verão"
                                     checkedColor="blue"
-                                    uncheckedColor="gray"
+                                    uncheckedColor="white"
                                     checked={personData.selectedSummer}
-                                    onPress={() => setPersonData({ ...personData, selectedSummer: !personData.selectedSummer})}
+                                    style={{ backgroundColor: 'red' }}
+                                    onPress={() => { !personData.selectedWinter ? setPersonData({ ...personData, selectedSummer: !personData.selectedSummer }) : null }}
                                 />
-                                <LastItem1CheckBox>
-                                    <CheckBox
-                                        title="Inverno"
-                                        checkedColor="blue"
-                                        uncheckedColor="gray"
-                                        checked={personData.selectedWinter}
-                                        onPress={() => setPersonData({ ...personData, selectedWinter: !personData.selectedWinter})}
-                                    />
-                                </LastItem1CheckBox>
+                                <CheckBox
+                                    containerStyle={{ backgroundColor: "#0085FF", borderWidth: 2, borderRadius: 12, marginLeft: 24 }}
+                                    textStyle={{
+                                        fontSize: 14,
+                                        fontWeight: "bold",
+                                        color: "white"
+                                    }}
+                                    title="Inverno"
+                                    checkedColor="blue"
+                                    uncheckedColor="white"
+                                    checked={personData.selectedWinter}
+                                    onPress={() => { !personData.selectedSummer ? setPersonData({ ...personData, selectedWinter: !personData.selectedWinter }) : null }}
+                                />
                             </RowSuggestion>
                             <RowSuggestion>
                                 <CheckBox
+                                    containerStyle={{ backgroundColor: "#0085FF", borderWidth: 2, borderRadius: 12 }}
+                                    textStyle={{
+                                        fontSize: 14,
+                                        fontWeight: "bold",
+                                        color: "white"
+                                    }}
                                     title="Social"
                                     checkedColor="blue"
-                                    uncheckedColor="gray"
+                                    uncheckedColor="white"
                                     checked={personData.selectedSocial}
-                                    onPress={() => setPersonData({ ...personData, selectedSocial: !personData.selectedSocial})}
+                                    onPress={() => { !personData.selectedCasual ? setPersonData({ ...personData, selectedSocial: !personData.selectedSocial }) : null }}
                                 />
-                                <LastItem2CheckBox>
-                                    <CheckBox
-                                        title="Casual"
-                                        checkedColor="blue"
-                                        uncheckedColor="gray"
-                                        checked={personData.selectedCasual}
-                                        onPress={() => setPersonData({ ...personData, selectedCasual: !personData.selectedCasual})}
-                                    />
-                                </LastItem2CheckBox>
+                                <CheckBox
+                                    containerStyle={{ backgroundColor: "#0085FF", borderWidth: 2, borderRadius: 12, marginLeft: 23 }}
+                                    textStyle={{
+                                        fontSize: 14,
+                                        fontWeight: "bold",
+                                        color: "white"
+                                    }}
+                                    title="Casual"
+                                    checkedColor="blue"
+                                    uncheckedColor="white"
+                                    checked={personData.selectedCasual}
+                                    onPress={() => { !personData.selectedSocial ? setPersonData({ ...personData, selectedCasual: !personData.selectedCasual }) : null }}
+                                />
                             </RowSuggestion>
                             <RowSuggestion>
                                 <CheckBox
-                                    title="Esportiva"
+                                    containerStyle={{ backgroundColor: "#0085FF", borderWidth: 2, borderRadius: 12 }}
+                                    textStyle={{
+                                        fontSize: 14,
+                                        fontWeight: "bold",
+                                        color: "white"
+                                    }}
+                                    title="Listra"
                                     checkedColor="blue"
-                                    uncheckedColor="gray"
-                                    checked={personData.selectedFitness}
-                                    onPress={() => setPersonData({ ...personData, selectedFitness: !personData.selectedFitness})}
+                                    uncheckedColor="white"
+                                    checked={personData.selectedStripe}
+                                    onPress={() => { !personData.selectedPatterned ? setPersonData({ ...personData, selectedStripe: !personData.selectedStripe }) : null }}
                                 />
-                                <LastItem3CheckBox>
-                                    <CheckBox
-                                        title="Pijama"
-                                        checkedColor="blue"
-                                        uncheckedColor="gray"
-                                        checked={personData.selectedPajama}
-                                        onPress={() => setPersonData({ ...personData, selectedPajama: !personData.selectedPajama})}
-                                    />
-                                </LastItem3CheckBox>
+                                <CheckBox
+                                    containerStyle={{ backgroundColor: "#0085FF", borderWidth: 2, borderRadius: 12, marginLeft: 26 }}
+                                    textStyle={{
+                                        fontSize: 14,
+                                        fontWeight: "bold",
+                                        color: "white"
+                                    }}
+                                    title="Estampa"
+                                    checkedColor="blue"
+                                    uncheckedColor="white"
+                                    checked={personData.selectedPatterned}
+                                    onPress={() => { !personData.selectedStripe ? setPersonData({ ...personData, selectedPatterned: !personData.selectedPatterned }) : null }}
+                                />
                             </RowSuggestion>
                         </ContainerCheckBox>
 
                         <ContainerSuggestion>
-                            <Description> Sugestão: </Description>
                             <SuggestionText>
                                 {suggestion && suggestion}
                             </SuggestionText>

@@ -12,8 +12,8 @@ export interface IGiftPersonData {
   selectedWinter?: boolean;
   selectedSocial?: boolean;
   selectedCasual?: boolean;
-  selectedPajama?: boolean;
-  selectedFitness?: boolean;
+  selectedPatterned?: boolean;
+  selectedStripe?: boolean;
 }
 
 export interface PurchaseGiftData {
