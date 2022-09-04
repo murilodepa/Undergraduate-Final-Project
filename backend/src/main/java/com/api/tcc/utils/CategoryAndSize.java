@@ -5,22 +5,17 @@
  */
 package com.api.tcc.utils;
 
-import java.time.LocalDate;
-
 /**
  * @author Murilo de Paula Araujo
  */
 
-public class CategorySizeAndDate {
+public class CategoryAndSize {
     private String category;
     private String size;
-    private String date;
 
-    public CategorySizeAndDate(String category, String size, LocalDate date) {
-        FormattingDates formattingDates = new FormattingDates();
+    public CategoryAndSize(String category, String size) {
         this.category = category;
         this.size = size;
-        this.date = formattingDates.convertDatabaseToDate(date);
     }
 
     public String getCategory() {
@@ -29,14 +24,6 @@ public class CategorySizeAndDate {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public String getSize() {

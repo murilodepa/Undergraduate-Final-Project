@@ -36,6 +36,8 @@ public class PurchaseModel {
     private String personsName;
     @Column(name = "date")
     private LocalDate date;
+    @Column(name = "description")
+    private String description;
     @ManyToOne
     @JoinColumn(name = "id_client")
     private ClientModel clientModel;

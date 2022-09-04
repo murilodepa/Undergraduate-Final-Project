@@ -9,6 +9,7 @@ import com.api.tcc.database.Models.ClientModel;
 import com.api.tcc.database.Models.ProductModel;
 import com.api.tcc.database.Models.PurchaseModel;
 import com.api.tcc.database.Models.PurchaseProductModel;
+import com.api.tcc.database.dtos.PersonDataWithTagsToGiftDTO;
 import com.api.tcc.database.dtos.PurchaseDTO;
 import com.api.tcc.services.ClientService;
 import com.api.tcc.services.ProductService;
@@ -53,7 +54,7 @@ public class PurchaseController {
     private PurchaseProductService purchaseProductService;
 
     @PostMapping("/insertPurchase")
-    public ResponseEntity<Object> savePurchase(@RequestBody @Valid PurchaseDTO purchaseDTO) {
+    public ResponseEntity<Object> savePurchase(@RequestBody @Valid PurchaseDTO purchaseDTO) throws IOException {
         Optional<ClientModel> clientModelOptional = clientService.findById(purchaseDTO.getId_client());
         if (!clientModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
@@ -61,7 +62,7 @@ public class PurchaseController {
 
         Optional<ProductModel> productModelOptional = productService.findById(purchaseDTO.getId_product());
 
-        if (!productModelOptional.isPresent() ) {
+        if (!productModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("product not found!");
         }
         ClientModel clientModel = clientModelOptional.get();
@@ -78,14 +79,15 @@ public class PurchaseController {
         purchaseModel.setCategory(productModel.getCategory());
         purchaseModel.setSize(productModel.getSize());
         purchaseModel.setDate(LocalDate.now(ZoneId.of("America/Sao_Paulo")));
+        purchaseModel.setDescription(productModel.getDescription());
         purchaseService.save(purchaseModel);
 
         productModel.setQuantity(productModelOptional.get().getQuantity() - purchaseDTO.getQuantity());
         productService.save(productModel);
 
-        String result = purchaseService.getMostSuggestion(clientModel.getId(), null, null);
+        String result = purchaseService.getMostSuggestion(clientModel, null, null);
         clientModel.setAvailable(true);
-        if(result != null && !result.equals("")) {
+        if (result != null && !result.equals("")) {
             clientModel.setPurchaseSuggestion(result);
         }
         clientService.save(clientModel);
@@ -95,6 +97,11 @@ public class PurchaseController {
         purchaseProductModel.setPurchaseModel(purchaseModel);
 
         return ResponseEntity.status(HttpStatus.OK).body(purchaseProductService.save(purchaseProductModel));
+    }
+
+    @PostMapping("/verifySuggestionWithTags")
+    public String verifySuggestionWithTags(@RequestBody @Valid PersonDataWithTagsToGiftDTO personDataWithTagsToGiftDTO) throws IOException {
+        return purchaseService.getProductToGiftWithCategory(personDataWithTagsToGiftDTO);
     }
 
     @GetMapping("/getPurchase")
@@ -112,7 +119,7 @@ public class PurchaseController {
     }
 
     @GetMapping("/getPurchaseList/{id}")
-    public List<CategorySizeAndDate> getOnePurchase(@PathVariable(value = "id") long id) throws ParseException {
+    public List<CategorySizeAndDate> getOnePurchase(@PathVariable(value = "id") long id) {
         return purchaseService.getPurchasedList(id, null, null);
     }
 
@@ -142,6 +149,7 @@ public class PurchaseController {
         purchaseModel.setCategory(purchaseDTO.getCategory());
         purchaseModel.setQuantity(purchaseDTO.getQuantity());
         purchaseModel.setSize(purchaseDTO.getSize());
+        purchaseModel.setDescription(purchaseDTO.getDescription());
         purchaseModel.setKinship(purchaseDTO.getKinship());
         purchaseModel.setPersonsName(purchaseDTO.getPersonsName());
         FormattingDates formattingDates = new FormattingDates();
@@ -156,22 +164,31 @@ public class PurchaseController {
     }
 
     @GetMapping("/getPurchaseGifts/{id}")
-    public List<CategorySizeAndDate> getPurchaseGifts(@PathVariable(value = "id") long id, @NotNull @RequestParam String name, @NotNull @RequestParam String kinship) throws ParseException {
+    public List<CategorySizeAndDate> getPurchaseGifts(@PathVariable(value = "id") long id, @NotNull @RequestParam String name, @NotNull @RequestParam String kinship) {
         return purchaseService.getPurchasedList(id, name, kinship);
     }
 
     @GetMapping("/getSuggestion/{id}")
-    public String getSuggestion(@PathVariable(value = "id") long id) {
-        return purchaseService.getMostSuggestion(id, null, null);
-    }
-    @GetMapping("/getSuggestionGifts/{id}")
-    public String getSuggestionGifts(@PathVariable(value = "id") long id, @NotNull @RequestParam String name, @NotNull @RequestParam String kinship) {
-        return purchaseService.getMostSuggestion(id, name, kinship);
+    public String getSuggestion(@PathVariable(value = "id") long id) throws IOException {
+        Optional<ClientModel> clientModelOptional = clientService.findById(id);
+        if (!clientModelOptional.isPresent()) {
+            return "";
+        }
+        return purchaseService.getMostSuggestion(clientModelOptional.get(), null, null);
     }
 
-    @GetMapping("/decisionTree")
+    @GetMapping("/getSuggestionGifts/{id}")
+    public String getSuggestionGifts(@PathVariable(value = "id") long id, @NotNull @RequestParam String name, @NotNull @RequestParam String kinship) throws IOException {
+        Optional<ClientModel> clientModelOptional = clientService.findById(id);
+        if (!clientModelOptional.isPresent()) {
+            return "";
+        }
+        return purchaseService.getMostSuggestion(clientModelOptional.get(), name, kinship);
+    }
+
+ /*   @GetMapping("/decisionTree")
     public ResponseEntity<String> getPurchaseSuggestion() throws IOException {
        return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getPurchaseSuggestion());
-    }
+    }*/
 }
 

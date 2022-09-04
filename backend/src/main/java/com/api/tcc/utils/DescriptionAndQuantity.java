@@ -9,21 +9,21 @@ package com.api.tcc.utils;
  * @author Murilo de Paula Araujo
  */
 
-public class PurchaseData {
-    private String category;
+public class DescriptionAndQuantity {
+    private String description;
     private int quantity;
 
-    public PurchaseData(String category, int quantity) {
-        this.category = category;
+    public DescriptionAndQuantity(String description, int quantity) {
+        this.description = description;
         this.quantity = quantity;
     }
 
-    public String getCategory() {
-        return category;
+    public String getDescription() {
+        return description;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public int getQuantity() {

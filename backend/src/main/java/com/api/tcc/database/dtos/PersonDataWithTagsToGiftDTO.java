@@ -6,21 +6,19 @@
 package com.api.tcc.database.dtos;
 
 import lombok.Data;
-import java.util.UUID;
 
 /**
  * @author Murilo de Paula Araujo
  */
-
 @Data
-public class PurchaseDTO {
-    private long id_client;
-    private UUID id_product;
-    private int quantity;
-    private String category;
+public class PersonDataWithTagsToGiftDTO {
+    private String gender;
+    private String age;
     private String size;
-    private String kinship;
-    private String personsName;
-    private String date;
-    private String description;
+    private boolean selectedSummer;
+    private boolean selectedWinter;
+    private boolean selectedSocial;
+    private boolean selectedCasual;
+    private boolean selectedPatterned;
+    private boolean selectedStripe;
 }
