@@ -21,6 +21,7 @@ from sklearn import tree
 columns = [
     'Gênero',
     'Comprado',
+    'Tamanho',
     'Vendido',
     'Vendedor',
     'Estoque'
@@ -40,7 +41,7 @@ def get_dataframe():
 df = get_dataframe()
 X = df.drop(target, axis=1)
 y = df[target]
-features = list(df.columns[:5])
+features = list(df.columns[:6])
 
 Xtrain, Xvalidation, ytrain, yvalidation = train_test_split(X, y, test_size=0.5, random_state=0)
 
@@ -69,7 +70,11 @@ def get_suggestion_purchase(data):
     result_int = int(np.array_str(result).replace('[','').replace(']','')) 
     return suggestion[result_int]
 
-itens = '1,2,0,0,2'
+
+#Gênero - Feminino = 0 - Masculino = 1 
+#Categorias - Indecisão = 0 - Camiseta = 1 - Calça = 2 - Short = 3 - Vestido = 4
+#"Gênero, Comprado, Tamanho, Vendido, Vendedor, Estoque"
+itens = '1,0,4,0,0,4'
 print('Sugestion: ', get_suggestion_purchase(itens))
 print('\n')
 

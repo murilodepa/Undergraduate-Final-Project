@@ -9,12 +9,12 @@ combinations_list = []
 combinations_str = ""
 cont = 0
 
-get_combinations = product(products, repeat=4) #Especificar a quantidade de produtos que cada combinação terá
+get_combinations = product(products, repeat=5) #Especificar a quantidade de produtos que cada combinação terá
 
 for combination in get_combinations:
     cont = cont + 1
-    for i in range(4):
-        if i == 3:
+    for i in range(5):
+        if i == 4:
             combinations_list.append(combination[i])
         else:
             combinations_list.append(combination[i] + ",")

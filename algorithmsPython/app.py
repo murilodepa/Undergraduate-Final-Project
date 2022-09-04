@@ -15,6 +15,7 @@ def post_decision_tree():
     try:
         request_decision_tree = request.json
         # Return purchase suggestion
+        print("Params: ", request_decision_tree["content"])
         return get_suggestion_purchase(request_decision_tree["content"])
     except:
         print("Error in request json!")
