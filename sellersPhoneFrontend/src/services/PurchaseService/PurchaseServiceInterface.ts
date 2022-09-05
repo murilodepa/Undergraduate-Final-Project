@@ -1,3 +1,4 @@
+import { AxiosResponse } from "axios";
 
 export interface INewPurchaseGiftData {
   name?: string;
@@ -47,6 +48,10 @@ export interface IPurchaseDataProps {
 
 export interface IPurchaseDataProps {
   getSuggestionGift: (id: number, name: string, kinship: string) => Promise<string>;
+}
+
+export interface IPurchaseDataProps {
+  verifySuggestionGiftWithTags: (response: IGiftPersonData) => Promise<string>;
 }
 
 export interface IPurchaseDataProps {

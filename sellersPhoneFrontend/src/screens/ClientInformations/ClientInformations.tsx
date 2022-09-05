@@ -25,7 +25,7 @@ import { useGlobalContext } from "../../context/SellerContext";
 import { ClientService } from "../../services/ClientService/ClientService";
 import GiftModal from "../../components/Modals/GiftModal/GiftModal";
 import NewClientGiftModal from "../../components/Modals/NewClientGiftModal/NewClientGiftModal";
-import AlreadyBoughtGiftModal from "../../components/Modals/AlreadyBoughtGiftModal/AlreadyBoughtGiftModal";
+import NewBuyGiftModal from "../../components/Modals/NewBuyGiftModal/NewBuyGiftModal";
 import { PurchaseService } from "../../services/PurchaseService/PurchaseService";
 import { IPurchasePeopleGiftList } from "../../services/PurchaseService/PurchaseServiceInterface";
 
@@ -34,7 +34,7 @@ const ClientInformations = ({ navigation, route }: any) => {
 
   const [openGiftModal, setOpenGiftModal] = useState(false);
   const [openNewClientGiftModal, setOpenNewClientGiftModal] = useState(false);
-  const [openAlreadyBoughtGiftModal, setOpenAlreadyBoughtGiftModal] = useState(false);
+  const [openNewBuyGiftModal, setOpenNewBuyGiftModal] = useState(false);
   const [list, setlist] = useState<IPurchasePeopleGiftList>();
 
   const closeGiftModal = async () => {
@@ -45,14 +45,14 @@ const ClientInformations = ({ navigation, route }: any) => {
     setOpenNewClientGiftModal(false);
   };
 
-  const closeAlreadyBoughtGiftModal = async () => {
-    setOpenAlreadyBoughtGiftModal(false);
+  const closeNewBuyGiftModal = async () => {
+    setOpenNewBuyGiftModal(false);
   };
 
   const closeGiftModalAndNo = async () => {
     console.log("Event - No");
     setOpenGiftModal(false);
-    setOpenAlreadyBoughtGiftModal(true);
+    setOpenNewBuyGiftModal(true);
   };
 
   const closeGiftModalAndYes = async (list: IPurchasePeopleGiftList) => {
@@ -60,9 +60,6 @@ const ClientInformations = ({ navigation, route }: any) => {
 
     setOpenGiftModal(false);
 
-    // Show other screen with suggetions of purchase gift
-
-    console.log("list", list)
     setlist(list)
     setOpenNewClientGiftModal(true);
 
@@ -140,7 +137,6 @@ const ClientInformations = ({ navigation, route }: any) => {
           id={clientInformationsData.id}
         />
       }
-
       {
         <NewClientGiftModal
           openNewClientGiftModal={openNewClientGiftModal}
@@ -149,11 +145,10 @@ const ClientInformations = ({ navigation, route }: any) => {
           list={list}
         />
       }
-
       {
-        <AlreadyBoughtGiftModal
-          openAlreadyBoughtGiftModal={openAlreadyBoughtGiftModal}
-          closeNewClientGiftModal={closeAlreadyBoughtGiftModal}
+        <NewBuyGiftModal
+          openNewBuyGiftModal={openNewBuyGiftModal}
+          closeNewClientGiftModal={closeNewBuyGiftModal}
         />
       }
 

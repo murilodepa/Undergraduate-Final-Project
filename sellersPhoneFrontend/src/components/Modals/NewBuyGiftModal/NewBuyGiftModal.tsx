@@ -21,9 +21,10 @@ import {
     ViewTextInput,
     RowSuggestion
 } from "./styles";
+import { PurchaseService } from "../../../services/PurchaseService/PurchaseService";
 
-export default function NewClientGiftModal({
-    openAlreadyBoughtGiftModal,
+export default function NewBuyGiftModal({
+    openNewBuyGiftModal,
     closeNewClientGiftModal,
 }) {
 
@@ -44,11 +45,55 @@ export default function NewClientGiftModal({
     const ageList = ['', 'Criança', 'Jovem', 'Adulto', 'Idoso'];
     const sizeList = ['', 'PP', 'P', 'M', 'G', 'GG', 'XGG'];
 
+    /* Border Color */
+    const [inputGenderColor, setInputGenderColor] = useState("black");
+    const [inputAgeColor, setInputAgeColor] = useState("black");
+    const [inputSizeColor, setInputSizeColor] = useState("black");
+
 
     const [suggestion, setSuggestion] = useState<string>("");
     const eventSuggestion = async () => {
         console.log("Event - Suggestion to new client - YES", personData);
-        setSuggestion("Short")
+
+        var count = 0;
+
+        if (personData.gender == '' || personData.gender == undefined || personData.gender == null) {
+            setInputGenderColor("red");
+            count--;
+        } else {
+            setInputGenderColor("black");
+            console.log("Gender is valid! +1");
+            count++;
+        }
+        if (personData.age == '' || personData.age == undefined || personData.age == null) {
+            setInputAgeColor("red");
+            count--;
+        } else {
+            setInputAgeColor("black");
+            console.log("Gender is valid! +1");
+            count++;
+        }
+        if (personData.size == '' || personData.size == undefined || personData.size == null) {
+            setInputSizeColor("red");
+            count--;
+        } else {
+            setInputSizeColor("black");
+            console.log("Gender is valid! +1");
+            count++;
+        }
+
+        if (count == 3) {
+            let suggestion: any;
+            try {
+                suggestion = await new PurchaseService().verifySuggestionGiftWithTags(personData);
+            } catch (error) {
+                console.error("Error to get suggestion of gift", error);
+            }
+            console.log("suggestion: ", suggestion)
+            setSuggestion(suggestion);
+        } else {
+            setSuggestion('');
+        }
     };
 
     const closeAndClearModal = async () => {
@@ -71,7 +116,7 @@ export default function NewClientGiftModal({
         <Modal
             animationType="slide"
             transparent={true}
-            visible={openAlreadyBoughtGiftModal}
+            visible={openNewBuyGiftModal}
         >
             <Container>
                 <ContainerModal>
@@ -86,7 +131,7 @@ export default function NewClientGiftModal({
                         <ProfileDescription>
                             <ViewTextInput>
                                 <Question> Gênero:      </Question>
-                                <ContainerPicker>
+                                <ContainerPicker style={{ borderColor: inputGenderColor }}>
                                     <Picker
                                         selectedValue={personData.gender}
                                         onValueChange={(itemValue) =>
@@ -108,7 +153,7 @@ export default function NewClientGiftModal({
                             </ViewTextInput>
                             <ViewTextInput>
                                 <Question> Idade:         </Question>
-                                <ContainerPicker style={{ width: 140 }}>
+                                <ContainerPicker style={{ borderColor: inputAgeColor, width: 140 }}>
                                     <Picker
                                         selectedValue={personData.age}
                                         onValueChange={(itemValue) =>
@@ -130,7 +175,7 @@ export default function NewClientGiftModal({
                             </ViewTextInput>
                             <ViewTextInput>
                                 <Question> Tamanho:  </Question>
-                                <ContainerPicker style={{ width: 110 }}>
+                                <ContainerPicker style={{ borderColor: inputSizeColor, width: 110 }}>
                                     <Picker
                                         selectedValue={personData.size}
                                         onValueChange={(itemValue) =>
