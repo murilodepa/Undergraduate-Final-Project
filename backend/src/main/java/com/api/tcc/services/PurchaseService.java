@@ -76,7 +76,7 @@ public class PurchaseService {
         purchaseRepository.delete(purchaseModel);
     }
 
-    public String getPurchaseSuggestion(String request) throws IOException {
+    private String getPurchaseSuggestion(String request) throws IOException {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             JSONObject json = new JSONObject();
             json.put("content", request);
@@ -166,21 +166,16 @@ public class PurchaseService {
         return null;
     }
 
- /*   public String getPurchaseSuggestion() throws IOException {
-        String result = getPurchaseSuggestion("4,2,3,4");
-        System.out.println("Purchase Suggestion: " + result);
-        return result;
-    }*/
-
     private boolean isTheCategoryInStock(CategoryAndSize categoryAndSize) {
         List<ProductModel> productModelList = productRepository.findAll();
-        String category = categoryAndSize.getCategory(), size = categoryAndSize.getSize();
+        if (categoryAndSize.getCategory() != null && categoryAndSize.getSize() != null) {
+            String category = categoryAndSize.getCategory(), size = categoryAndSize.getSize();
 
-        for (ProductModel productModel : productModelList) {
-            if (Objects.equals(productModel.getCategory(), category) &&
-                    Objects.equals(productModel.getSize(), size) &&
-                    productModel.getQuantity() > 0) {
-                return true;
+            for (ProductModel productModel : productModelList) {
+                if (Objects.equals(productModel.getCategory(), category) && Objects.equals(productModel.getSize(), size) &&
+                        productModel.getQuantity() > 0) {
+                    return true;
+                }
             }
         }
         return false;
@@ -189,7 +184,7 @@ public class PurchaseService {
     private String getElementHavingMaxFreq(List<String> recommendedSizeList) {
         if (!recommendedSizeList.isEmpty()) {
             int maxCount = 0, i, j, count, size = recommendedSizeList.size();
-            String element_having_max_freq = "";
+            String element_having_max_freq = null;
             for (i = 0; i < size; i++) {
                 count = 0;
                 for (j = 0; j < size; j++) {
@@ -205,7 +200,7 @@ public class PurchaseService {
             }
             return element_having_max_freq;
         }
-        return "";
+        return null;
     }
 
     private String mostPurchasedSize(List<PurchaseModel> purchaseModelList, String category) {
@@ -215,6 +210,14 @@ public class PurchaseService {
             if (Objects.equals(purchaseModel.getCategory(), category)) {
                 recommendedSizeList.add(purchaseModel.getSize());
             }
+        }
+        String result = getElementHavingMaxFreq(recommendedSizeList);
+        if (result != null) {
+            return result;
+        }
+        recommendedSizeList.clear();
+        for (PurchaseModel purchaseModel : purchaseModelList) {
+            recommendedSizeList.add(purchaseModel.getSize());
         }
         return getElementHavingMaxFreq(recommendedSizeList);
     }
@@ -261,6 +264,18 @@ public class PurchaseService {
         }
         return ClothingCategory.INDECISION.getCategory();
     }
+
+    private String getMostSizeByCategory(List<CategorySizeAndQuantity> categorySizeAndQuantityList, String suggestion) {
+        if (!categorySizeAndQuantityList.isEmpty()) {
+            for (CategorySizeAndQuantity categorySizeAndQuantity : categorySizeAndQuantityList) {
+                if (Objects.equals(categorySizeAndQuantity.getCategory(), suggestion)) {
+                    return categorySizeAndQuantity.getSize();
+                }
+            }
+        }
+        return null;
+    }
+
 
     private char getMostSize(List<CategorySizeAndQuantity> purchaseCategoryQuantityList) {
         int size = purchaseCategoryQuantityList.size();
@@ -334,21 +349,9 @@ public class PurchaseService {
     private char getMostProduct(List<PurchaseModel> purchaseModelOneClientList, String size) {
         List<PurchaseModel> purchaseModelList = purchaseRepository.findAll();
         List<CategoryAndQuantity> categoryAndQuantityList = new ArrayList<>();
-        boolean flagIsDuplicated;
 
         for (PurchaseModel purchaseModel : purchaseModelList) {
-            flagIsDuplicated = false;
-            for (CategoryAndQuantity categoryAndQuantity : categoryAndQuantityList) {
-                if (Objects.equals(categoryAndQuantity.getCategory(), purchaseModel.getCategory())) {
-                    categoryAndQuantity.setQuantity(categoryAndQuantity.getQuantity() + purchaseModel.getQuantity());
-                    flagIsDuplicated = true;
-                    break;
-                }
-            }
-            if (!flagIsDuplicated) {
-                categoryAndQuantityList.add(new CategoryAndQuantity(purchaseModel.getCategory(),
-                        purchaseModel.getQuantity()));
-            }
+            isDuplicatedCategoryAndQuantity(categoryAndQuantityList, purchaseModel.getCategory(), purchaseModel.getQuantity());
         }
 
         return sortAndGetMostCategory(categoryAndQuantityList, purchaseModelOneClientList, size);
@@ -420,8 +423,8 @@ public class PurchaseService {
     }
 
     public String getMostSuggestion(ClientModel clientModel, String name, String kinship) throws IOException {
-        char gender = getGender(clientModel, kinship), mostPurchase, mostSize, mostProduct, mostSeller, mostInStock;
-        String suggestion;
+        char gender = getGenderIndex(clientModel.getGender(), kinship), mostPurchase, mostSize, mostProduct, mostSeller, mostInStock;
+        String suggestion, sizeMostPurchased;
         StringBuilder params = new StringBuilder();
 
         List<PurchaseModel> purchaseModelOneClientList = getPurchaseOfJustOneClient(clientModel.getId(), name, kinship);
@@ -446,17 +449,7 @@ public class PurchaseService {
                     separatePurchaseByCategoryAndSizeList.add(new CategorySizeAndQuantity(purchaseModel.getCategory(), purchaseModel.getSize(), purchaseModel.getQuantity()));
                 }
 
-                flag_isAddList = false;
-                for (CategoryAndQuantity categoryAndQuantity : separatePurchaseByCategoryList) {
-                    if (Objects.equals(categoryAndQuantity.getCategory(), purchaseModel.getCategory())) {
-                        categoryAndQuantity.setQuantity(categoryAndQuantity.getQuantity() + purchaseModel.getQuantity());
-                        flag_isAddList = true;
-                        break;
-                    }
-                }
-                if (!flag_isAddList) {
-                    separatePurchaseByCategoryList.add(new CategoryAndQuantity(purchaseModel.getCategory(), purchaseModel.getQuantity()));
-                }
+                isDuplicatedCategoryAndQuantity(separatePurchaseByCategoryList, purchaseModel.getCategory(), purchaseModel.getQuantity());
             }
 
             if (!separatePurchaseByCategoryAndSizeList.isEmpty()) {
@@ -490,44 +483,85 @@ public class PurchaseService {
             System.out.println("params: " + params);
             suggestion = getPurchaseSuggestion(String.valueOf(params));
 
-            if (isTheCategoryInStock(new CategoryAndSize(suggestion, mostPurchasedSize(purchaseModelOneClientList, suggestion)))) {
-                return suggestion;
+            if (suggestion != null && !suggestion.equals("")) {
+                sizeMostPurchased = getMostSizeByCategory(separatePurchaseByCategoryAndSizeList, suggestion);
+                if (sizeMostPurchased == null) {
+                    sizeMostPurchased = mostPurchasedSize(purchaseModelOneClientList, suggestion);
+                }
+                if (isTheCategoryInStock(new CategoryAndSize(suggestion, sizeMostPurchased))) {
+                    return suggestion;
+                }
             }
         }
         return null;
     }
 
-    private List<DescriptionAndQuantity> getSellingProductList(String category, boolean isKids, String size) {
-        List<PurchaseModel> purchaseModelList = purchaseRepository.findAll();
-        List<DescriptionAndQuantity> purchaseDataList = new ArrayList<>();
-        boolean flag_isAddList;
+    private List<DescriptionAndQuantity> getProductListToGift(String category, boolean isKids, String size) {
+        List<ProductModel> productModelList = productRepository.findAll();
+        List<DescriptionAndQuantity> descriptionAndQuantityList = new ArrayList<>();
+        boolean flag_isAddList, isContainsKids;
+        String description;
 
-        for (PurchaseModel purchaseModel : purchaseModelList) {
+        for (ProductModel productModel : productModelList) {
             flag_isAddList = false;
-            if (Objects.equals(purchaseModel.getCategory(), category)) {
-                for (DescriptionAndQuantity purchaseData : purchaseDataList) {
-                    if (Objects.equals(purchaseData.getDescription(), purchaseModel.getDescription())) {
-                        purchaseData.setQuantity(purchaseData.getQuantity() + purchaseModel.getQuantity());
+            description = productModel.getDescription();
+
+            if (description != null && Objects.equals(productModel.getCategory(), category) && Objects.equals(productModel.getSize(), size)) {
+                for (DescriptionAndQuantity descriptionAndQuantity : descriptionAndQuantityList) {
+                    if (Objects.equals(descriptionAndQuantity.getDescription(), description)) {
+                        descriptionAndQuantity.setQuantity(descriptionAndQuantity.getQuantity() + productModel.getQuantity());
                         flag_isAddList = true;
                         break;
                     }
                 }
-                if (!flag_isAddList && Objects.equals(purchaseModel.getSize(), size)) {
-                    if (isKids && (purchaseModel.getDescription().contains("criança") || purchaseModel
-                            .getDescription().contains("infantil"))) {
-                        purchaseDataList.add(new DescriptionAndQuantity(purchaseModel.getDescription(),
-                                purchaseModel.getQuantity()));
-                    } else if (!isKids && !purchaseModel.getDescription().contains("criança") && !purchaseModel
-                            .getDescription().contains("infantil")) {
-                        purchaseDataList.add(new DescriptionAndQuantity(purchaseModel.getDescription(), purchaseModel
-                                .getQuantity()));
+                isContainsKids = description.contains("criança") || description.contains("infantil");
+                if (!flag_isAddList) {
+                    if (isKids && isContainsKids) {
+                        descriptionAndQuantityList.add(new DescriptionAndQuantity(description, productModel.getQuantity()));
+                    } else if (!isKids && !isContainsKids) {
+                        descriptionAndQuantityList.add(new DescriptionAndQuantity(description, productModel.getQuantity()));
                     }
                 }
             }
         }
-        if (!purchaseDataList.isEmpty()) {
-            purchaseDataList.sort(Comparator.comparing(DescriptionAndQuantity::getQuantity).reversed());
-            return purchaseDataList;
+        if (!descriptionAndQuantityList.isEmpty()) {
+            descriptionAndQuantityList.sort(Comparator.comparing(DescriptionAndQuantity::getQuantity).reversed());
+            return descriptionAndQuantityList;
+        }
+        return null;
+    }
+
+
+    private List<DescriptionAndQuantity> getSellingProductList(String category, boolean isKids, String size) {
+        List<PurchaseModel> purchaseModelList = purchaseRepository.findAll();
+        List<DescriptionAndQuantity> descriptionAndQuantityList = new ArrayList<>();
+        boolean flag_isAddList, isContainsKids;
+        String description;
+
+        for (PurchaseModel purchaseModel : purchaseModelList) {
+            flag_isAddList = false;
+            description = purchaseModel.getDescription();
+            if (description != null && Objects.equals(purchaseModel.getCategory(), category) && Objects.equals(purchaseModel.getSize(), size)) {
+                for (DescriptionAndQuantity descriptionAndQuantity : descriptionAndQuantityList) {
+                    if (Objects.equals(descriptionAndQuantity.getDescription(), description)) {
+                        descriptionAndQuantity.setQuantity(descriptionAndQuantity.getQuantity() + purchaseModel.getQuantity());
+                        flag_isAddList = true;
+                        break;
+                    }
+                }
+                isContainsKids = description.contains("criança") || description.contains("infantil");
+                if (!flag_isAddList) {
+                    if (isKids && isContainsKids) {
+                        descriptionAndQuantityList.add(new DescriptionAndQuantity(description, purchaseModel.getQuantity()));
+                    } else if (!isKids && !isContainsKids) {
+                        descriptionAndQuantityList.add(new DescriptionAndQuantity(description, purchaseModel.getQuantity()));
+                    }
+                }
+            }
+        }
+        if (!descriptionAndQuantityList.isEmpty()) {
+            descriptionAndQuantityList.sort(Comparator.comparing(DescriptionAndQuantity::getQuantity).reversed());
+            return descriptionAndQuantityList;
         }
         return null;
     }
@@ -536,64 +570,104 @@ public class PurchaseService {
                                                  boolean summer, boolean stripe, boolean printer, boolean casual,
                                                  boolean social) {
 
-        for (DescriptionAndQuantity purchaseData : purchaseDataList) {
-            if ((!summer && (purchaseData.getDescription().contains("verão") ||
-                    purchaseData.getDescription().contains("curta") ||
-                    purchaseData.getDescription().contains("calor"))) ||
-                    (summer && (!purchaseData.getDescription().contains("verão") ||
-                            !purchaseData.getDescription().contains("curta") ||
-                            !purchaseData.getDescription().contains("calor")))) {
-                purchaseDataList.remove(purchaseData);
+        String description;
+        boolean isContainsTag, flagRemove;
+        List<DescriptionAndQuantity> ListOfRecommendedProducts = new ArrayList<>();
+        int quantity;
+
+        for (DescriptionAndQuantity productData : purchaseDataList) {
+            description = productData.getDescription().toLowerCase();
+            flagRemove = false;
+            quantity = 0;
+            isContainsTag = description.contains("verão") ||
+                    description.contains("verao") ||
+                    description.contains("curta") ||
+                    description.contains("calor");
+            if ((!summer && winter && isContainsTag) || (summer && !isContainsTag)) {
+                flagRemove = true;
+            } else if (summer && isContainsTag) {
+                quantity++;
             }
-            purchaseDataList.remove(purchaseData);
-            if ((!winter && (purchaseData.getDescription().contains("inverno") ||
-                    purchaseData.getDescription().contains("frio") ||
-                    purchaseData.getDescription().contains("agasalho") ||
-                    purchaseData.getDescription().contains("moletom"))) ||
-                    (winter && (!purchaseData.getDescription().contains("inverno") ||
-                            !purchaseData.getDescription().contains("frio") ||
-                            !purchaseData.getDescription().contains("agasalho") ||
-                            !purchaseData.getDescription().contains("moletom")))) {
-                purchaseDataList.remove(purchaseData);
+
+            if (!flagRemove) {
+                isContainsTag = description.contains("inverno") ||
+                        description.contains("frio") ||
+                        description.contains("agasalho") ||
+                        description.contains("moletom");
+                if ((!winter && summer && isContainsTag) || (winter && !isContainsTag)) {
+                    flagRemove = true;
+                } else if (winter && isContainsTag) {
+                    quantity++;
+                }
             }
-            if ((!stripe && (purchaseData.getDescription().contains("listra") ||
-                    purchaseData.getDescription().contains("listrado") ||
-                    purchaseData.getDescription().contains("listrada"))) ||
-                    (stripe && (!purchaseData.getDescription().contains("listra") ||
-                            purchaseData.getDescription().contains("listrado") ||
-                            !purchaseData.getDescription().contains("listrada")))) {
-                purchaseDataList.remove(purchaseData);
+
+            if (!flagRemove) {
+                isContainsTag = description.contains("listra") ||
+                        description.contains("listras") ||
+                        description.contains("listrado") ||
+                        description.contains("listrados") ||
+                        description.contains("listrada") ||
+                        description.contains("listradas");
+                if ((!stripe && printer && isContainsTag) || (stripe && !isContainsTag)) {
+                    flagRemove = true;
+                } else if (stripe && isContainsTag) {
+                    quantity++;
+                }
             }
-            if ((!printer && (purchaseData.getDescription().contains("estampa") ||
-                    purchaseData.getDescription().contains("estampada") ||
-                    purchaseData.getDescription().contains("estampado"))) ||
-                    (printer && (!purchaseData.getDescription().contains("estampa") ||
-                            !purchaseData.getDescription().contains("estampada") ||
-                            !purchaseData.getDescription().contains("estampado")))) {
-                purchaseDataList.remove(purchaseData);
+
+            if (!flagRemove) {
+                isContainsTag = description.contains("estampa") ||
+                        description.contains("estampas") ||
+                        description.contains("estampada") ||
+                        description.contains("estampadas") ||
+                        description.contains("estampado") ||
+                        description.contains("estampados");
+                if ((!printer && stripe && isContainsTag) || (printer && !isContainsTag)) {
+                    flagRemove = true;
+                } else if (printer && isContainsTag) {
+                    quantity++;
+                }
             }
-            if (!casual && purchaseData.getDescription().contains("casual") ||
-                    casual && !purchaseData.getDescription().contains("casual")) {
-                purchaseDataList.remove(purchaseData);
+
+            if (!flagRemove) {
+                isContainsTag = description.contains("casual");
+                if ((!casual && social && isContainsTag) || (casual && !isContainsTag)) {
+                    flagRemove = true;
+                } else if (casual && isContainsTag) {
+                    quantity++;
+                }
             }
-            if (!social && purchaseData.getDescription().contains("social") ||
-                    casual && !purchaseData.getDescription().contains("social")) {
-                purchaseDataList.remove(purchaseData);
+
+            if (!flagRemove) {
+                isContainsTag = description.contains("social");
+                if ((!social && casual && isContainsTag) || (social && !isContainsTag)) {
+                    flagRemove = true;
+                } else if (social && isContainsTag) {
+                    quantity++;
+                }
+            }
+
+            if (!flagRemove) {
+                productData.setQuantity(quantity);
+                ListOfRecommendedProducts.add(productData);
             }
         }
 
-        if (!purchaseDataList.isEmpty()) {
-            return purchaseDataList.get(0).getDescription();
+        if (!ListOfRecommendedProducts.isEmpty()) {
+            if (ListOfRecommendedProducts.size() > 1) {
+                ListOfRecommendedProducts.sort(Comparator.comparing(DescriptionAndQuantity::getQuantity).reversed());
+            }
+            return ListOfRecommendedProducts.get(0).getDescription();
         }
 
         return null;
     }
 
-    private char getGender(ClientModel clientModel, String kinship) {
-        if (clientModel.getGender() != null && kinship == null) {
-            if (Objects.equals(clientModel.getGender(), FEMININO))
+    private char getGenderIndex(String gender, String kinship) {
+        if (gender != null) {
+            if (Objects.equals(gender, FEMININO))
                 return Gender.FEMININO.getGender();
-            if (Objects.equals(clientModel.getGender(), MASCULINO))
+            if (Objects.equals(gender, MASCULINO))
                 return Gender.MASCULINO.getGender();
             return Gender.OUTROS.getGender();
         } else if (kinship != null) {
@@ -607,21 +681,50 @@ public class PurchaseService {
         return Gender.FEMININO.getGender(); // a - e - ó
     }
 
-    //Retorna produto mais comprado de um determinado cliente, entrando com uma categoria
+    private char getMostSizeInStock(String size) {
+        List<ProductModel> productModelList = productRepository.findAll();
+        List<CategoryAndQuantity> categoryAndQuantityList = new ArrayList<>();
+
+        for (ProductModel productModel : productModelList) {
+            if (Objects.equals(productModel.getSize(), size)) {
+                isDuplicatedCategoryAndQuantity(categoryAndQuantityList, productModel.getCategory(), productModel.getQuantity());
+            }
+        }
+
+        if (!categoryAndQuantityList.isEmpty()) {
+            categoryAndQuantityList.sort(Comparator.comparing(CategoryAndQuantity::getQuantity).reversed());
+            return convertCategoryInIndex(categoryAndQuantityList.get(0).getCategory());
+        }
+        return ClothingCategory.INDECISION.getCategory();
+    }
+
+    private void isDuplicatedCategoryAndQuantity(List<CategoryAndQuantity> categoryAndQuantityList, String category, int quantity) {
+        boolean flag_isAddList = false;
+        for (CategoryAndQuantity categoryAndQuantity : categoryAndQuantityList) {
+            if (Objects.equals(categoryAndQuantity.getCategory(), category)) {
+                categoryAndQuantity.setQuantity(categoryAndQuantity.getQuantity() + quantity);
+                flag_isAddList = true;
+                break;
+            }
+        }
+        if (!flag_isAddList) {
+            categoryAndQuantityList.add(new CategoryAndQuantity(category, quantity));
+        }
+    }
+
     public String getProductToGiftWithCategory(PersonDataWithTagsToGiftDTO params) throws IOException {
-        //TO DO VERIFICAR SUGGESTÃO DE COMPRA
-        String suggestion, category;
+        String categorySuggestion, productSuggestion;
         StringBuilder decisionTreeParams = new StringBuilder();
         char mostProduct, mostSeller, mostInStock;
 
         mostProduct = getMostProduct(null, params.getSize());
         mostSeller = getMostSeller(null, params.getSize());
         mostInStock = getMostInStock(null, params.getSize());
-        decisionTreeParams.append(params.getGender());
+        decisionTreeParams.append(getGenderIndex(params.getGender(), null));
         decisionTreeParams.append(",");
         decisionTreeParams.append(ClothingCategory.INDECISION.getCategory());
         decisionTreeParams.append(",");
-        decisionTreeParams.append(params.getSize());
+        decisionTreeParams.append(getMostSizeInStock(params.getSize())); // TO DO Size indicado
         decisionTreeParams.append(",");
         decisionTreeParams.append(mostProduct);
         decisionTreeParams.append(",");
@@ -629,19 +732,32 @@ public class PurchaseService {
         decisionTreeParams.append(",");
         decisionTreeParams.append(mostInStock);
         System.out.println("params: " + decisionTreeParams);
-        suggestion = getPurchaseSuggestion(String.valueOf(decisionTreeParams));
+        categorySuggestion = getPurchaseSuggestion(String.valueOf(decisionTreeParams));
 
-        if (suggestion != null && params.getAge() != null && params.getSize() != null) {
-            List<DescriptionAndQuantity> resultList = getSellingProductList(suggestion, params.getAge().equals("Criança"),
+        List<DescriptionAndQuantity> resultList;
+
+        if (categorySuggestion != null && params.getAge() != null && params.getSize() != null) {
+            resultList = getSellingProductList(categorySuggestion, params.getAge().equals("Criança"),
                     params.getSize());
             if (resultList != null) {
-                category = getBestSellingProductWithTags(resultList, params.isSelectedWinter(),
+                productSuggestion = getBestSellingProductWithTags(resultList, params.isSelectedWinter(),
                         params.isSelectedSummer(), params.isSelectedStripe(), params.isSelectedPatterned(),
                         params.isSelectedCasual(), params.isSelectedSocial());
-                if (category != null)
-                    return suggestion;
+                if (productSuggestion != null && isTheCategoryInStock(new CategoryAndSize(categorySuggestion, params.getSize())))
+                    return categorySuggestion + " - " + productSuggestion;
+            } else {
+                resultList = getProductListToGift(categorySuggestion, params.getAge().equals("Criança"), params.getSize());
+                if (resultList != null) {
+                    productSuggestion = getBestSellingProductWithTags(resultList, params.isSelectedWinter(),
+                            params.isSelectedSummer(), params.isSelectedStripe(), params.isSelectedPatterned(),
+                            params.isSelectedCasual(), params.isSelectedSocial());
+                    if (productSuggestion != null && isTheCategoryInStock(new CategoryAndSize(categorySuggestion, params.getSize())))
+                        return categorySuggestion + " - " + productSuggestion;
+                }
             }
-            return suggestion;
+            if (isTheCategoryInStock(new CategoryAndSize(categorySuggestion, params.getSize()))) {
+                return categorySuggestion;
+            }
         }
         return "";
     }
