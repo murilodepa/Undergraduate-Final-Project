@@ -34,7 +34,8 @@ columns = [
 @app.route("/postBestSeller", methods=["POST"])
 def post_matchmaking():
     try:
-        request_data = request.json["content"]
+        request_match_making = request.json
+        request_data = request_match_making["content"]
         seller_data = []
         client_data = []
         print(request_data)
@@ -50,8 +51,9 @@ def post_matchmaking():
             
         seller_df = pd.DataFrame(seller_data, columns=columns)
         client_df = pd.DataFrame(client_data, columns=columns)
-        return get_seller_to_attendance(seller_df, client_df)
-        # Return id of the seller to attendance the client
+
+        # Return id of best seller to attendance the client
+        return str(get_seller_to_attendance(seller_df, client_df))
     except:
         print("Error in request json!")
         return None

@@ -34,7 +34,7 @@ def convert_category_to_value(category):
         return 0
 
 def convert_age_to_value(age):
-    if age == 'criança':
+    if age == 'crianca':
         return 1.05
     elif age == 'jovem':
         return 1.1
