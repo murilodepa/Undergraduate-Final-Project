@@ -30,7 +30,6 @@ public class ClientSellerModel {
 
     @Column(name = "end_time")
     private LocalDateTime endTime;
-    @NotNull
     @ManyToOne
     @JoinColumn(name = "id_client")
     private ClientModel clientModel;

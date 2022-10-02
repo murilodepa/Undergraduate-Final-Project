@@ -6,26 +6,19 @@
 package com.api.tcc.services;
 
 import com.api.tcc.database.Models.ClientModel;
+import com.api.tcc.database.Models.ClientSellerModel;
 import com.api.tcc.database.Models.SellerImageModel;
 import com.api.tcc.database.Models.SellerModel;
 import com.api.tcc.database.dtos.RegistrationSellerDTO;
 import com.api.tcc.email.EmailMessages;
 import com.api.tcc.email.SendEmail;
+import com.api.tcc.repositories.ClientSellerRepository;
 import com.api.tcc.repositories.SellerImageRepository;
 import com.api.tcc.repositories.SellerRepository;
 import com.api.tcc.utils.FormattingDates;
 import com.api.tcc.utils.IndexAndName;
 import com.api.tcc.utils.ManipulatingImage;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.simple.JSONObject;
+import com.api.tcc.utils.PostRequestApiPython;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,6 +42,11 @@ public class SellerService {
 
     @Autowired
     private SellerImageRepository sellerImageRepository;
+
+    @Autowired
+    private ClientSellerRepository clientSellerRepository;
+
+    private static final String URL_MATCH_MAKING = "http://127.0.0.1:9090/postBestSeller";
 
     @Transactional
     public SellerModel save(SellerModel sellerModel) {
@@ -110,6 +108,18 @@ public class SellerService {
         return sellerDate;
     }
 
+    public List<SellerModel> verifySellersAvailable() {
+        List<SellerModel> sellerModelList = sellerRepository.findAll();
+        List<SellerModel> availableSellerModelList = new ArrayList<>();
+
+        for (SellerModel sellerModel: sellerModelList) {
+            if(sellerModel.getAvailable()) {
+                availableSellerModelList.add(sellerModel);
+            }
+        }
+        return availableSellerModelList;
+    }
+
     public RegistrationSellerDTO getRegisteredSeller(String email, String password) throws IOException {
         List<SellerModel> sellerModelList = sellerRepository.findAll();
         RegistrationSellerDTO registrationSellerDTO = new RegistrationSellerDTO();
@@ -117,6 +127,8 @@ public class SellerService {
 
         for (SellerModel sellerModel : sellerModelList) {
             if (Objects.equals(email, sellerModel.getEmail()) && Objects.equals(password, sellerModel.getPassword())) {
+                sellerModel.setAvailable(true);
+                save(sellerModel);
                 List<SellerImageModel> sellerImageModelList = sellerImageRepository.findSellerImages(sellerModel.getId());
                 BeanUtils.copyProperties(sellerModel, registrationSellerDTO);
                 if(!sellerImageModelList.isEmpty()) {
@@ -124,47 +136,87 @@ public class SellerService {
                 }
                 FormattingDates formattingDates = new FormattingDates();
                 registrationSellerDTO.setBirth(formattingDates.convertDateToAge(sellerModel.getBirth()));
+
+                List<ClientSellerModel> clientSellerModelListAux = clientSellerRepository.findAll();
+                List<ClientSellerModel> clientSellerModelList = new ArrayList<>();
+
+                for(ClientSellerModel clientSellerModel : clientSellerModelListAux) {
+                    if(clientSellerModel.getEndTime() == null){
+                        clientSellerModelList.add(clientSellerModel);
+                    }
+                }
+
+                // Verify list of client - seller and seller available to indicate attendance
+                if(!clientSellerModelList.isEmpty()) {
+                    for (ClientSellerModel clientSellerModel : clientSellerModelList) {
+                        List<SellerModel> availableSellerModelList = verifySellersAvailable();
+                        if (!availableSellerModelList.isEmpty()) {
+                            if (availableSellerModelList.size() == 1) {
+                                sellerModel = availableSellerModelList.get(0);
+                                sellerModel.setAvailable(false);
+                                sellerRepository.save(sellerModel);
+                                clientSellerModel.setSellerModel(sellerModel);
+                            } else {
+                                if (clientSellerModel.getClientModel() != null) {
+                                    sellerModel = matchMakingGetBestSeller(clientSellerModel.getClientModel());
+                                    if(sellerModel != null) {
+                                        sellerModel.setAvailable(false);
+                                        sellerRepository.save(sellerModel);
+                                        clientSellerModel.setSellerModel(sellerModel);
+                                    }
+                                } else {
+                                    availableSellerModelList.sort(Comparator.comparing(SellerModel::getAttendances));
+                                    sellerModel = availableSellerModelList.get(0);
+                                    sellerModel.setAvailable(false);
+                                    sellerRepository.save(sellerModel);
+                                    clientSellerModel.setSellerModel(sellerModel);
+                                }
+                            }
+                            clientSellerRepository.save(clientSellerModel);
+                        }
+                    }
+                }
+
                 return registrationSellerDTO;
             }
         }
         return null;
     }
 
-    //TO DO Melhorar esse método e aplicar no end point criado em python
-    public String matchMakingGetBestSeller(List<SellerModel> sellerModelList, ClientModel clientModel) {
-        try (CloseableHttpClient closeableHttpClient = HttpClients.createDefault()) {
-            JSONObject jsonObject = new JSONObject();
-            int i = 0;
-            List<NameValuePair> sellerModelParameters = new ArrayList<>();
-            for (SellerModel sellerModel : sellerModelList) {
-                sellerModelParameters.add(new BasicNameValuePair("seller-" + i, sellerModel.getName()));
-            }
-            jsonObject.put("content", sellerModelParameters);
-            StringEntity params = new StringEntity(jsonObject.toString());
-            HttpPost httpPost = new HttpPost("http://127.0.0.1:9090/postMatchMaking");
-            httpPost.addHeader("content-type", "application/json");
-            httpPost.setEntity(params);
-
-            try (CloseableHttpResponse response = closeableHttpClient.execute(httpPost)) {
-                ResponseHandler<String> handler = new BasicResponseHandler();
-                String body = handler.handleResponse(response);
-                System.out.println(body);
-                return body;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public SellerModel getSellerCategory(String category) {
+    public SellerModel matchMakingGetBestSeller(ClientModel clientModel) {
         List<SellerModel> sellerModelList = sellerRepository.findAll();
+
         if (!sellerModelList.isEmpty()) {
-            for (SellerModel sellerModel : sellerModelList) {
-                if (sellerModel.getAvailable() && Objects.equals(sellerModel.getSector(), category)) {
-                    return sellerModel;
+            sellerModelList.removeIf(sellerModel -> !sellerModel.getAvailable());
+
+            if (!sellerModelList.isEmpty()) {
+                if (sellerModelList.size() == 1) {
+                    return sellerModelList.get(0);
                 }
+
+                StringBuilder parametersModel = new StringBuilder();
+                for (SellerModel sellerModel : sellerModelList) {
+                    parametersModel.append(sellerModel.getId()).append(",");
+                    parametersModel.append(sellerModel.getGender().toLowerCase()).append(",");
+                    parametersModel.append(sellerModel.getSector().toLowerCase().replace('ç', 'c')).append(",");
+                    parametersModel.append(sellerModel.getServicePreference().toLowerCase().replace('ç', 'c')).append("/");
+                }
+                parametersModel.append(clientModel.getId()).append(",");
+                parametersModel.append(clientModel.getGender().toLowerCase()).append(",");
+                if (clientModel.getPurchaseSuggestion() != null) {
+                    parametersModel.append(clientModel.getPurchaseSuggestion().toLowerCase().replace('ç', 'c')).append(",");
+                } else {
+                    parametersModel.append(",");
+                }
+                FormattingDates formattingDates = new FormattingDates();
+                parametersModel.append(formattingDates.getAgeGroup(clientModel.getBirth()).toLowerCase());
+
+                long sellerId = Long.parseLong(PostRequestApiPython.requestApiPython(String.valueOf(parametersModel), URL_MATCH_MAKING));
+                Optional<SellerModel> sellerModelOptional = sellerRepository.findById(sellerId);
+                if (!sellerModelOptional.isPresent()) {
+                    return null;
+                }
+                return sellerModelOptional.get();
             }
         }
         return null;
@@ -172,10 +224,13 @@ public class SellerService {
 
     public SellerModel getSellerWithLessAttendance() {
         List<SellerModel> sellerModelList = sellerRepository.findAll();
-        int min = 0;
+
         if (!sellerModelList.isEmpty()) {
-            sellerModelList.sort(Comparator.comparing(SellerModel::getAttendances));
-            return sellerModelList.get(0);
+            sellerModelList.removeIf(sellerModel -> !sellerModel.getAvailable());
+            if (!sellerModelList.isEmpty()) {
+                sellerModelList.sort(Comparator.comparing(SellerModel::getAttendances));
+                        return sellerModelList.get(0);
+            }
         }
         return null;
     }

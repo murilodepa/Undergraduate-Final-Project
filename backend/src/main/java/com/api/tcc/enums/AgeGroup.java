@@ -9,18 +9,19 @@ package com.api.tcc.enums;
  * @author Murilo de Paula Araujo
  */
 
-public enum Gender {
-    FEMININE('0'),
-    MASCULINE('1'),
-    OTHERS('0');
+public enum AgeGroup {
+    CHILD("crianca"),
+    YOUNG("jovem"),
+    ADULT("adulto"),
+    SENIORS("idoso");
 
-    private final char gender;
+    private final String ageGroup;
 
-    Gender(char gender) {
-        this.gender = gender;
+    AgeGroup(String ageGroup) {
+        this.ageGroup = ageGroup;
     }
 
-    public char getGender() {
-        return gender;
+    public String getAgeGroup() {
+        return ageGroup;
     }
 }

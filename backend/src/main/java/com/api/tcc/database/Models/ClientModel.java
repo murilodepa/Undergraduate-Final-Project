@@ -35,6 +35,4 @@ public class ClientModel {
     @Column(name = "purchase_suggestion")
     @Size(min = 3, max = 20)
     private String purchaseSuggestion;
-    @Column(name = "available")
-    private Boolean available;
 }

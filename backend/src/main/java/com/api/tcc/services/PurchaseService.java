@@ -12,18 +12,11 @@ import com.api.tcc.database.Models.SellerModel;
 import com.api.tcc.database.dtos.PersonDataWithTagsToGiftDTO;
 import com.api.tcc.enums.ClothingCategory;
 import com.api.tcc.enums.Gender;
+import com.api.tcc.repositories.ClientRepository;
 import com.api.tcc.repositories.ProductRepository;
 import com.api.tcc.repositories.PurchaseRepository;
 import com.api.tcc.repositories.SellerRepository;
 import com.api.tcc.utils.*;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +38,9 @@ public class PurchaseService {
     @Autowired
     private SellerRepository sellerRepository;
 
+    @Autowired
+    private ClientRepository clientRepository;
+
     private static final String URL_DECISION_TREE = "http://127.0.0.1:9090/postPurchaseSuggestion";
 
     /* Variable to send to decision tree:  _ _ _ _ _ _. Gender - Bought - Sold - Size - Seller - Inventory */
@@ -52,7 +48,6 @@ public class PurchaseService {
     private static final String FEMININO = "Feminino";
     private static final String MASCULINO = "Masculino";
 
-    private static final String INDECISAO = "Indecisão";
     private static final String CAMISETA = "Camiseta";
     private static final String CALCA = "Calça";
     private static final String SHORT = "Short";
@@ -76,22 +71,8 @@ public class PurchaseService {
         purchaseRepository.delete(purchaseModel);
     }
 
-    private String getPurchaseSuggestion(String request) throws IOException {
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            JSONObject json = new JSONObject();
-            json.put("content", request);
-            StringEntity params = new StringEntity(json.toString());
-            HttpPost httpPost = new HttpPost(URL_DECISION_TREE);
-            httpPost.addHeader("content-type", "application/json");
-            httpPost.setEntity(params);
-
-            try (CloseableHttpResponse response = httpClient.execute(httpPost)) {
-                ResponseHandler<String> handler = new BasicResponseHandler();
-                String body = handler.handleResponse(response);
-                System.out.println(body);
-                return body;
-            }
-        }
+    private String getPurchaseSuggestion(String request) {
+        return PostRequestApiPython.requestApiPython(request, URL_DECISION_TREE);
     }
 
     public List<CategorySizeAndDate> getPurchasedList(long clientId, String name, String kinship) {
@@ -205,21 +186,61 @@ public class PurchaseService {
 
     private String mostPurchasedSize(List<PurchaseModel> purchaseModelList, String category) {
         List<String> recommendedSizeList = new ArrayList<>();
+        List<String> notRecommendedSizeList = new ArrayList<>();
+        List<ProductModel> productModelList = productRepository.findAll();
+        List<DescriptionAndQuantity> descriptionAndQuantityList = new ArrayList<>();
 
         for (PurchaseModel purchaseModel : purchaseModelList) {
             if (Objects.equals(purchaseModel.getCategory(), category)) {
                 recommendedSizeList.add(purchaseModel.getSize());
+            } else {
+                notRecommendedSizeList.add(purchaseModel.getSize());
             }
         }
-        String result = getElementHavingMaxFreq(recommendedSizeList);
-        if (result != null) {
-            return result;
+
+        if(!recommendedSizeList.isEmpty()) {
+            verifyDuplicatedDescriptionAndSize(recommendedSizeList, descriptionAndQuantityList);
+
+            descriptionAndQuantityList.sort(Comparator.comparing(DescriptionAndQuantity::getQuantity).reversed());
+
+            for(String element: recommendedSizeList) {
+                if (isTheCategoryInStock(new CategoryAndSize(category, element))) {
+                    return element;
+                }
+            }
+
+            descriptionAndQuantityList.clear();
+            verifyDuplicatedDescriptionAndSize(notRecommendedSizeList, descriptionAndQuantityList);
+            descriptionAndQuantityList.sort(Comparator.comparing(DescriptionAndQuantity::getQuantity).reversed());
+
+            for(String element: notRecommendedSizeList) {
+                if (isTheCategoryInStock(new CategoryAndSize(category, element))) {
+                    return element;
+                }
+            }
         }
-        recommendedSizeList.clear();
-        for (PurchaseModel purchaseModel : purchaseModelList) {
-            recommendedSizeList.add(purchaseModel.getSize());
+
+        for (ProductModel productModel : productModelList) {
+            recommendedSizeList.add(productModel.getSize());
         }
         return getElementHavingMaxFreq(recommendedSizeList);
+    }
+
+    private void verifyDuplicatedDescriptionAndSize(List<String> notRecommendedSizeList, List<DescriptionAndQuantity> descriptionAndQuantityList) {
+        boolean flagIsDuplicated;
+        for(String element: notRecommendedSizeList) {
+            flagIsDuplicated = false;
+            for (DescriptionAndQuantity descriptionAndQuantity : descriptionAndQuantityList) {
+                if (Objects.equals(descriptionAndQuantity.getDescription(), element)) {
+                    descriptionAndQuantity.setQuantity(descriptionAndQuantity.getQuantity() + 1);
+                    flagIsDuplicated = true;
+                    break;
+                }
+            }
+            if (!flagIsDuplicated) {
+                descriptionAndQuantityList.add(new DescriptionAndQuantity(element, 1));
+            }
+        }
     }
 
     private char convertCategoryInIndex(String category) {
@@ -239,7 +260,6 @@ public class PurchaseService {
             purchaseModelOneClientList) {
         int size = purchaseCategoryQuantityList.size(), i;
         String category = purchaseCategoryQuantityList.get(0).getCategory();
-        CategoryAndSize categoryAndSize;
         String mostSize;
 
         if (size == 1) {
@@ -268,7 +288,9 @@ public class PurchaseService {
     private String getMostSizeByCategory(List<CategorySizeAndQuantity> categorySizeAndQuantityList, String suggestion) {
         if (!categorySizeAndQuantityList.isEmpty()) {
             for (CategorySizeAndQuantity categorySizeAndQuantity : categorySizeAndQuantityList) {
-                if (Objects.equals(categorySizeAndQuantity.getCategory(), suggestion)) {
+                if (Objects.equals(categorySizeAndQuantity.getCategory(), suggestion) &&
+                        isTheCategoryInStock(new CategoryAndSize(categorySizeAndQuantity.getCategory(),
+                                categorySizeAndQuantity.getSize()))) {
                     return categorySizeAndQuantity.getSize();
                 }
             }
@@ -322,9 +344,9 @@ public class PurchaseService {
 
     private char sortAndGetMostCategory(List<CategoryAndQuantity> CategoryAndQuantityList, List<PurchaseModel>
             purchaseModelOneClientList, String clothingSize) {
-        String category = CategoryAndQuantityList.get(0).getCategory();
 
         if (!CategoryAndQuantityList.isEmpty()) {
+            String category = CategoryAndQuantityList.get(0).getCategory();
             CategoryAndQuantityList.sort(Comparator.comparing(CategoryAndQuantity::getQuantity).reversed());
 
             if (CategoryAndQuantityList.size() == 1) {
@@ -336,7 +358,7 @@ public class PurchaseService {
                             CategoryAndQuantityList.get(i).getQuantity() > CategoryAndQuantityList.get((i + 1))
                                     .getQuantity() &&
                             CategoryAndQuantityList.get(i).getQuantity() == CategoryAndQuantityList.get(0)
-                                    .getQuantity()) {
+                                    .getQuantity() && isTheCategoryInStock(new CategoryAndSize(category, clothingSize))) {
                         category = CategoryAndQuantityList.get(i).getCategory();
                         return verifyMostSize(purchaseModelOneClientList, category, clothingSize);
                     }
@@ -422,7 +444,7 @@ public class PurchaseService {
         return null;
     }
 
-    public String getMostSuggestion(ClientModel clientModel, String name, String kinship) throws IOException {
+    public String getMostSuggestion(ClientModel clientModel, String name, String kinship) {
         char gender = getGenderIndex(clientModel.getGender(), kinship), mostPurchase, mostSize, mostProduct, mostSeller, mostInStock;
         String suggestion, sizeMostPurchased;
         StringBuilder params = new StringBuilder();
@@ -489,6 +511,10 @@ public class PurchaseService {
                     sizeMostPurchased = mostPurchasedSize(purchaseModelOneClientList, suggestion);
                 }
                 if (isTheCategoryInStock(new CategoryAndSize(suggestion, sizeMostPurchased))) {
+                    if(name == null && kinship == null) {
+                        clientModel.setPurchaseSuggestion(suggestion);
+                        clientRepository.save(clientModel);
+                    }
                     return suggestion;
                 }
             }
@@ -664,21 +690,21 @@ public class PurchaseService {
     }
 
     private char getGenderIndex(String gender, String kinship) {
-        if (gender != null) {
+        if (gender != null && kinship == null) {
             if (Objects.equals(gender, FEMININO))
-                return Gender.FEMININO.getGender();
+                return Gender.FEMININE.getGender();
             if (Objects.equals(gender, MASCULINO))
-                return Gender.MASCULINO.getGender();
-            return Gender.OUTROS.getGender();
+                return Gender.MASCULINE.getGender();
+            return Gender.OTHERS.getGender();
         } else if (kinship != null) {
             char lastLetter = kinship.substring(kinship.length() - 1).charAt(0);
             if (lastLetter == 'ô' ||
                     lastLetter == 'i' ||
                     lastLetter == 'o') {
-                return Gender.MASCULINO.getGender();
+                return Gender.MASCULINE.getGender();
             }
         }
-        return Gender.FEMININO.getGender(); // a - e - ó
+        return Gender.FEMININE.getGender(); // a - e - ó
     }
 
     private char getMostSizeInStock(String size) {
@@ -724,7 +750,7 @@ public class PurchaseService {
         decisionTreeParams.append(",");
         decisionTreeParams.append(ClothingCategory.INDECISION.getCategory());
         decisionTreeParams.append(",");
-        decisionTreeParams.append(getMostSizeInStock(params.getSize())); // TO DO Size indicado
+        decisionTreeParams.append(getMostSizeInStock(params.getSize()));
         decisionTreeParams.append(",");
         decisionTreeParams.append(mostProduct);
         decisionTreeParams.append(",");

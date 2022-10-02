@@ -54,7 +54,7 @@ public class PurchaseController {
     private PurchaseProductService purchaseProductService;
 
     @PostMapping("/insertPurchase")
-    public ResponseEntity<Object> savePurchase(@RequestBody @Valid PurchaseDTO purchaseDTO) throws IOException {
+    public ResponseEntity<Object> savePurchase(@RequestBody @Valid PurchaseDTO purchaseDTO) {
         Optional<ClientModel> clientModelOptional = clientService.findById(purchaseDTO.getId_client());
         if (!clientModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client not found!");
@@ -86,7 +86,6 @@ public class PurchaseController {
         productService.save(productModel);
 
         String result = purchaseService.getMostSuggestion(clientModel, null, null);
-        clientModel.setAvailable(true);
         if (result != null && !result.equals("")) {
             clientModel.setPurchaseSuggestion(result);
         }
@@ -169,7 +168,7 @@ public class PurchaseController {
     }
 
     @GetMapping("/getSuggestion/{id}")
-    public String getSuggestion(@PathVariable(value = "id") long id) throws IOException {
+    public String getSuggestion(@PathVariable(value = "id") long id) {
         Optional<ClientModel> clientModelOptional = clientService.findById(id);
         if (!clientModelOptional.isPresent()) {
             return "";
@@ -178,7 +177,7 @@ public class PurchaseController {
     }
 
     @GetMapping("/getSuggestionGifts/{id}")
-    public String getSuggestionGifts(@PathVariable(value = "id") long id, @NotNull @RequestParam String name, @NotNull @RequestParam String kinship) throws IOException {
+    public String getSuggestionGifts(@PathVariable(value = "id") long id, @NotNull @RequestParam String name, @NotNull @RequestParam String kinship) {
         Optional<ClientModel> clientModelOptional = clientService.findById(id);
         if (!clientModelOptional.isPresent()) {
             return "";

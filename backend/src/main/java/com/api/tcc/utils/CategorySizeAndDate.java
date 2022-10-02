@@ -14,13 +14,13 @@ import java.time.LocalDate;
 public class CategorySizeAndDate {
     private String category;
     private String size;
-    private String date;
+    private LocalDate date;
 
     public CategorySizeAndDate(String category, String size, LocalDate date) {
         FormattingDates formattingDates = new FormattingDates();
         this.category = category;
         this.size = size;
-        this.date = formattingDates.convertDatabaseToDate(date);
+        this.date = date;
     }
 
     public String getCategory() {
@@ -31,11 +31,11 @@ public class CategorySizeAndDate {
         this.category = category;
     }
 
-    public String getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

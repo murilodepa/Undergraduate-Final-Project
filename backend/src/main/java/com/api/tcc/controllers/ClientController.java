@@ -40,7 +40,6 @@ public class ClientController {
         BeanUtils.copyProperties(clientDTO, clientModel);
         FormattingDates formattingDates = new FormattingDates();
         clientModel.setBirth(formattingDates.convertDateToDatabase(clientDTO.getBirth()));
-        clientModel.setAvailable(true);
         return ResponseEntity.status(HttpStatus.CREATED).body(clientService.save(clientModel));
     }
 
@@ -80,7 +79,6 @@ public class ClientController {
         clientModel.setId(clientModelOptional.get().getId());
         FormattingDates formattingDates = new FormattingDates();
         clientModel.setBirth(formattingDates.convertDateToDatabase(clientDTO.getBirth()));
-        clientModel.setAvailable(clientDTO.getAvailable());
         return ResponseEntity.status(HttpStatus.OK).body(clientService.save(clientModel));
     }
 }

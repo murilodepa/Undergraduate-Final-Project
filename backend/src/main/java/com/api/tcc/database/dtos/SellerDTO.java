@@ -28,4 +28,5 @@ public class SellerDTO {
     private String email;
     @Size(min = 5, max = 30)
     private String password;
+    private String servicePreference;
 }

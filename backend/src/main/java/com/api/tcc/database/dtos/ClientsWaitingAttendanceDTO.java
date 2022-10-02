@@ -20,6 +20,7 @@ public class ClientsWaitingAttendanceDTO {
     private String name;
     @Size(min = 1, max = 10)
     private String gender;
-    private int birth;
+    private String birth;
     private String profileImage;
+    private int visibleHappyBirthdayImage;
 }

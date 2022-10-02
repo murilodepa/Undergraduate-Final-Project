@@ -21,6 +21,6 @@ import java.util.UUID;
 public class ClientSellerDTO {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private ClientModel clientModel;
-    private SellerModel sellerModel;
+    private long clientId;
+    private long sellerId;
 }

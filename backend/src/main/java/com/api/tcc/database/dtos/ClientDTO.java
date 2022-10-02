@@ -22,5 +22,4 @@ public class ClientDTO {
     @Size(min = 1, max = 10)
     private String gender;
     private String birth;
-    private Boolean available;
 }

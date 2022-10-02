@@ -5,8 +5,10 @@
  */
 package com.api.tcc.controllers;
 
+import com.api.tcc.database.Models.ClientModel;
 import com.api.tcc.database.dtos.RegistrationSellerDTO;
 import com.api.tcc.faceRecognition.Training;
+import com.api.tcc.services.ClientService;
 import com.api.tcc.services.SellerImageService;
 import com.api.tcc.utils.FormattingDates;
 import com.api.tcc.database.Models.SellerModel;
@@ -39,6 +41,9 @@ public class SellerController {
     @Autowired
     SellerImageService sellerImageService;
 
+    @Autowired
+    ClientService clientService;
+
     @PostMapping("/insertSeller")
     public ResponseEntity<Object> saveSeller(@RequestBody @Valid SellerDTO sellerDTO) throws ParseException {
         if(sellerService.existsByEmail(sellerDTO.getEmail())) {
@@ -46,11 +51,22 @@ public class SellerController {
         }
         SellerModel sellerModel = new SellerModel();
         BeanUtils.copyProperties(sellerDTO, sellerModel);
-        sellerModel.setAvailable(true);
+        sellerModel.setAvailable(false);
         sellerModel.setAttendances(0);
         FormattingDates formattingDates = new FormattingDates();
         sellerModel.setBirth(formattingDates.convertDateToDatabase(sellerDTO.getBirth()));
         return ResponseEntity.status(HttpStatus.CREATED).body(sellerService.save(sellerModel));
+    }
+
+    @PostMapping("/matchMaking/{id}")
+    public long getBestSeller(@PathVariable(value = "id") long clientId) {
+        Optional<ClientModel> clientModelOptional = clientService.findById(clientId);
+        if (!clientModelOptional.isPresent()) {
+            return 0;
+        }
+        SellerModel sellerModel = sellerService.matchMakingGetBestSeller(clientModelOptional.get());
+        System.out.println("Seller Model: " + sellerModel);
+        return sellerModel.getId();
     }
 
     @GetMapping("/getSeller")
@@ -72,9 +88,8 @@ public class SellerController {
         return ResponseEntity.status(HttpStatus.OK).body(sellerService.findAllSellerAvailable());
     }
 
-
     @DeleteMapping("/removeSeller/{id}")
-    public ResponseEntity<Object> deleteSeller(@PathVariable(value = "id") long id) throws IOException {
+    public ResponseEntity<Object> deleteSeller(@PathVariable(value = "id") long id) {
         Optional<SellerModel> sellerModelOptional = sellerService.findById(id);
         if (!sellerModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller not found!");
@@ -117,7 +132,7 @@ public class SellerController {
     }
 
     @GetMapping("/getRegisteredSeller")
-    public ResponseEntity<Object> getRegisteredSeller(@NotNull @RequestParam String email, @NotNull @RequestParam String password) throws IOException, ParseException {
+    public ResponseEntity<Object> getRegisteredSeller(@NotNull @RequestParam String email, @NotNull @RequestParam String password) throws IOException {
         RegistrationSellerDTO registrationSellerDTO = sellerService.getRegisteredSeller(email, password);
         if (registrationSellerDTO != null) {
             return ResponseEntity.status(HttpStatus.OK).body(registrationSellerDTO);

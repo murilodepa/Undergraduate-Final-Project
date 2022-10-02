@@ -47,4 +47,6 @@ public class SellerModel {
     @JsonIgnore
     @Column(name = "password")
     private String password;
+    @Column(name = "service_preference")
+    private String servicePreference;
 }

@@ -6,19 +6,27 @@
 package com.api.tcc.services;
 
 import com.api.tcc.database.Models.ClientImageModel;
+import com.api.tcc.database.Models.ClientModel;
 import com.api.tcc.database.Models.ClientSellerModel;
 import com.api.tcc.database.Models.SellerModel;
 import com.api.tcc.database.dtos.ClientsWaitingAttendanceDTO;
 import com.api.tcc.repositories.ClientImageRepository;
 import com.api.tcc.repositories.ClientSellerRepository;
 import com.api.tcc.repositories.SellerRepository;
+import com.api.tcc.utils.CategorySizeAndDate;
 import com.api.tcc.utils.FormattingDates;
 import com.api.tcc.utils.ManipulatingImage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
@@ -37,7 +45,13 @@ public class ClientSellerService {
     private SellerRepository sellerRepository;
 
     @Autowired
+    private SellerService sellerService;
+
+    @Autowired
     private ClientImageRepository clientImageRepository;
+
+    @Autowired
+    private PurchaseService purchaseService;
 
     @Transactional
     public ClientSellerModel save(ClientSellerModel clientSellerModel) {
@@ -84,17 +98,6 @@ public class ClientSellerService {
         }
     }
 
-    public Optional<SellerModel> getBestSeller() {
-        List<SellerModel> sellerModelList = sellerRepository.findAll();
-        if(sellerModelList.isEmpty()) {
-            return Optional.empty();
-        }
-        if(sellerModelList.size() == 1) {
-            return Optional.ofNullable(sellerModelList.get(0));
-        }
-        return sellerModelList.stream().min(Comparator.comparing(SellerModel::getAttendances));
-    }
-
     public ClientsWaitingAttendanceDTO clientWaitingAttendance(long sellerId) throws IOException {
         List<ClientSellerModel> clientSellerModelList = clientSellerRepository.findAll();
         ClientsWaitingAttendanceDTO clientsWaitingAttendanceDTO = new ClientsWaitingAttendanceDTO();
@@ -102,14 +105,45 @@ public class ClientSellerService {
         FormattingDates formattingDates = new FormattingDates();
 
         for(ClientSellerModel clientSellerModel : clientSellerModelList) {
-            if(clientSellerModel.getSellerModel().getId() == sellerId && clientSellerModel.getEndTime() == null && clientSellerModel.getClientModel().getAvailable()) {
-                clientsWaitingAttendanceDTO.setClientId(clientSellerModel.getClientModel().getId());
-                clientsWaitingAttendanceDTO.setName(clientSellerModel.getClientModel().getName());
-                clientsWaitingAttendanceDTO.setBirth(formattingDates.convertDateToAge(clientSellerModel.getClientModel().getBirth()));
-                clientsWaitingAttendanceDTO.setGender(clientSellerModel.getClientModel().getGender());
-                List<ClientImageModel> clientImageModelList = clientImageRepository.findClientImages(clientSellerModel.getClientModel().getId());
-                if(!clientImageModelList.isEmpty()) {
-                    clientsWaitingAttendanceDTO.setProfileImage(manipulatingImage.decodeImage(clientImageModelList.get(0).getImage()));
+            if(clientSellerModel.getSellerModel() != null && clientSellerModel.getSellerModel().getId() == sellerId && clientSellerModel.getEndTime() == null) {
+                long clientId;
+                if(clientSellerModel.getClientModel() != null) {
+                    ClientModel clientModel = clientSellerModel.getClientModel();
+                    clientId = clientModel.getId();
+                    clientsWaitingAttendanceDTO.setClientId(clientId);
+                    clientsWaitingAttendanceDTO.setName(clientModel.getName());
+                    LocalDate date = clientModel.getBirth();
+                    clientsWaitingAttendanceDTO.setBirth(formattingDates.convertDatabaseToDateComplete(date));
+                    clientsWaitingAttendanceDTO.setGender(clientModel.getGender());
+                    List<CategorySizeAndDate> categorySizeAndDateList = purchaseService.getPurchasedList(clientId, null, null);
+                    clientsWaitingAttendanceDTO.setVisibleHappyBirthdayImage(formattingDates.getHappyBirthdayNear(date, categorySizeAndDateList));
+                    List<ClientImageModel> clientImageModelList = clientImageRepository.findClientImages(clientId);
+                    if(!clientImageModelList.isEmpty()) {
+                        clientsWaitingAttendanceDTO.setProfileImage(manipulatingImage.decodeImage(clientImageModelList.get(0).getImage()));
+                    }
+                } else {
+                    clientsWaitingAttendanceDTO.setClientId(0);
+                    clientsWaitingAttendanceDTO.setName("Desconhecido");
+                    clientsWaitingAttendanceDTO.setBirth("Nascimento não registrado");
+                    clientsWaitingAttendanceDTO.setGender("Gênero não registrado");
+
+                    String fileName = manipulatingImage.getFileNameUnknownClient();
+                    if(fileName != null) {
+                        final String photoPath = "src\\main\\resources\\photos\\Unknown_Client\\" + fileName;
+                        Path source = Paths.get(photoPath);
+                        BufferedImage bi = ImageIO.read(source.toFile());
+
+                        // convert BufferedImage to byte[]
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        ImageIO.write(bi, "png", baos);
+                        byte[] imageBytes = baos.toByteArray();
+                        clientsWaitingAttendanceDTO.setProfileImage(manipulatingImage.decodeImage(imageBytes));
+                        /* TO DO - Delete file after sending...
+                        File photo = new File(photoPath);
+                        if (photo.exists()) {
+                            photo.delete();
+                        }*/
+                    }
                 }
 
                 return clientsWaitingAttendanceDTO;
@@ -119,54 +153,75 @@ public class ClientSellerService {
         return null;
     }
 
-    public List<SellerModel> verifySellersAvailable() {
-        List<SellerModel> sellerModelList = sellerRepository.findAll();
-        List<SellerModel> availableSellerModelList = new ArrayList<>();
+    public void endAttendance(long sellerId) {
+        List<ClientSellerModel> clientSellerModelListAux = clientSellerRepository.findAll();
+        List<ClientSellerModel> clientSellerModelList = new ArrayList<>();
+        List<ClientSellerModel> clientSellerModelListToAttendace = new ArrayList<>();
 
-        for (SellerModel sellerModel: sellerModelList) {
-            if(sellerModel.getAvailable()) {
-                availableSellerModelList.add(sellerModel);
+        for(ClientSellerModel clientSellerModel : clientSellerModelListAux) {
+            if(clientSellerModel.getEndTime() == null){
+                clientSellerModelList.add(clientSellerModel);
+                clientSellerModelListToAttendace.add(clientSellerModel);
             }
         }
-        return availableSellerModelList;
-    }
-
-    public void endAttendance(long clientId, long sellerId) {
-        List<ClientSellerModel> clientSellerModelList = clientSellerRepository.findAll();
 
         for(ClientSellerModel clientSellerModel : clientSellerModelList) {
-            if (clientSellerModel.getEndTime() == null
-                    && !clientSellerModel.getClientModel().getAvailable()
-                    && !clientSellerModel.getSellerModel().getAvailable()
-                    && clientSellerModel.getClientModel().getId() == clientId
+            if (clientSellerModel.getSellerModel() != null && !clientSellerModel.getSellerModel().getAvailable()
                     && clientSellerModel.getSellerModel().getId() == sellerId) {
+
                 clientSellerModel.setEndTime(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")));
-                clientSellerModel.getClientModel().setAvailable(true);
+                SellerModel sellerModel = clientSellerModel.getSellerModel();
+                sellerModel.setAvailable(true);
+                int attendance = sellerModel.getAttendances()+1;
+                sellerModel.setAttendances(attendance);
                 clientSellerModel.getSellerModel().setAvailable(true);
+                clientSellerModel.getSellerModel().setAttendances(attendance);
+                sellerRepository.save(sellerModel);
+                clientSellerRepository.save(clientSellerModel);
+                clientSellerModelListToAttendace.remove(clientSellerModel);
             }
         }
 
-        //TO DO Verificar lista e indicar vendedor para algum cliente que não foi atendido ainda
-        List<SellerModel> availableSellerModelList = verifySellersAvailable();
-        for (ClientSellerModel clientSellerModel : clientSellerModelList) {
-            if (clientSellerModel.getEndTime() == null && clientSellerModel.getSellerModel() == null && clientSellerModel.getClientModel().getAvailable() && !availableSellerModelList.isEmpty()) {
-                if(availableSellerModelList.size() == 1) {
-                    clientSellerModel.setSellerModel(availableSellerModelList.get(0));
-                } else {
-                    //TO DO MATCH MAKING
+        // Verify list of client - seller and seller available to indicate attendance
+        if(!clientSellerModelListToAttendace.isEmpty()) {
+            SellerModel sellerModel;
+            for (ClientSellerModel clientSellerModel : clientSellerModelListToAttendace) {
+                List<SellerModel> availableSellerModelList = sellerService.verifySellersAvailable();
+                if (!availableSellerModelList.isEmpty()) {
+                    if (availableSellerModelList.size() == 1) {
+                        sellerModel = availableSellerModelList.get(0);
+                        sellerModel.setAvailable(false);
+                        sellerRepository.save(sellerModel);
+                        clientSellerModel.setSellerModel(sellerModel);
+                    } else {
+                        if (clientSellerModel.getClientModel() != null) {
+                            sellerModel = sellerService.matchMakingGetBestSeller(clientSellerModel.getClientModel());
+                            if(sellerModel != null) {
+                                sellerModel.setAvailable(false);
+                                sellerService.save(sellerModel);
+                                clientSellerModel.setSellerModel(sellerModel);
+                            }
+                        } else {
+                            availableSellerModelList.sort(Comparator.comparing(SellerModel::getAttendances));
+                            sellerModel = availableSellerModelList.get(0);
+                            sellerModel.setAvailable(false);
+                            sellerRepository.save(sellerModel);
+                            clientSellerModel.setSellerModel(sellerModel);
+                        }
+                    }
+                    clientSellerRepository.save(clientSellerModel);
                 }
             }
         }
     }
 
     @Transactional
-    public void deleteAttendance(long clientId, long sellerId) {
+    public void deleteAttendance(long sellerId) {
 
         List<ClientSellerModel> clientSellerModelList = clientSellerRepository.findAll();
 
         for(ClientSellerModel clientSellerModel : clientSellerModelList) {
             if (clientSellerModel.getEndTime() == null
-                    && clientSellerModel.getClientModel().getId() == clientId
                     && clientSellerModel.getSellerModel().getId() == sellerId) {
                 clientSellerRepository.delete(clientSellerModel);
             }

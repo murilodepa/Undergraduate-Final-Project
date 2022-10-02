@@ -10,10 +10,7 @@ import org.apache.commons.io.FileUtils;
 import javax.imageio.ImageIO;
 import javax.xml.bind.DatatypeConverter;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -66,7 +63,7 @@ public class ManipulatingImage {
         if (photosIndex == 0) {
             photosIndex = QUANTITY_OF_PHOTOS;
         }
-            fileName = ("person." + userId + "." + photosIndex + ".jpg");
+        fileName = ("person." + userId + "." + photosIndex + ".jpg");
         return fileName;
     }
 
@@ -89,5 +86,41 @@ public class ManipulatingImage {
         System.out.println("Image Created!");
         String data = DatatypeConverter.printBase64Binary(byteArrayOutputStream.toByteArray());
         return "data:image/jpeg;base64," + data;
+    }
+
+    private File[] getUnknownClientPhotosList() {
+        File unknownClientPhotos = new File("src\\main\\resources\\photos\\Unknown_Client");
+
+        FilenameFilter filenameFilter = new FilenameFilter() {
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.endsWith(".jpg") || name.endsWith(".png") || name.endsWith("jpeg");
+            }
+        };
+
+        return unknownClientPhotos.listFiles(filenameFilter);
+    }
+
+    public int getLastIndexUnknownClientPhotos() {
+        int index = 1;
+        File[] unknownClientPhotosList = getUnknownClientPhotosList();
+
+        if (unknownClientPhotosList != null) {
+            index = (unknownClientPhotosList.length) + 1;
+        }
+        return index;
+    }
+
+    public String getFileNameUnknownClient() {
+        String fileName;
+        File[] unknownClientPhotosList = getUnknownClientPhotosList();
+
+        if (unknownClientPhotosList != null && unknownClientPhotosList.length > 0) {
+            for (File file : unknownClientPhotosList) {
+                return file.getName();
+
+            }
+        }
+        return null;
     }
 }

@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -49,8 +48,26 @@ public class ClientSellerController {
 
     @PostMapping("/insertAttendance")
     public ResponseEntity<Object> saveAttendance(@RequestBody @Valid ClientSellerDTO clientSellerDTO) {
+
         ClientSellerModel clientSellerModel = new ClientSellerModel();
-        BeanUtils.copyProperties(clientSellerDTO, clientSellerModel);
+        long clientId = clientSellerDTO.getClientId();
+        long sellerId = clientSellerDTO.getSellerId();
+
+        if(clientId != 0) {
+            Optional<ClientModel> clientModelOptional = clientService.findById(clientId);
+            if (clientModelOptional.isPresent()) {
+                clientSellerModel.setClientModel(clientModelOptional.get());
+            }
+        }
+
+        if(sellerId != 0) {
+            Optional<SellerModel> sellerModelOptional = sellerService.findById(sellerId);
+            if (sellerModelOptional.isPresent()) {
+                clientSellerModel.setSellerModel(sellerModelOptional.get());
+            }
+        }
+
+        clientSellerModel.setStartTime(LocalDateTime.parse(formatter.format(LocalDateTime.now(ZoneId.of("America/Sao_Paulo"))), formatter));
         return ResponseEntity.status(HttpStatus.CREATED).body(clientSellerService.save(clientSellerModel));
     }
 
@@ -85,46 +102,63 @@ public class ClientSellerController {
         if (!clientSellerModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Attendance not found!");
         }
+
         ClientSellerModel clientSellerModel = new ClientSellerModel();
-        BeanUtils.copyProperties(clientSellerDTO, clientSellerModel);
+        long clientId = clientSellerDTO.getClientId();
+        long sellerId = clientSellerDTO.getSellerId();
+
+        if(clientId != 0) {
+            Optional<ClientModel> clientModelOptional = clientService.findById(clientId);
+            if (clientModelOptional.isPresent()) {
+                clientSellerModel.setClientModel(clientModelOptional.get());
+            }
+        }
+
+        if(sellerId != 0) {
+            Optional<SellerModel> sellerModelOptional = sellerService.findById(sellerId);
+            if (sellerModelOptional.isPresent()) {
+                clientSellerModel.setSellerModel(sellerModelOptional.get());
+            }
+        }
+
         clientSellerModel.setId(clientSellerModelOptional.get().getId());
+        clientSellerModel.setStartTime(clientSellerDTO.getStartTime());
+        clientSellerModel.setEndTime(clientSellerDTO.getEndTime());
         return ResponseEntity.status(HttpStatus.OK).body(clientSellerService.save(clientSellerModel));
     }
 
-    @PutMapping("/updateStatus/{clientId}/{sellerId}")
-    public ResponseEntity<Object> updateStatus(@PathVariable(value = "clientId") long clientId, @PathVariable(value = "sellerId") long sellerId) {
-        Optional<ClientModel> clientModelOptional = clientService.findById(clientId);
+    @PutMapping("/updateStatus/{sellerId}")
+    public ResponseEntity<Object> updateStatus(@PathVariable(value = "sellerId") long sellerId) {
         Optional<SellerModel> sellerModelOptional = sellerService.findById(sellerId);
 
         if (!clientModelOptional.isPresent() || !sellerModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client or Seller not found!");
         }
-        clientModelOptional.get().setAvailable(false);
-        sellerModelOptional.get().setAvailable(false);
-        return ResponseEntity.status(HttpStatus.OK).body("Client and seller status changed successfully");
+        SellerModel sellerModel = sellerModelOptional.get();
+        sellerModel.setAvailable(false);
+        sellerService.save(sellerModel);
+        return ResponseEntity.status(HttpStatus.OK).body("Seller status changed successfully");
     }
 
-    @PutMapping("/updateStatusAndEndTime/{clientId}/{sellerId}") //TO DO percorrer lista se tem cliente esperando atendimento e indicar o vendedor livre para aquela pessoa
-    public ResponseEntity<Object> updateStatusAndEndTime(@PathVariable(value = "clientId") long clientId, @PathVariable(value = "sellerId") long sellerId) {
-        Optional<ClientModel> clientModelOptional = clientService.findById(clientId);
+    @PutMapping("/updateStatusAndEndTime/{sellerId}")
+    public ResponseEntity<Object> updateStatusAndEndTime(@PathVariable(value = "sellerId") long sellerId) {
         Optional<SellerModel> sellerModelOptional = sellerService.findById(sellerId);
 
-        if (!clientModelOptional.isPresent() || !sellerModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client or Seller not found!");
+        if (!sellerModelOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller not found!");
         }
-        clientSellerService.endAttendance(clientId, sellerId);
-        return ResponseEntity.status(HttpStatus.OK).body("Client and seller status changed successfully");
+        clientSellerService.endAttendance(sellerId);
+        return ResponseEntity.status(HttpStatus.OK).body("Seller status changed successfully");
     }
 
-    @DeleteMapping("/deleteAttendance/{clientId}/{sellerId}")
-    public ResponseEntity<Object> deleteAttendance(@PathVariable(value = "clientId") long clientId, @PathVariable(value = "sellerId") long sellerId) {
-        Optional<ClientModel> clientModelOptional = clientService.findById(clientId);
+    @DeleteMapping("/deleteAttendance/{sellerId}")
+    public ResponseEntity<Object> deleteAttendance(@PathVariable(value = "sellerId") long sellerId) {
         Optional<SellerModel> sellerModelOptional = sellerService.findById(sellerId);
 
-        if (!clientModelOptional.isPresent() || !sellerModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client or Seller not found!");
+        if (!sellerModelOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller not found!");
         }
-        clientSellerService.deleteAttendance(clientId, sellerId);
+        clientSellerService.deleteAttendance(sellerId);
         return ResponseEntity.status(HttpStatus.OK).body("Attendance between client and seller was deleted successfully");
     }
 
