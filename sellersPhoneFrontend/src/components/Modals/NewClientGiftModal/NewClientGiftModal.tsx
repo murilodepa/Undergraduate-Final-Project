@@ -54,11 +54,7 @@ export default function NewClientGiftModal({
         } catch (error) {
             console.error("Error to get purchase list of gifts", error);
         }
-        console.log("response: ", response)
-
-        if (response != null && response != undefined) {
-            setPurchaseList(response);
-        } 
+        setPurchaseList(response);
 
         let suggestion: string;
         try {
@@ -70,6 +66,8 @@ export default function NewClientGiftModal({
 
         if (suggestion != null && suggestion != undefined && suggestion != '') {
             setSuggestion(suggestion);
+        } else {
+            setSuggestion("");
         } 
     }
 

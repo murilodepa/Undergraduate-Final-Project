@@ -11,15 +11,17 @@ export interface IClientData {
   name?: string;
   profileImage?: any;
   gender?: string;
-  birth?: number;
+  birth?: string;
+  visibleHappyBirthdayImage?: number;
 }
 
 export interface IClientInformationsData {
   id?: number;
   name?: string;
   gender?: string;
-  birth?: number;
+  birth?: string;
   purchaseList?: any;
+  visibleHappyBirthdayImage?: number;
 }
 
 export interface IClientDataProps {

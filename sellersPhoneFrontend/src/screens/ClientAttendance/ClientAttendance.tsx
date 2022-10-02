@@ -21,14 +21,15 @@ const ClientAttendance = ({ navigation, route }: any) => {
     id: route.params.paramKey.clientId,
     name: route.params.paramKey.name,
     gender: route.params.paramKey.gender,
-    birth: route.params.paramKey.birth
+    birth: route.params.paramKey.birth,
+    visibleHappyBirthdayImage: route.params.paramKey.visibleHappyBirthdayImage
   });
 
   const eventClientFound = async () => {
     console.log("Event - Client found");
     let response: any;
     try {
-        response = await new ClientSellerAttendance().updateStatus(clientInformationsData.id, id);
+        response = await new ClientSellerAttendance().updateStatus(id);
     } catch (error) {
       console.error("Error to update status", error);
     }
@@ -41,7 +42,7 @@ const ClientAttendance = ({ navigation, route }: any) => {
 
     let response: any;
     try {
-        response = await new ClientSellerAttendance().deleteAttendance(clientInformationsData.id, id);
+        response = await new ClientSellerAttendance().deleteAttendance(id);
     } catch (error) {
       console.error("Error to update status", error);
     }

@@ -23,6 +23,21 @@ export const Line = styled.View`
   height: 3px;
 `
 
+export const HappyBirthdayContainer = styled.View`
+  position: absolute;
+`;
+
+export const HappyBirthdayImage = styled.Image`
+  max-width: 60px;
+  max-height: 60px;
+  height: 60px;
+  width: 60px;
+  position: absolute;
+  margin-top: 60px;
+  margin-left: 110px;
+  opacity: 1
+`;
+
 export const LineDescription = styled.View`
   flex: 1;
   background-color: #000000;

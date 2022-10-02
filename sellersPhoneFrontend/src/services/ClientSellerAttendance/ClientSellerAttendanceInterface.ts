@@ -1,13 +1,13 @@
 import { AxiosResponse } from "axios";
 
 export interface IUpdateAttendanceProps {
-    updateStatus: (clientId: number, sellerId: number) => Promise<AxiosResponse>;
+    updateStatus: (sellerId: number) => Promise<AxiosResponse>;
 }
 
 export interface IUpdateAttendanceProps {
-    updateStatusAndEndTime: (clientId: number, sellerId: number) => Promise<AxiosResponse>;
+    updateStatusAndEndTime: (sellerId: number) => Promise<AxiosResponse>;
 }
 
 export interface IUpdateAttendanceProps {
-    deleteAttendance: (clientId: number, sellerId: number) => Promise<AxiosResponse>;
+    deleteAttendance: (sellerId: number) => Promise<AxiosResponse>;
 }

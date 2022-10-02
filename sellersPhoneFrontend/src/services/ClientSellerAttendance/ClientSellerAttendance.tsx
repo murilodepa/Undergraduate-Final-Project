@@ -5,15 +5,15 @@ import { IUpdateAttendanceProps } from "./ClientSellerAttendanceInterface";
 
 export class ClientSellerAttendance implements IUpdateAttendanceProps {
 
-    async updateStatus(clientId: number, sellerId: number): Promise<AxiosResponse> {
-        return await backendApi.put("/clientSeller/updateStatus/"+clientId+"/"+sellerId)
+    async updateStatus(sellerId: number): Promise<AxiosResponse> {
+        return await backendApi.put("/clientSeller/updateStatus/"+sellerId)
     }
 
-    async updateStatusAndEndTime(clientId: number, sellerId: number): Promise<AxiosResponse> {
-        return await backendApi.put("/clientSeller/updateStatusAndEndTime/"+clientId+"/"+sellerId)
+    async updateStatusAndEndTime(sellerId: number): Promise<AxiosResponse> {
+        return await backendApi.put("/clientSeller/updateStatusAndEndTime/"+sellerId)
     }
 
-    async deleteAttendance(clientId: number, sellerId: number): Promise<AxiosResponse> {
-        return await backendApi.delete("/clientSeller/deleteAttendance/"+clientId+"/"+sellerId)
+    async deleteAttendance(sellerId: number): Promise<AxiosResponse> {
+        return await backendApi.delete("/clientSeller/deleteAttendance/"+sellerId)
     }
 }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import date from "./date";
-import { ScrollView, TouchableOpacity } from "react-native";
+import { ScrollView, TouchableOpacity, ToastAndroid } from "react-native";
 
 import HeaderProfile from "../../components/HeaderProfile/HeaderProfile";
 
@@ -17,7 +17,9 @@ import {
   DescriptionItens,
   LineItens,
   GiftGif,
-  ContainerGifAndButton
+  ContainerGifAndButton,
+  HappyBirthdayContainer,
+  HappyBirthdayImage
 } from "./styles";
 import { IClientInformationsData, IPurchaseList } from "../../services/ClientService/ClientServiceInterface";
 import { ClientSellerAttendance } from "../../services/ClientSellerAttendance/ClientSellerAttendance";
@@ -36,6 +38,7 @@ const ClientInformations = ({ navigation, route }: any) => {
   const [openNewClientGiftModal, setOpenNewClientGiftModal] = useState(false);
   const [openNewBuyGiftModal, setOpenNewBuyGiftModal] = useState(false);
   const [list, setlist] = useState<IPurchasePeopleGiftList>();
+  const [visibleToast, setVisibleToast] = useState(false);
 
   const closeGiftModal = async () => {
     setOpenGiftModal(false);
@@ -45,8 +48,16 @@ const ClientInformations = ({ navigation, route }: any) => {
     setOpenNewClientGiftModal(false);
   };
 
+  const [clientInformationsData, setClientInformationsData] = useState<IClientInformationsData>({
+    id: route.params.paramKey.id,
+    name: route.params.paramKey.name,
+    gender: route.params.paramKey.gender,
+    birth: route.params.paramKey.birth,
+    visibleHappyBirthdayImage: route.params.paramKey.visibleHappyBirthdayImage
+  });
+
   const closeNewBuyGiftModal = async () => {
-    setOpenNewBuyGiftModal(false);
+      setOpenNewBuyGiftModal(false);
   };
 
   const closeGiftModalAndNo = async () => {
@@ -65,26 +76,52 @@ const ClientInformations = ({ navigation, route }: any) => {
 
   };
 
+  const Toast = ({ visible, message }) => {
+    if (visible) {
+      ToastAndroid.showWithGravityAndOffset(
+        message,
+        ToastAndroid.LONG,
+        ToastAndroid.BOTTOM,
+        25,
+        50
+      );
+      return null;
+    }
+    return null;
+  };
+  
+  useEffect(() => setVisibleToast(false), [visibleToast]);
+
   const eventOpenGiftModal = async () => {
     console.log("Event - Open gift modal");
-    setOpenGiftModal(true);
+    if(clientInformationsData.id != 0) {
+      setOpenGiftModal(true);
+    } else {
+      setVisibleToast(true);
+    }
   };
-
-  const [clientInformationsData, setClientInformationsData] = useState<IClientInformationsData>({
-    id: route.params.paramKey.id,
-    name: route.params.paramKey.name,
-    gender: route.params.paramKey.gender,
-    birth: route.params.paramKey.birth
-  });
 
   const [responsePurchaseList, setResponsePurchaseList] = useState<IPurchaseList>();
   const [suggestion, setSuggestion] = useState<string>("");
+
+  function getOpacityToHappyBirthdayImage() {
+    if(clientInformationsData != null && clientInformationsData != undefined && clientInformationsData.visibleHappyBirthdayImage != null) {
+      if (clientInformationsData.visibleHappyBirthdayImage == 2) {
+        return 0.2;
+      } else if (clientInformationsData.visibleHappyBirthdayImage == 1) {
+        return 1;
+      }
+    } 
+    return 0;
+  }
+
+  const opacityHappyBirthdayImage = getOpacityToHappyBirthdayImage();
 
   const eventClientAttendance = async () => {
     console.log("Event - Client attendance");
     let response: any;
     try {
-      response = await new ClientSellerAttendance().updateStatusAndEndTime(clientInformationsData.id, id);
+      response = await new ClientSellerAttendance().updateStatusAndEndTime(id);
     } catch (error) {
       console.error("Error to update status", error);
     }
@@ -93,37 +130,42 @@ const ClientInformations = ({ navigation, route }: any) => {
   };
 
   useEffect(() => {
-    let clientId = clientInformationsData.id;
-    async function getList() {
-      let response: IPurchaseList;
-      try {
-        response = await new ClientService().getPurchaseList(clientId);
-      } catch (error) {
-        console.error("Error to get client date", error);
-      }
-      console.log("response: ", response)
+    if(clientInformationsData.id != 0) {
+      let clientId = clientInformationsData.id;
+      async function getList() {
+        let response: IPurchaseList;
+        try {
+          response = await new ClientService().getPurchaseList(clientId);
+        } catch (error) {
+          console.error("Error to get client date", error);
+        }
 
-      if (response != null) {
         setResponsePurchaseList(response);
       }
-    }
-    getList();
+      getList();
 
-    async function getSuggestion() {
-      let suggestion: string;
-      try {
-        suggestion = await new PurchaseService().getSuggestion(clientId);
-      } catch (error) {
-        console.error("Error to get suggestion of gift", error);
-      }
-      console.log("suggestion: ", suggestion)
+      async function getSuggestion() {
+        let suggestion: string;
+        try {
+          suggestion = await new PurchaseService().getSuggestion(clientId);
+        } catch (error) {
+          console.error("Error to get suggestion of gift", error);
+        }
+        console.log("suggestion: ", suggestion)
 
-      if (suggestion != null && suggestion != undefined && suggestion != '') {
-        setSuggestion(suggestion);
+        if(suggestion != undefined) {
+          setSuggestion(suggestion);
+        } else {
+          setSuggestion("");
+        }
       }
-    }
-    getSuggestion();
-  }, [])
+      getSuggestion();
+  } else {
+    setOpenNewBuyGiftModal(true);
+  }
+
+
+}, [])
 
   return (
     <Container>
@@ -151,13 +193,15 @@ const ClientInformations = ({ navigation, route }: any) => {
           closeNewClientGiftModal={closeNewBuyGiftModal}
         />
       }
-
+      <HappyBirthdayContainer>
+        <HappyBirthdayImage style={{opacity: opacityHappyBirthdayImage}} source={require("../../assets/happy-birthday.png")} />
+      </HappyBirthdayContainer>
       <Line />
       <ContainerClientName>
         <ClientName>{clientInformationsData.name}</ClientName>
         <LineDescription />
         <ClientDescription>
-          {`${clientInformationsData.gender} \n ${clientInformationsData.birth} anos \n Sugestão: ${suggestion && suggestion}`}
+          {`${clientInformationsData.gender} \n ${clientInformationsData.birth} \n Sugestão: ${suggestion && suggestion}`}
         </ClientDescription>
       </ContainerClientName>
 
@@ -174,6 +218,8 @@ const ClientInformations = ({ navigation, route }: any) => {
         </ContainerScrollView>
       </ScrollView>
 
+      <Toast visible={visibleToast} message="Opção apenas para clientes cadastrados!" />
+      
       <ContainerGifAndButton>
         <TouchableOpacity onPress={() => eventOpenGiftModal()}>
           <GiftGif source={require("../../assets/gift.gif")} />
