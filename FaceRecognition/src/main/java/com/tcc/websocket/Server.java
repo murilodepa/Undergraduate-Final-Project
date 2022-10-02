@@ -65,7 +65,6 @@ public class Server {
                 System.out.println("File " + fileName
                         + " received for client!");
                 new ControlThreads();
-                System.out.println("PASSOU!");
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {

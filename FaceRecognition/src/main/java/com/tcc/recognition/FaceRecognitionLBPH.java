@@ -16,6 +16,7 @@ import org.bytedeco.opencv.opencv_face.*;
 import org.bytedeco.opencv.opencv_face.FaceRecognizer;
 import org.bytedeco.opencv.opencv_face.LBPHFaceRecognizer;
 
+import static org.bytedeco.opencv.global.opencv_imgcodecs.imwrite;
 import static org.bytedeco.opencv.global.opencv_imgproc.COLOR_BGRA2GRAY;
 import static org.bytedeco.opencv.global.opencv_imgproc.FONT_HERSHEY_PLAIN;
 import static org.bytedeco.opencv.global.opencv_imgproc.cvtColor;
@@ -36,7 +37,7 @@ import java.util.List;
  * @author Murilo de Paula Araujo
  */
 public class FaceRecognitionLBPH {
-    private static final int MINIMUM_TRUST = 95;
+    private static final int MINIMUM_TRUST = 90;
     private static final int MINIMUM_CLIENTS_TO_RECOGNIZE_AGAIN = 10;
 
     public static FaceRecognizer faceRecognizer = LBPHFaceRecognizer.create();
@@ -54,7 +55,7 @@ public class FaceRecognitionLBPH {
 
             BackendAPI backendAPI = BackendAPI.getInstance();
             String info = null;
-            String[] names = {"", "Tom Cruise", "Murilo Araujo", ""};
+            String[] names = {"Unknown", "Unknown", "Tom Cruise", "Murilo Araujo", "Unknown", "Unknown", "Unknown", "Unknown", "Unknown", "Unknown"};
 
             CascadeClassifier cascadeClassifier = new CascadeClassifier("src\\main\\resources\\classifiers\\haarcascade_frontalface_alt.xml");
             faceRecognizer.read("src\\main\\resources\\classifiers\\LBPHClassifier.yml");
@@ -65,6 +66,7 @@ public class FaceRecognitionLBPH {
             Mat colorImage = new Mat();
             int index = 0, i = 0;
             long quantityOfDetectedFaces = 0;
+            long start = 0;
 
             while ((capturedFrame = camera.grab()) != null) {
                 colorImage = converterMat.convert(capturedFrame);
@@ -74,7 +76,7 @@ public class FaceRecognitionLBPH {
 
                 cascadeClassifier.detectMultiScale(grayscaleImage, detectedFaces, 1.1, 2, 0, new Size(100, 100), new Size(500, 500));
 
-              //  if (quantityOfDetectedFaces != detectedFaces.size()) {
+                if (quantityOfDetectedFaces != detectedFaces.size()) {
                     for (i = 0; i < detectedFaces.size(); i++) {
                         Rect faceData = detectedFaces.get(i);
                         rectangle(colorImage, faceData, new Scalar(0, 255, 0, 0));
@@ -99,16 +101,25 @@ public class FaceRecognitionLBPH {
 
                         if(predict == -1 || trustInt >= MINIMUM_TRUST) {
                             info = "Unknown";
-                            //Mat faceDetected = new Mat(colorImage, faceData);
-                            //resize(faceDetected, faceDetected, new Size(160, 160));
-                            //imwrite("src\\main\\resources\\Unknown_Client\\UnknownClient_" + index + ".jpg", faceDetected);
-                            //index++;
-                            //System.out.println("Photo - " + index + "- Captured\n");
+
+                            if(start == 0) {
+                                start = System.currentTimeMillis();
+                                Mat faceDetected = new Mat(colorImage, faceData);
+                                resize(faceDetected, faceDetected, new Size(160, 160));
+                                imwrite("src\\main\\resources\\Unknown_Client\\UnknownClient_" + index + ".jpg", faceDetected);
+                                System.out.println("Photo - " + index + "- Captured\n");
+                                backendAPI.postUnknownUserPhoto(index);
+                                index++;
+                            } else if ((System.currentTimeMillis() - start) > 5000) {
+                                start = 0;
+                            }
                         } else {
                             System.out.println("Recognized user with an acceptable confidence value!");
-                            //stream().filter(clientId -> userId == clientId.getId()).findAny().orElse(null);
-                            info = names[predict];
-                         /*   if (recognitionClients != null && !recognitionClients.contains(predict)) {
+                            if(predict < names.length) {
+                                info = names[predict];
+                            }
+                            /* Validation not to send user duplicated */
+                            if (recognitionClients != null && !recognitionClients.contains(predict)) {
                                 if (recognitionClients.size() < MINIMUM_CLIENTS_TO_RECOGNIZE_AGAIN) {
                                     recognitionClients.add(predict);
                                 } else {
@@ -117,15 +128,16 @@ public class FaceRecognitionLBPH {
                                 }
                                 System.out.println("Sending to backend the recognized user with id: " + predict);
                                 backendAPI.recognizedClient(predict);
-                            }*/
+                            }
                         }
 
+                        /* Draw green square on user's face
                         int x = Math.max(faceData.tl().x() - 10, 0);
                         int y = Math.max(faceData.tl().y() - 10, 0);
-                        putText(colorImage, info, new Point(x, y), FONT_HERSHEY_PLAIN, 1.6, new Scalar(0, 255, 0, 0));
+                        putText(colorImage, info, new Point(x, y), FONT_HERSHEY_PLAIN, 1.6, new Scalar(0, 255, 0, 0));*/
                     }
                     quantityOfDetectedFaces = i;
-              //  }
+                }
 
                 if (canvasFrame.isVisible()) {
                     canvasFrame.showImage(capturedFrame);

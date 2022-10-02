@@ -10,13 +10,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -66,33 +64,24 @@ public class BackendAPI {
         }
     }
 
-    public void postUnknownUserPhoto(int index) {
-        try {
-            HttpPost httpPost = new HttpPost(BackendAPI.URLBase + "/recognizedUser?unknownUserPhoto=" + decodeImage(index));
-            ResponseHandler<String> responseHandler = httpResponse -> {
-                int status = httpResponse.getStatusLine().getStatusCode();
-                if (status >= 200 && status < 300) {
-                    HttpEntity entity = httpResponse.getEntity();
-                    return entity != null ? EntityUtils.toString(entity) : null;
-                } else {
-                    throw new ClientProtocolException("Unexpected response status: " + status);
-                }
-            };
-            String responseBody = this.clientHTTP.execute(httpPost, responseHandler);
-            System.out.println("-----------------------------------------------------");
-            System.out.println(responseBody);
-        } catch (IOException e) {
-            Logger.getLogger(BackendAPI.class.getName()).log(Level.SEVERE, null, e);
-        }
-    }
+    public void postUnknownUserPhoto(int index) throws IOException {
 
-    public ByteArrayOutputStream decodeImage(int index) throws IOException {
         String imagePath = "src\\main\\resources\\Unknown_Client\\UnknownClient_" + index + ".jpg";
-        File fileImage = new File(imagePath);
-        BufferedImage bufferedImage = ImageIO.read(fileImage);
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
-        System.out.println("Image created");
-        return byteArrayOutputStream;
+        File file = new File(imagePath);
+        CloseableHttpClient client = HttpClients.createDefault();
+
+        HttpPost httpPost = new HttpPost(BackendAPI.URLBase + "/unknownUserPhoto");
+        try {
+            MultipartEntityBuilder mpeBuilder = MultipartEntityBuilder.create();
+
+            mpeBuilder.addBinaryBody("image", file);
+
+            HttpEntity content = mpeBuilder.build();
+
+            httpPost.setEntity(content);
+            client.execute(httpPost);
+        } finally {
+            httpPost.reset();
+        }
     }
 }

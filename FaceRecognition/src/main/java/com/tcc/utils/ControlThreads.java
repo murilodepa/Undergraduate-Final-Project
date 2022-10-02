@@ -21,12 +21,11 @@ public class ControlThreads {
     private static FaceRecognizer faceRecognizer = LBPHFaceRecognizer.create();
 
     public ControlThreads() throws InterruptedException {
-        System.out.println("ENTROU NO CONSTRUTOR");
         lockResourceOpenSave();
     }
 
     public void lockResourceOpenSave() throws InterruptedException {
-        System.out.println("Lock current thread to update file!");
+        System.out.println("Acquire or Lock current thread to update file!");
         SEMAPHORE.acquire();
 
         //System.out.println("THREAD " + Thread.currentThread() + " - will update the classifier file!");
@@ -48,5 +47,6 @@ public class ControlThreads {
         }
 
         SEMAPHORE.release();
+        System.out.println("Release or UnLock current thread to update file!");
     }
 }
