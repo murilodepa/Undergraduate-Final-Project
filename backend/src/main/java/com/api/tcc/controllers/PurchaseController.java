@@ -184,10 +184,5 @@ public class PurchaseController {
         }
         return purchaseService.getMostSuggestion(clientModelOptional.get(), name, kinship);
     }
-
- /*   @GetMapping("/decisionTree")
-    public ResponseEntity<String> getPurchaseSuggestion() throws IOException {
-       return ResponseEntity.status(HttpStatus.OK).body(purchaseService.getPurchaseSuggestion());
-    }*/
 }
 

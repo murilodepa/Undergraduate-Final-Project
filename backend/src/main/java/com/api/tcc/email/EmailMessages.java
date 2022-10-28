@@ -28,7 +28,7 @@ public class EmailMessages {
         return "Olá " + sellerModel.getName()
                 + ",\n\nParabéns! Estamos felizes com a sua contratação! \n\n"
                 + "Seja muito bem-vindo(a) como vendedor(a) em nossa loja."
-                + "Os seus dados e a sua senha de acesso em nosso aplicativo, estão disponíveis logo abaixo: \n\n"
+                + " Os seus dados e a sua senha de acesso em nosso aplicativo, estão disponíveis logo abaixo: \n\n"
                 + "--------------------------------------------------------------- \n"
                 + "Nome: " + sellerModel.getName() + "\n"
                 + "E-mail: " + sellerModel.getEmail() + "\n"

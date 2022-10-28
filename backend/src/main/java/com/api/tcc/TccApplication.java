@@ -21,7 +21,7 @@ import java.io.IOException;
 @RestController
 public class TccApplication {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		SpringApplication.run(TccApplication.class, args);
 		//new Training();
 	}

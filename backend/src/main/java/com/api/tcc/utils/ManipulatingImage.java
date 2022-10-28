@@ -112,13 +112,11 @@ public class ManipulatingImage {
     }
 
     public String getFileNameUnknownClient() {
-        String fileName;
         File[] unknownClientPhotosList = getUnknownClientPhotosList();
 
         if (unknownClientPhotosList != null && unknownClientPhotosList.length > 0) {
             for (File file : unknownClientPhotosList) {
                 return file.getName();
-
             }
         }
         return null;

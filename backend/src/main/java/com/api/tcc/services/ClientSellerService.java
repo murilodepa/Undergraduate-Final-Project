@@ -23,6 +23,7 @@ import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -122,13 +123,14 @@ public class ClientSellerService {
                         clientsWaitingAttendanceDTO.setProfileImage(manipulatingImage.decodeImage(clientImageModelList.get(0).getImage()));
                     }
                 } else {
-                    clientsWaitingAttendanceDTO.setClientId(0);
-                    clientsWaitingAttendanceDTO.setName("Desconhecido");
-                    clientsWaitingAttendanceDTO.setBirth("Nascimento não registrado");
-                    clientsWaitingAttendanceDTO.setGender("Gênero não registrado");
-
                     String fileName = manipulatingImage.getFileNameUnknownClient();
                     if(fileName != null) {
+
+                        clientsWaitingAttendanceDTO.setClientId(0);
+                        clientsWaitingAttendanceDTO.setName("Desconhecido");
+                        clientsWaitingAttendanceDTO.setBirth("Nascimento não registrado");
+                        clientsWaitingAttendanceDTO.setGender("Gênero não registrado");
+
                         final String photoPath = "src\\main\\resources\\photos\\Unknown_Client\\" + fileName;
                         Path source = Paths.get(photoPath);
                         BufferedImage bi = ImageIO.read(source.toFile());
@@ -138,15 +140,43 @@ public class ClientSellerService {
                         ImageIO.write(bi, "png", baos);
                         byte[] imageBytes = baos.toByteArray();
                         clientsWaitingAttendanceDTO.setProfileImage(manipulatingImage.decodeImage(imageBytes));
-                        /* TO DO - Delete file after sending...
+                        /* Delete file after sending...*/
                         File photo = new File(photoPath);
                         if (photo.exists()) {
                             photo.delete();
-                        }*/
+                        }
+                    } else {
+                        return null;
                     }
                 }
-
                 return clientsWaitingAttendanceDTO;
+            } else if(clientSellerModel.getSellerModel() == null && clientSellerModel.getEndTime() == null && clientSellerModel.getClientModel() == null) {
+
+                String fileName = manipulatingImage.getFileNameUnknownClient();
+                if(fileName != null) {
+
+                    clientsWaitingAttendanceDTO.setClientId(0);
+                    clientsWaitingAttendanceDTO.setName("Desconhecido");
+                    clientsWaitingAttendanceDTO.setBirth("Nascimento não registrado");
+                    clientsWaitingAttendanceDTO.setGender("Gênero não registrado");
+
+
+                    final String photoPath = "src\\main\\resources\\photos\\Unknown_Client\\" + fileName;
+                    Path source = Paths.get(photoPath);
+                    BufferedImage bi = ImageIO.read(source.toFile());
+
+                    // convert BufferedImage to byte[]
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    ImageIO.write(bi, "png", baos);
+                    byte[] imageBytes = baos.toByteArray();
+                    clientsWaitingAttendanceDTO.setProfileImage(manipulatingImage.decodeImage(imageBytes));
+                    /* Delete file after sending...*/
+                    File photo = new File(photoPath);
+                    if (photo.exists()) {
+                        photo.delete();
+                    }
+                    return clientsWaitingAttendanceDTO;
+                }
             }
         }
 
@@ -156,12 +186,12 @@ public class ClientSellerService {
     public void endAttendance(long sellerId) {
         List<ClientSellerModel> clientSellerModelListAux = clientSellerRepository.findAll();
         List<ClientSellerModel> clientSellerModelList = new ArrayList<>();
-        List<ClientSellerModel> clientSellerModelListToAttendace = new ArrayList<>();
+        List<ClientSellerModel> clientSellerModelListToAttendance = new ArrayList<>();
 
         for(ClientSellerModel clientSellerModel : clientSellerModelListAux) {
             if(clientSellerModel.getEndTime() == null){
                 clientSellerModelList.add(clientSellerModel);
-                clientSellerModelListToAttendace.add(clientSellerModel);
+                clientSellerModelListToAttendance.add(clientSellerModel);
             }
         }
 
@@ -169,6 +199,7 @@ public class ClientSellerService {
             if (clientSellerModel.getSellerModel() != null && !clientSellerModel.getSellerModel().getAvailable()
                     && clientSellerModel.getSellerModel().getId() == sellerId) {
 
+                clientSellerModelListToAttendance.remove(clientSellerModel);
                 clientSellerModel.setEndTime(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")));
                 SellerModel sellerModel = clientSellerModel.getSellerModel();
                 sellerModel.setAvailable(true);
@@ -178,16 +209,15 @@ public class ClientSellerService {
                 clientSellerModel.getSellerModel().setAttendances(attendance);
                 sellerRepository.save(sellerModel);
                 clientSellerRepository.save(clientSellerModel);
-                clientSellerModelListToAttendace.remove(clientSellerModel);
             }
         }
 
         // Verify list of client - seller and seller available to indicate attendance
-        if(!clientSellerModelListToAttendace.isEmpty()) {
+        if(!clientSellerModelListToAttendance.isEmpty()) {
             SellerModel sellerModel;
-            for (ClientSellerModel clientSellerModel : clientSellerModelListToAttendace) {
+            for (ClientSellerModel clientSellerModel : clientSellerModelListToAttendance) {
                 List<SellerModel> availableSellerModelList = sellerService.verifySellersAvailable();
-                if (!availableSellerModelList.isEmpty()) {
+                if (!availableSellerModelList.isEmpty() && clientSellerModel.getSellerModel() == null) {
                     if (availableSellerModelList.size() == 1) {
                         sellerModel = availableSellerModelList.get(0);
                         sellerModel.setAvailable(false);
@@ -198,7 +228,7 @@ public class ClientSellerService {
                             sellerModel = sellerService.matchMakingGetBestSeller(clientSellerModel.getClientModel());
                             if(sellerModel != null) {
                                 sellerModel.setAvailable(false);
-                                sellerService.save(sellerModel);
+                                sellerRepository.save(sellerModel);
                                 clientSellerModel.setSellerModel(sellerModel);
                             }
                         } else {
@@ -222,7 +252,12 @@ public class ClientSellerService {
 
         for(ClientSellerModel clientSellerModel : clientSellerModelList) {
             if (clientSellerModel.getEndTime() == null
+                    && clientSellerModel.getSellerModel() != null
+                    && clientSellerModel.getSellerModel().getId() != 0
                     && clientSellerModel.getSellerModel().getId() == sellerId) {
+                SellerModel sellerModel = clientSellerModel.getSellerModel();
+                sellerModel.setAvailable(true);
+                sellerRepository.save(sellerModel);
                 clientSellerRepository.delete(clientSellerModel);
             }
         }

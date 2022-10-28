@@ -128,7 +128,7 @@ public class SellerService {
         for (SellerModel sellerModel : sellerModelList) {
             if (Objects.equals(email, sellerModel.getEmail()) && Objects.equals(password, sellerModel.getPassword())) {
                 sellerModel.setAvailable(true);
-                save(sellerModel);
+                sellerRepository.save(sellerModel);
                 List<SellerImageModel> sellerImageModelList = sellerImageRepository.findSellerImages(sellerModel.getId());
                 BeanUtils.copyProperties(sellerModel, registrationSellerDTO);
                 if(!sellerImageModelList.isEmpty()) {

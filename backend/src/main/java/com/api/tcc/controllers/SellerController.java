@@ -89,7 +89,7 @@ public class SellerController {
     }
 
     @DeleteMapping("/removeSeller/{id}")
-    public ResponseEntity<Object> deleteSeller(@PathVariable(value = "id") long id) {
+    public ResponseEntity<Object> deleteSeller(@PathVariable(value = "id") long id) throws IOException {
         Optional<SellerModel> sellerModelOptional = sellerService.findById(id);
         if (!sellerModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller not found!");

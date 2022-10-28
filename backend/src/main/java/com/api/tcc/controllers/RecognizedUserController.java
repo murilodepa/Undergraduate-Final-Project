@@ -8,6 +8,7 @@ package com.api.tcc.controllers;
 import com.api.tcc.database.Models.ClientModel;
 import com.api.tcc.database.Models.ClientSellerModel;
 import com.api.tcc.database.Models.SellerModel;
+import com.api.tcc.repositories.SellerRepository;
 import com.api.tcc.services.ClientSellerService;
 import com.api.tcc.services.ClientService;
 import com.api.tcc.services.RecognizedUserService;
@@ -53,6 +54,9 @@ public class RecognizedUserController {
     @Autowired
     SellerService sellerService;
 
+    @Autowired
+    SellerRepository sellerRepository;
+
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 
@@ -64,7 +68,7 @@ public class RecognizedUserController {
         if (indexAndName != null) {
             Optional<ClientModel> clientModelOptional = clientService.findById(userId);
             if (clientModelOptional.isPresent()) {
-                System.out.println("The user is a client! - Id: " + indexAndName.getId() + ", Name: " + indexAndName.getName());
+                System.out.println("The user is a client!");
                 if(clientSellerService.isBeingAttended(userId)) {
                     return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The client is being attended or he is leaving the store!");
                 } else {
@@ -74,7 +78,7 @@ public class RecognizedUserController {
                     SellerModel sellerModel = sellerService.matchMakingGetBestSeller(clientModelOptional.get());
                     if(sellerModel != null) {
                         sellerModel.setAvailable(false);
-                        sellerService.save(sellerModel);
+                        sellerRepository.save(sellerModel);
                         clientSellerModel.setSellerModel(sellerModel);
                     }
 
@@ -116,7 +120,7 @@ public class RecognizedUserController {
         SellerModel sellerModel = sellerService.getSellerWithLessAttendance();
         if (sellerModel != null) {
             sellerModel.setAvailable(false);
-            sellerService.save(sellerModel);
+            sellerRepository.save(sellerModel);
             clientSellerModel.setSellerModel(sellerModel);
         }
         clientSellerService.save(clientSellerModel);

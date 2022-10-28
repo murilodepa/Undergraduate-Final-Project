@@ -10,10 +10,9 @@ import com.api.tcc.database.Models.ClientSellerModel;
 import com.api.tcc.database.Models.SellerModel;
 import com.api.tcc.database.dtos.ClientSellerDTO;
 import com.api.tcc.database.dtos.ClientsWaitingAttendanceDTO;
+import com.api.tcc.repositories.ClientRepository;
+import com.api.tcc.repositories.SellerRepository;
 import com.api.tcc.services.ClientSellerService;
-import com.api.tcc.services.ClientService;
-import com.api.tcc.services.SellerService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,10 +38,10 @@ public class ClientSellerController {
     private ClientSellerService clientSellerService;
 
     @Autowired
-    private ClientService clientService;
+    private ClientRepository clientRepository;
 
     @Autowired
-    private SellerService sellerService;
+    private SellerRepository sellerRepository;
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -54,14 +53,14 @@ public class ClientSellerController {
         long sellerId = clientSellerDTO.getSellerId();
 
         if(clientId != 0) {
-            Optional<ClientModel> clientModelOptional = clientService.findById(clientId);
+            Optional<ClientModel> clientModelOptional = clientRepository.findById(clientId);
             if (clientModelOptional.isPresent()) {
                 clientSellerModel.setClientModel(clientModelOptional.get());
             }
         }
 
         if(sellerId != 0) {
-            Optional<SellerModel> sellerModelOptional = sellerService.findById(sellerId);
+            Optional<SellerModel> sellerModelOptional = sellerRepository.findById(sellerId);
             if (sellerModelOptional.isPresent()) {
                 clientSellerModel.setSellerModel(sellerModelOptional.get());
             }
@@ -108,14 +107,14 @@ public class ClientSellerController {
         long sellerId = clientSellerDTO.getSellerId();
 
         if(clientId != 0) {
-            Optional<ClientModel> clientModelOptional = clientService.findById(clientId);
+            Optional<ClientModel> clientModelOptional = clientRepository.findById(clientId);
             if (clientModelOptional.isPresent()) {
                 clientSellerModel.setClientModel(clientModelOptional.get());
             }
         }
 
         if(sellerId != 0) {
-            Optional<SellerModel> sellerModelOptional = sellerService.findById(sellerId);
+            Optional<SellerModel> sellerModelOptional = sellerRepository.findById(sellerId);
             if (sellerModelOptional.isPresent()) {
                 clientSellerModel.setSellerModel(sellerModelOptional.get());
             }
@@ -129,20 +128,20 @@ public class ClientSellerController {
 
     @PutMapping("/updateStatus/{sellerId}")
     public ResponseEntity<Object> updateStatus(@PathVariable(value = "sellerId") long sellerId) {
-        Optional<SellerModel> sellerModelOptional = sellerService.findById(sellerId);
+        Optional<SellerModel> sellerModelOptional = sellerRepository.findById(sellerId);
 
-        if (!clientModelOptional.isPresent() || !sellerModelOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Client or Seller not found!");
+        if (!sellerModelOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller not found!");
         }
         SellerModel sellerModel = sellerModelOptional.get();
         sellerModel.setAvailable(false);
-        sellerService.save(sellerModel);
+        sellerRepository.save(sellerModel);
         return ResponseEntity.status(HttpStatus.OK).body("Seller status changed successfully");
     }
 
     @PutMapping("/updateStatusAndEndTime/{sellerId}")
     public ResponseEntity<Object> updateStatusAndEndTime(@PathVariable(value = "sellerId") long sellerId) {
-        Optional<SellerModel> sellerModelOptional = sellerService.findById(sellerId);
+        Optional<SellerModel> sellerModelOptional = sellerRepository.findById(sellerId);
 
         if (!sellerModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller not found!");
@@ -153,7 +152,7 @@ public class ClientSellerController {
 
     @DeleteMapping("/deleteAttendance/{sellerId}")
     public ResponseEntity<Object> deleteAttendance(@PathVariable(value = "sellerId") long sellerId) {
-        Optional<SellerModel> sellerModelOptional = sellerService.findById(sellerId);
+        Optional<SellerModel> sellerModelOptional = sellerRepository.findById(sellerId);
 
         if (!sellerModelOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Seller not found!");
@@ -181,7 +180,7 @@ public class ClientSellerController {
     }
 
     @GetMapping("/clientWaitingAttendance/{sellerId}")
-    public ResponseEntity<ClientsWaitingAttendanceDTO> clientWaitingAttendance(@PathVariable(value = "sellerId") long sellerId) throws ParseException, IOException {
+    public ResponseEntity<ClientsWaitingAttendanceDTO> clientWaitingAttendance(@PathVariable(value = "sellerId") long sellerId) throws IOException {
         return ResponseEntity.status(HttpStatus.OK).body(clientSellerService.clientWaitingAttendance(sellerId));
     }
 }
