@@ -11,7 +11,7 @@ export const ContainerProfileImage = styled.View`
   justify-content: center;
   align-items: center;
   width: auto;
-  max-height: 250px;
+  max-height: 200px;
 `;
 
 export const Line = styled.View`
@@ -91,8 +91,8 @@ export const ViewTextInput = styled.View`
 `;
 
 export const ManagerPicture = styled.Image`
-  height: 200px;
-  width: 200px;
+  height: 150px;
+  width: 150px;
   justify-content: center;
   align-items: center;
   border-radius: 100px;
@@ -133,6 +133,6 @@ export const AvailableButton = styled.Image`
   position: absolute;
   max-width: 40px;
   max-height: 40px;
-  margin-left: 63.5%;
-  margin-top: 34%;
+  margin-left: 63%;
+  margin-top: 26%;
 `;

@@ -15,7 +15,7 @@ const ClientRegistration = ({ navigation }) => {
   });
 
   const [clientData, setClientData] = useState<IClientData>({
-    gender: "Feminino",
+    gender: "Selecione",
   });
 
   const closeEditProfile = async () => {

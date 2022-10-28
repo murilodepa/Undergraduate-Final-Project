@@ -7,6 +7,7 @@ export interface ISellerData {
   birth?: string;
   sector?: string;
   available?: boolean;
+  servicePreference?: string,
   email?: string;
   password: string;
 }

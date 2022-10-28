@@ -61,13 +61,10 @@ const SellerInputs = (props: any) => {
   }
 
   const regexNumber = /[0-9]/;
-  const genderList = ["Feminino", "Masculino", "Outros"];
-  const sectorList = [
-    "Camiseta",
-    "Calça",
-    "Vestido",
-    "Short",
-  ];
+  const genderList = ["Selecione", "Feminino", "Masculino", "Outros"];
+  const sectorList = ["Selecione", "Camiseta", "Calça", "Vestido", "Short"];
+
+  const servicePreferenceList = ["Selecione", "Criança", "Jovem", "Adulto", "Idoso"]
   const [sellerData, setSellerData] = useState<ISellerData>(props.sellerData);
   const [inputNameColor, setInputNameColor] = useState("black");
   const [inputBirthColor, setInputBirthColor] = useState("black");
@@ -75,6 +72,7 @@ const SellerInputs = (props: any) => {
   const [inputPasswordColor, setInputPasswordColor] = useState("black");
   const [inputGenderColor, setInputGenderColor] = useState("black");
   const [inputSectorColor, setInputSectorColor] = useState("black");
+  const [inputServicePreferenceColor, setInputServicePreferenceColor] = useState("black");
   const [hidePassword, setHidePassword] = useState(true);
   const { setResultSellerData } = useGlobalContext();
 
@@ -90,71 +88,83 @@ const SellerInputs = (props: any) => {
 
   const eventCaptureOrEdit = async () => {
     var count = 0;
-    if (
-      sellerData.name != undefined &&
-      sellerData.name.length > 3 &&
-      !regexNumber.test(sellerData.name)
-    ) {
-      console.log("Name is valid! +1");
-      setInputNameColor("black");
-      count++;
-    } else {
-      setInputNameColor("red");
-      count--;
-    }
-    if (sellerData.gender == undefined || sellerData.gender == null) {
-      setInputGenderColor("red");
-      count--;
-    } else {
-      setInputGenderColor("black");
-      console.log("Gender is valid! +1");
-      count++;
-    }
-    if (sellerData.sector == undefined || sellerData.sector == null) {
-      setInputSectorColor("red");
-      count--;
-    } else {
-      setInputSectorColor("black");
-      console.log("Sector is valid! +1");
-      count++;
-    }
-    if (sellerData.birth != undefined && validateDate(sellerData.birth)) {
-      setInputBirthColor("black");
-      count++;
-    } else {
-      setInputBirthColor("red");
-      count = count - 1;
-    }
-    if (
-      sellerData.email != undefined &&
-      sellerData.email.length > 5 &&
-      regexEmail.test(sellerData.email)
-    ) {
-      console.log("Email is valid! +1");
-      setInputEmailColor("black");
-      count++;
-    } else {
-      setInputEmailColor("red");
-      count--;
-    }
-    if (
-      props.buttonName == "Cadastrar" ||
-      (props.buttonName != "Cadastrar" &&
-        (sellerData.password != undefined || sellerData.password != null))
-    ) {
-      if (sellerData.password != undefined && sellerData.password.length > 5) {
-        console.log("Password is valid!");
-        setInputPasswordColor("black");
+    if (sellerData != undefined && sellerData != null) {
+      if (
+        sellerData.name != undefined &&
+        sellerData.name.length > 3 &&
+        !regexNumber.test(sellerData.name)
+      ) {
+        console.log("Name is valid! +1");
+        setInputNameColor("black");
         count++;
       } else {
-        setInputPasswordColor("red");
+        setInputNameColor("red");
         count--;
       }
-    } else {
-      setInputPasswordColor("black");
-      count++;
+
+      if (sellerData.gender == undefined || sellerData.gender == "Selecione" || sellerData.gender == null) {
+        setInputGenderColor("red");
+        count--;
+      } else {
+        setInputGenderColor("black");
+        console.log("Gender is valid! +1");
+        count++;
+      }
+      if (sellerData.sector == undefined || sellerData.sector == "Selecione" || sellerData.sector == null) {
+        setInputSectorColor("red");
+        count--;
+      } else {
+        setInputSectorColor("black");
+        console.log("Sector is valid! +1");
+        count++;
+      }
+      if (sellerData.servicePreference == undefined || sellerData.servicePreference == "Selecione" || sellerData.servicePreference == null) {
+        setInputServicePreferenceColor("red");
+        count--;
+      } else {
+        setInputServicePreferenceColor("black");
+        console.log("Service Preference is valid! +1");
+        count++;
+      }
+      if (sellerData.birth != undefined && validateDate(sellerData.birth)) {
+        setInputBirthColor("black");
+        count++;
+      } else {
+        setInputBirthColor("red");
+        count = count - 1;
+      }
+      if (
+        sellerData.email != undefined &&
+        sellerData.email.length > 5 &&
+        regexEmail.test(sellerData.email)
+      ) {
+        console.log("Email is valid! +1");
+        setInputEmailColor("black");
+        count++;
+      } else {
+        setInputEmailColor("red");
+        count--;
+      }
+      if (
+        props.buttonName == "Cadastrar" ||
+        (props.buttonName != "Cadastrar" &&
+          (sellerData.password != undefined || sellerData.password != null))
+      ) {
+        if (sellerData.password != undefined && sellerData.password.length > 5) {
+          console.log("Password is valid!");
+          setInputPasswordColor("black");
+          count++;
+        } else {
+          setInputPasswordColor("red");
+          count--;
+        }
+      } else {
+        setInputPasswordColor("black");
+        count++;
+      }
     }
-    if (count == 6) {
+
+    if (count == 7) {
       if (props.buttonName == "Cadastrar") {
         var errorRegister = false;
 
@@ -192,17 +202,17 @@ const SellerInputs = (props: any) => {
         />
       </ContainerProfileImage>
       {
-          (props.buttonName != "Cadastrar") ? (
-            (sellerData.available) ? (
-              <AvailableButton
-                source={require("../../assets/available-true.png")}
-              />
-            ) : (
-              <AvailableButton
-                source={require("../../assets/available-false.png")}
-              />
-            )) : (null)
-        }
+        (props.buttonName != "Cadastrar") ? (
+          (sellerData.available) ? (
+            <AvailableButton
+              source={require("../../assets/available-true.png")}
+            />
+          ) : (
+            <AvailableButton
+              source={require("../../assets/available-false.png")}
+            />
+          )) : (null)
+      }
       <Line />
       <ViewTextInput>
         <CharacteristicText> Nome: </CharacteristicText>
@@ -242,10 +252,7 @@ const SellerInputs = (props: any) => {
         </ContainerSelect>
       </ViewTextInput>
       <ViewTextInput>
-        <CharacteristicText>
-          {" "}
-          Data de {"\n"} Nascimento:{" "}
-        </CharacteristicText>
+        <CharacteristicText> Nascimento: </CharacteristicText>
         <TextInputMask
           type={"datetime"}
           options={{
@@ -268,6 +275,7 @@ const SellerInputs = (props: any) => {
         {console.log("email: ", sellerData.email)}
         {console.log("password: ", sellerData.password)}
       </ViewTextInput>
+
       <ViewTextInput>
         <CharacteristicText> Setor: </CharacteristicText>
         <ContainerSelect style={{ borderColor: inputSectorColor }}>
@@ -290,6 +298,34 @@ const SellerInputs = (props: any) => {
           </Picker>
         </ContainerSelect>
       </ViewTextInput>
+
+      <ViewTextInput>
+
+        <CharacteristicText>
+          {" "}
+          Preferência de {"\n"} Atendimento:{" "}
+        </CharacteristicText>
+        <ContainerSelect style={{ borderColor: inputServicePreferenceColor }}>
+          <Picker
+            selectedValue={sellerData.servicePreference}
+            onValueChange={(itemValue) =>
+              setSellerData({ ...sellerData, servicePreference: itemValue })
+            }
+          >
+            {servicePreferenceList.map((servicePreference, key) => {
+              return (
+                <Picker.Item
+                  style={{ fontSize: 24 }}
+                  label={servicePreference}
+                  value={servicePreference}
+                  key={key}
+                />
+              );
+            })}
+          </Picker>
+        </ContainerSelect>
+      </ViewTextInput>
+
       <ViewTextInput>
         <CharacteristicText> E-mail: </CharacteristicText>
         <CharacteristicInput

@@ -81,6 +81,8 @@ const Capture = ({ navigation, route }: any) => {
     if (response.profileImage != null && response.profileImage != undefined) {
       setProfileImage(response.profileImage);
       setName(response.name);
+    } else {
+      setProfileImage(null);
     }
     console.log("Updating name and photo...");
   };

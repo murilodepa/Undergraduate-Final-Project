@@ -27,8 +27,9 @@ const SellerRegistration = ({ navigation, route }: any) => {
   });
 
   const [managerData, setManagerData] = useState<ISellerData>({
-    gender: "Feminino",
-    sector: "Camiseta"
+    gender: "Selecione",
+    sector: "Selecione",
+    servicePreference: "Selecione"
   });
 
   const closeEditProfile = async () => {

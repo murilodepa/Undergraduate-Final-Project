@@ -77,6 +77,9 @@ export const ManagerPicture = styled.Image`
   width: 190px;
   justify-content: center;
   align-items: center;
+  border-radius: 100px;
+  border-width: 2px;
+  border-color: #000000;
 `;
 
 export const ContainerSelect = styled.View`

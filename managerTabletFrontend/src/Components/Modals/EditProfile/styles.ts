@@ -8,8 +8,8 @@ export const Container = styled.View`
 
 export const ContainerModal = styled.View`
   background-color: #6bb1f1;
-  max-height: 820px;
-  height: 820px;
+  max-height: 860px;
+  height: 860px;
   width: 540px;
   max-width: 540px;
   border-radius: 20px;

@@ -59,7 +59,8 @@ const Splash = ({ navigation }) => {
     } catch (error) {
       console.error("Error to get manager date", error);
     }
-    if (response.profileImage != null && response.profileImage != undefined) {
+
+    if (response != undefined && response.profileImage != null && response.profileImage != undefined) {
       setProfileImage(response.profileImage);
       setName(response.name);
       getSellerData();

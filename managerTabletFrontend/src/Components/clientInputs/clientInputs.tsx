@@ -55,7 +55,7 @@ const ClientInputs = (props: any) => {
   }
 
   const regexNumber = /[0-9]/;
-  const genderList = ["Feminino", "Masculino", "Outros"];
+  const genderList = ["Selecione", "Feminino", "Masculino", "Outros"];
   const [clientData, setClientData] = useState<IClientData>(props.clientData);
   const [inputNameColor, setInputNameColor] = useState("black");
   const [inputBirthColor, setInputBirthColor] = useState("black");
@@ -86,7 +86,7 @@ const ClientInputs = (props: any) => {
       setInputNameColor("red");
       count--;
     }
-    if (clientData.gender == undefined || clientData.gender == null) {
+    if (clientData.gender == undefined || clientData.gender == "Selecione" || clientData.gender == null) {
       setInputGenderColor("red");
       count--;
     } else {
@@ -128,8 +128,8 @@ const ClientInputs = (props: any) => {
   return (
     <>
       <ContainerProfileImage style={{ alignContent: "center" }}>
-        <ManagerPicture
-          source={require("../../assets/profile-image-setting.png")}
+      <ManagerPicture
+          source={{ uri: props.image }}
         />
       </ContainerProfileImage>
 
